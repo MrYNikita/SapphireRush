@@ -25,8 +25,10 @@ class classState extends classBasic {
 
     constructor(jectTransmit = {
 
-        stringName   : "",
-        functionState: async function() {},
+        stringName             : "",
+        functionState          : async function() {},
+        jectAnimaSequenceIntro : new classAnimaSequence(),
+        jectAnimaSequenceFinish: new classAnimaSequence(),
 
     }) {
 
@@ -35,10 +37,14 @@ class classState extends classBasic {
         const {
 
             functionState,
+            jectAnimaSequenceIntro,
+            jectAnimaSequenceFinish,
 
         } = jectTransmit;
 
-        this.functionState = functionState ?? async function() {};
+        this.functionState           = functionState ?? async function() {};
+        this.jectAnimaSequenceIntro  = jectAnimaSequenceIntro;
+        this.jectAnimaSequenceFinish = jectAnimaSequenceFinish;
 
     };
 
@@ -96,7 +102,63 @@ class classStateVideo extends classState {
 };
 class classStateButton extends classState {
 
-    
+    constructor(
+
+        jectTransmit = {
+
+            stringName             : "",
+            stringText             : "",
+            jectAnimaClick         : new classAnima(),
+            functionExecute        : async function() {},
+            jectAnimaSequenceIntro : new classAnimaSequence(),
+            jectAnimaSequenceFinish: new classAnimaSequence(),
+
+        },
+
+    ) {
+
+        jectTransmit.functionState = async function() {
+
+            const [domButton,styleButton] = functionDomElementCreate({
+                
+                stringParms   : "button domButton x divBackground session",
+                jectParamStyle: {
+
+                    top      : "-100px",
+                    left     : "50%",
+                    width    : "10%",
+                    position : "absolute",
+                    transform: "translateX(-50%)"
+
+                },
+            
+            });
+
+            this.jectAnimaSequenceIntro.domElement = domButton;
+
+            if (this.jectAnimaSequenceIntro) {
+                
+                await this.jectAnimaSequenceIntro.functionExecute();
+            
+            };
+            
+        };
+
+        super(jectTransmit);
+
+        const {
+
+            stringText,
+            jectAnimaClick,
+            functionExecute,
+
+        } = jectTransmit;
+
+        this.stringText      = stringText;
+        this.jectAnimaClick  = jectAnimaClick;
+        this.functionExecute = functionExecute; 
+
+    };
 
 };
 class classStateChoice extends classState {
@@ -218,27 +280,37 @@ class classStateClaster extends classStateCatalog {
         stringName    : "introdaction",
         arrayJectState: [
 
-            new classState({
+            new classStateButton({
 
-                functionState: async function() {
+                jectAnimaSequenceIntro: new classAnimaSequence({
 
-                    await functionArrayGetByName({
+                    arrayJectAnima: [
 
-                        stringName    : "gradientWaveLinearTonTwo",
-                        arrayJectParse: jectSession.arrayJectAnima,
+                        new classAnimaTeamwise({
 
-                    }).functionExecute().functionBegin();
+                            arrayJectAnima: [
+    
+                                functionArrayGetByName({
+    
+                                    stringName    : "gradientWaveLinearTonTwo",
+                                    arrayJectParse: jectSession.arrayJectAnima,
+            
+                                }).functionCreate({ numberIterate: 200, }),
+                                new classAnimaDomMove({
 
-                },
+                                    jectParam: new classAnimaParam({}),
+                                    stringName: "moveClassic",
 
-            }),
-            new classState({
 
-                functionState: async function() {
+                                }).functionCreate({ numberIterate: 200, }),
+    
+                            ],
+    
+                        }),
 
-                    console.log("GG");
+                    ],
 
-                },
+                }),
 
             }),
 

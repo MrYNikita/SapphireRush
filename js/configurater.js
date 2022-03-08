@@ -2,13 +2,14 @@
 const jectConfigurate = {};
 
 // Логические данные;
-jectConfigurate.boolSkip               = false;
-jectConfigurate.boolReload             = true;
-jectConfigurate.boolSkipAnima          = false;
-jectConfigurate.boolSkipState          = false;
-jectConfigurate.boolSkipTimer          = false;
-jectConfigurate.boolClearSession       = false;
-jectConfigurate.boolSaveAnimaImplement = true;
+jectConfigurate.boolSkip                = false;
+jectConfigurate.boolReload              = true;
+jectConfigurate.boolSkipAnima           = false;
+jectConfigurate.boolSkipState           = false;
+jectConfigurate.boolSkipTimer           = false;
+jectConfigurate.boolClearSession        = false;
+jectConfigurate.boolSaveAnimaImplement  = false;
+jectConfigurate.boolSaveDomElementStyle = false;
 
 // Числовые данные;
 jectConfigurate.numberDefaultIterate           = 100;

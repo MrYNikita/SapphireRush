@@ -41,7 +41,7 @@
             
             strokeParse: functionStylePropertyExtract({
 
-                domStyle: jectSession.styleSession,
+                domStyle: jectSession.domStyleSession,
                 strokeFind: "grid-template-rows",
                 strokeExcerpt: "divBackground",
 
@@ -53,7 +53,7 @@
             
             strokeParse: functionStylePropertyExtract({
 
-                domStyle: jectSession.styleSession,
+                domStyle: jectSession.domStyleSession,
                 strokeFind: "grid-template-columns",
                 strokeExcerpt: "divBackground",
 

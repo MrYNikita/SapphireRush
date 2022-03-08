@@ -2,61 +2,89 @@
 
     const {
 
-        stylePlot,
-        styleBuffer,
-        styleSession,
+        domStylePlot,
+        domStyleBuffer,
+        domStyleSession,
 
     } = jectSession;
 
     // ID;
-    styleSession.innerHTML += ` #divBody {
+    functionStylePropertySet({
 
-        width   : 100%;
-        height  : 100%;
-        position: absolute;
+        domElement    : jectSession.domDivBody,
+        jectParamStyle: {
 
-    }`;
-    styleSession.innerHTML += ` #divBackground {
+            width   : `100%`,
+            height  : `100%`,
+            position: `absolute`,
+            
+        },
 
-        width              : 100%;
-        height             : 100%;
-        display            : grid;
-        gridTemplateRows   : repeat(${jectConfigurate.numberDivBackgroundGridRows},1fr);
-        gridTemplateColumns: repeat(${jectConfigurate.numberDivBackgroundGridColumns},1fr);
+    });
+    functionStylePropertySet({
 
-    }`;
-    styleSession.innerHTML += ` #canvasBackground {
+        domElement    : jectSession.domDivBackground,
+        jectParamStyle: {
 
-        display: none;
+            width              : `100%`,
+            height             : `100%`,
+            display            : `grid`,
+            gridTemplateRows   : `repeat(${jectConfigurate.numberDivBackgroundGridRows},1fr)`,
+            gridTemplateColumns: `repeat(${jectConfigurate.numberDivBackgroundGridColumns},1fr)`,
 
-    }`;
+        },
+
+    });
+    functionStylePropertySet({
+
+        domElement    : jectSession.domCanvasBackground,
+        jectParamStyle: {
+
+            display: `none`,
+
+        },
+
+    });
 
     // Классы;
 
 
     // Группы;
-    styleSession.innerHTML += ` * {
+    domStyleSession.innerHTML += `body{}*{}`;
+    functionStylePropertySet({
 
-        margin     : 0;
-        padding    : 0;
-        fontFamily : "Courier New", monospace;
-        marginLeft : auto;
-        marginRight: auto;
+        styleElement  : jectSession.domStyleSession,
+        stringElement : "\\*",
+        jectParamStyle: {
 
-    }`;
-    styleSession.innerHTML += ` body {
+            margin     : `0`,
+            padding    : `0`,
+            fontFamily : `"Courier New", monospace`,
+            marginLeft : `auto`,
+            marginRight: `auto`,
 
-        background: rgba(255,255,255,0);
+        },
 
-    }`;
+    });
+    functionStylePropertySet({
+
+        styleElement  : jectSession.domStyleSession,
+        stringElement : "body",
+        jectParamStyle: {
+
+            background: "rgba(255,255,255,0)",
+
+        },
+
+    });
 
     // Аниматоры;
 
 }
 
-functionStyleProcess({ styleElement: jectSession.stylePlot, });
-functionStyleProcess({ styleElement: jectSession.styleBuffer, });
-functionStyleProcess({ styleElement: jectSession.styleSession, });
+functionStyleProcess({ styleElement: jectSession.domStylePlot, });
+functionStyleProcess({ styleElement: jectSession.domStyleBuffer, });
+functionStyleProcess({ styleElement: jectSession.domStyleSession, });
 
 
 functionResolveConnect();

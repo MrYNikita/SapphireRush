@@ -202,6 +202,17 @@ class classBasicTimerFinite extends classBasicTimer {
 
     };
 
+    functionClear() {
+
+        functionArrayRemove({
+
+            arrayJect : jectSession.arrayJectTimerSession,
+            jectRemove: this,
+
+        });
+
+    };
+
     async functionUpdate(
 
         jectTransmit = {
@@ -235,12 +246,7 @@ class classBasicTimerFinite extends classBasicTimer {
 
                 clearInterval(this.intervalExecute);
 
-                functionArrayRemove({
-
-                    arrayJect : jectSession.arrayJectTimerSession,
-                    jectRemove: this,
-
-                });
+                this.functionClear();
 
                 if (this.functionResolveFinite) { this.functionResolveFinite(); }
 
@@ -283,6 +289,17 @@ class classBasicTimerFinitePlot extends classBasicTimerFinite {
         super(jectTransmit);
 
         jectSession.arrayJectTimerPlot.push(this);
+
+    };
+
+    functionClear() {
+
+        functionArrayRemove({
+
+            arrayJect : jectSession.arrayJectTimerPlot,
+            jectRemove: this,
+
+        });
 
     };
 

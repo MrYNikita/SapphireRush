@@ -23,14 +23,14 @@ jectSession.arrayJectStateSequence = [];
 jectSession.arrayDomElementSession = [];
 
 // Style элементы;
-jectSession.stylePlot    = functionDomElementCreate({ strokeParms: "style stylePlot x head" })[0];
-jectSession.styleBuffer  = functionDomElementCreate({ strokeParms: "style styleBuffer x head" })[0];
-jectSession.styleSession = functionDomElementCreate({ strokeParms: "style styleSession x head" })[0];
+jectSession.domStylePlot    = functionDomElementCreate({ stringParms: "style stylePlot x head" })[0];
+jectSession.domStyleBuffer  = functionDomElementCreate({ stringParms: "style styleBuffer x head" })[0];
+jectSession.domStyleSession = functionDomElementCreate({ stringParms: "style styleSession x head" })[0];
 
 // HTML элементы;
-jectSession.domDivBody          = functionDomElementCreate({ strokeParms: "div divBody x body session" })[0];
-jectSession.domDivBackground    = functionDomElementCreate({ strokeParms: "div divBackground x divBody session" })[0];
-jectSession.domCanvasBackground = functionDomElementCreate({ strokeParms: "canvas canvasBackground x divBody session" })[0];
+jectSession.domDivBody          = functionDomElementCreate({ stringParms: "div divBody x body session" })[0];
+jectSession.domDivBackground    = functionDomElementCreate({ stringParms: "div divBackground x divBody session" })[0];
+jectSession.domCanvasBackground = functionDomElementCreate({ stringParms: "canvas canvasBackground x divBody session" })[0];
 
 // Объектные данные;
 jectSession.jectControllerState = {
@@ -67,7 +67,7 @@ jectSession.jectControllerState = {
         if (jectStatePlot instanceof classStatePlot) {
 
             // Переопределение сюжетного стиля;
-            jectSession.stylePlot.innerHTML = jectStatePlot.stringStyle;
+            jectSession.domStylePlot.innerHTML = jectStatePlot.stringStyle;
             // Переопределение последовательности событий;
             jectSession.arrayJectStateSequence = jectStatePlot.arrayJectState;
 

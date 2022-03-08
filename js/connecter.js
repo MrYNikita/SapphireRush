@@ -24,10 +24,10 @@ let functionResolveConnect;
     let arrayStringScriptsClasses = [
 
         "basic",
-        "state",
         "thing",
         "being",
         "anima",
+        "state",
         "script",
 
     ];

@@ -1,39 +1,41 @@
 {
     { // Log;
 
+        
+
     }
     { // Dom;
 
         function functionDomElementCreate(jectTransmit = {
 
-            jectStyle               : {},
+            jectParamStyle          : {},
             domElementOver          : document.createElement("sr"),
-            strokeParms             : "",
-            strokeElementId         : "",
-            strokeElementType       : "",
-            strokeElementClass      : "",
-            strokeElementAffiliation: "",
+            stringParms             : "",
+            stringElementId         : "",
+            stringElementType       : "",
+            stringElementClass      : "",
+            stringElementAffiliation: "",
 
         }) {
 
             const {
 
-                jectStyle,
-                strokeParms,
+                stringParms,
                 domElementOver,
-                strokeElementId,
-                strokeElementType,
-                strokeElementClass,
-                strokeElementAffiliation,
+                jectParamStyle,
+                stringElementId,
+                stringElementType,
+                stringElementClass,
+                stringElementAffiliation,
 
             } = jectTransmit;
 
             let domElement = document.createElement("sr");
             let styleElement = document.createElement("style");
 
-            if (typeof(strokeParms) === "string") {
+            if (typeof(stringParms) === "string") {
 
-                const arrayStringParms = strokeParms.split(" ");
+                const arrayStringParms = stringParms.split(" ");
 
                 [domElement,styleElement] = functionDomElementCreate({
 
@@ -41,45 +43,43 @@
                     ? document.getElementById(arrayStringParms[3]) : (arrayStringParms[3] === "body")
                     ? document.body : (arrayStringParms[3] === "head")
                     ? document.head : undefined,
-                    strokeElementId         : arrayStringParms[1],
-                    strokeElementType       : arrayStringParms[0],
-                    strokeElementClass      : (arrayStringParms[2] && arrayStringParms[2] !== "x")
+                    stringElementId         : arrayStringParms[1],
+                    stringElementType       : arrayStringParms[0],
+                    stringElementClass      : (arrayStringParms[2] && arrayStringParms[2] !== "x")
                     ? arrayStringParms[2] : undefined,
-                    strokeElementAffiliation: (["session","plot"].includes(arrayStringParms[4])) ? arrayStringParms[4] : undefined,
+                    stringElementAffiliation: (["session","plot"].includes(arrayStringParms[4])) ? arrayStringParms[4] : undefined,
 
                 });
 
-            } else if (!strokeParms) {
+            } else if (!stringParms) {
 
-                domElement = document.createElement(strokeElementType);
+                domElement = document.createElement(stringElementType);
                 styleElement = domElement.style;
 
                 if (domElementOver) { domElementOver.appendChild(domElement); }
-                if (strokeElementId) { domElement.id = strokeElementId; }
-                if (strokeElementClass) { domElement.className = strokeElementClass; }
-                if (strokeElementAffiliation) {
+                if (stringElementId) { domElement.id = stringElementId; }
+                if (stringElementClass) { domElement.className = stringElementClass; }
+                if (stringElementAffiliation) {
 
-                    switch(strokeElementAffiliation) {
+                    const domStyle        = jectSession[`domStyle${stringElementAffiliation[0].toUpperCase() + stringElementAffiliation.substring(1)}`];
+                    const arrayDomElement = jectSession[`arrayDomElement${stringElementAffiliation[0].toUpperCase() + stringElementAffiliation.substring(1)}`];
+                    
+                    if (domStyle && !domStyle.innerHTML.includes(`#${stringElementId}`)) { domStyle.innerHTML += `#${stringElementId}{}`; }
+                    if (arrayDomElement) { arrayDomElement.push(domElement); };
 
-                        case "plot"   : { jectSession.arrayDomElementPlot.push(domElement); } break;
-                        case "session": { jectSession.arrayDomElementSession.push(domElement); } break;
-
-                    };
 
                 };
 
             };
 
-            if (typeof(jectStyle) === "object") {
+            if (typeof(jectParamStyle) === "object") {
                     
-                Object.entries(jectStyle).forEach((jectPropertyNow,numberIndexNow) => {
+                functionStylePropertySet({
 
-                    if (Object.keys(styleElement).includes(jectPropertyNow[0])) {
+                    domElement    : domElement,
+                    stringExcerpt : ``,
+                    jectParamStyle: jectParamStyle,
 
-                        styleElement[jectPropertyNow[0]] = jectPropertyNow[1];
-
-                    }
-                
                 });
                 
             };
@@ -100,11 +100,44 @@
                 return functionDomElementCreate({
 
                     domElementOver: domElementOver,
-                    strokeElementId: strokeElementId,
-                    strokeElementType: strokeElementType,
-                    strokeElementClass: strokeElementClass,
+                    stringElementId: strokeElementId,
+                    stringElementType: strokeElementType,
+                    stringElementClass: strokeElementClass,
 
                 });
+
+            };
+
+        };
+        function functionDomElementRemove(
+
+            jectTransmit = {
+
+                domElement   : document.createElement("sr"),
+                boolStyleSave: jectConfigurate.boolSaveDomElementStyle,
+
+            },
+
+        ) {
+
+            const {
+
+                domElement,
+                boolStyleSave,
+            
+            } = jectTransmit;
+
+            const domStyle          = functionStyleGetByElement({ domElement: domElement, });
+            const stringAffiliation = domStyle.id.substring(5).toLocaleLowerCase();
+
+            domElement.parentElement.removeChild(domElement);
+
+            if (!boolStyleSave) { domStyle.innerHTML = domStyle.innerHTML.replace(new RegExp(`${domElement.id} *{[^}]*}`),``); };
+
+            switch(stringAffiliation) {
+
+                case "plot"   : { functionArrayRemove({ jectRemove: domElement, arrayJect: jectSession.arrayDomElementPlot }); }; break;
+                case "session": { functionArrayRemove({ jectRemove: domElement, arrayJect: jectSession.arrayDomElementSession }); }; break; 
 
             };
 
@@ -132,8 +165,8 @@
 
             let styleElement = undefined;
 
-            if (jectSession.arrayDomElementPlot.includes(domElement)) { styleElement = jectSession.stylePlot; };
-            if (jectSession.arrayDomElementSession.includes(domElement)) { styleElement = jectSession.styleSession; };
+            if (jectSession.arrayDomElementPlot.includes(domElement)) { styleElement = jectSession.domStylePlot; };
+            if (jectSession.arrayDomElementSession.includes(domElement)) { styleElement = jectSession.domStyleSession; };
 
             return (styleElement instanceof HTMLStyleElement) ? styleElement : undefined;
 
@@ -152,21 +185,13 @@
 
             } = jectTransmit;
 
-            if (strokeValue) {
+            if (styleElement) { strokeValue = styleElement.innerHTML; }
 
-                styleElement = document.createElement("style");
-                styleElement.innerHTML = strokeValue;
+            strokeValue = functionStrokeReplace({
 
-            }
-            if (!styleElement) { return; }
-
-            styleElement.innerHTML = styleElement.innerHTML.replaceAll("\n","");
-
-            styleElement.innerHTML = functionStrokeReplace({
-
-                stringParse   : styleElement.innerHTML,
+                stringParse   : strokeValue,
                 stringReplace : "",
-                regexpExcerpt : functionGetRegexpIgnore({ stringMode: "pair", stringSymbolPair: `"`, }),
+                regexpExcerpt : functionGetRegexpIgnore({ stringInterrupt: ";", stringSeparator: `"()`, }),
                 stringReplaced: " ",
                 boolReplaceAll: true,
 
@@ -176,11 +201,20 @@
 
                 const stringSymbol = String.fromCharCode(strokeCount);
 
-                styleElement.innerHTML = functionStrokeReplace({
+                strokeValue = functionStrokeReplace({
 
-                    stringParse   : styleElement.innerHTML,
+                    stringParse   : strokeValue,
                     stringReplace : `-${stringSymbol.toLowerCase()}`,
-                    regexpExcerpt : /(?:[\d; ]*([^{"]*?):)/,
+                    regexpExcerpt : new RegExp(`(?:[\d; ]*([^;]${stringSymbol}[^{"]*?):)`),
+                    stringReplaced: stringSymbol,
+                    boolReplaceAll: true,
+                    
+                }) ?? "";
+                strokeValue = functionStrokeReplace({
+
+                    stringParse   : strokeValue,
+                    stringReplace : `${stringSymbol.toLowerCase()}`,
+                    regexpExcerpt : new RegExp(`(?:[\d; ]*(;${stringSymbol}[^{"]*?):)`),
                     stringReplaced: stringSymbol,
                     boolReplaceAll: true,
                     
@@ -188,7 +222,9 @@
 
             };
 
-            return styleElement.innerHTML;
+            if (styleElement) { styleElement.innerHTML = strokeValue; }
+
+            return strokeValue ?? "";
 
         };
         function functionStyleRGBAReplace(jectTransmit = {
@@ -241,19 +277,28 @@
                 domElement    : document.createElement("sr"),
                 stringValue   : "",
                 styleElement  : document.createElement("style"),
+                stringElement : "",
                 stringExcerpt : "",
                 stringProperty: "",
+                jectParamStyle: document.createElement("sr").style,
 
             },
 
         ) {
 
-            const { domElement } = jectTransmit;
+            const { domElement, stringElement } = jectTransmit;
+            
+            let arrayPair = [];
 
             if (domElement) {
 
                 jectTransmit.styleElement  = functionStyleGetByElement({ domElement: domElement, });
                 jectTransmit.stringExcerpt = domElement.id;
+
+            }
+            else if (stringElement) {
+
+                jectTransmit.stringExcerpt = stringElement;
 
             };
             
@@ -263,43 +308,49 @@
                 styleElement,
                 stringExcerpt,
                 stringProperty,
+                jectParamStyle,
             
             } = jectTransmit;
 
-            if (styleElement) {
+            if (!styleElement) { throw new Error(); };
+            if (jectParamStyle) { arrayPair = Object.entries(jectParamStyle); };
+            if (stringProperty && stringValue) { arrayPair = [[stringProperty,stringValue]]; }
+
+            for (const arrayPairNow of arrayPair) {
 
                 if(functionStylePropertyExtract({
 
                     domStyle     : styleElement,
-                    strokeFind   : stringProperty,
+                    strokeFind   : arrayPairNow[0],
                     strokeExcerpt: stringExcerpt,
-
+    
                 })[0]) {
-
+    
                     functionStylePropertyReplace({
-
+    
                         domStyle     : styleElement,
-                        strokeFind   : stringProperty,
+                        strokeFind   : arrayPairNow[0],
                         strokeExcerpt: stringExcerpt,
-                        strokeReplace: stringValue,
-
+                        strokeReplace: arrayPairNow[1],
+    
                     });
-
+    
                 } else {
-
+    
                     functionStylePropertyAdd({
-
-                        stringValue   : stringValue,
+    
+                        stringValue   : arrayPairNow[1],
                         styleElement  : styleElement,
                         regexpExcerpt : functionGetRegexpStyle({ stringStyle: stringExcerpt }),
-                        stringProperty: stringProperty,
-
+                        stringProperty: arrayPairNow[0],
+    
                     });
+    
+                };
 
-                }
-                
+            };
 
-            } else { throw new Error(); }
+            functionStyleProcess({ styleElement: styleElement, });
 
         };
         // Функция добавления новых свойств к указанному стилю;
@@ -419,7 +470,7 @@
                 let strokeStyle = domStyle.innerHTML;
                 let strokeClass = strokeStyle.match(new RegExp(`${strokeExcerpt}[^}]*`,"s"))[0];
 
-                strokeClass = strokeClass.replace(new RegExp(`${strokeFindNow}:.*;`),`${strokeFindNow}:${arrayStrokeReplace[numberIndexNow]};`);
+                strokeClass = strokeClass.replace(new RegExp(`${strokeFindNow}:[^;]*;`),`${strokeFindNow}:${arrayStrokeReplace[numberIndexNow]};`);
                 domStyle.innerHTML = domStyle.innerHTML.replace(new RegExp(`${strokeExcerpt}[^}]*`,"s"),strokeClass);
 
             });
@@ -593,19 +644,25 @@
             let {
 
                 arrayJect,
+                jectRemove,
                 numberIndex,
                 arrayNumberIndex,
 
             } = jectTransmit;
 
-            if (numberIndex) {
+            if (jectRemove) {
+
+                arrayNumberIndex = [arrayJect.indexOf(jectRemove)];
+
+            }
+            else if (numberIndex) {
 
                 if (typeof(numberIndex) === "number") { arrayNumberIndex = [numberIndex]; }
 
-            }
+            };
 
-            if (!(arrayJect instanceof Array)) { return; } 
-            if (!(arrayNumberIndex instanceof Array)) { return; }
+            if (!(arrayJect instanceof Array)) { return; };
+            if (!(arrayNumberIndex instanceof Array)) { return; };
 
             arrayNumberIndex.forEach((numberNow,numberIndexNow) => {
 
@@ -666,9 +723,6 @@
             });
 
         };
-
-        
-
         function functionArrayGetByName(jectTransmit = {
 
             arrayJectParse: [],
@@ -791,18 +845,17 @@
                 } else { return; }
         
             }
-        
+
             const {
         
                 stringParse,
-                stringExcerpt,
                 stringReplace,
                 regexpExcerpt,
                 stringReplaced,
                 boolReplaceAll,
         
             } = jectTransmit;
-        
+
             const arrayStringFind = [];
         
             if (boolReplaceAll) {
@@ -836,7 +889,7 @@
                 };
         
             };
-        
+
             let stringResult = stringParse;
         
             arrayStringFind.forEach((stringFindNow,numberIndexNow) => {
@@ -936,36 +989,23 @@
 
             jectTransmit = {
 
-                stringMode: ["pair",],
-                stringSymbolPair: "",
+                stringSeparator : "",
+                stringInterrupt : "",
 
             },
 
         ) {
 
+            if (!jectTransmit.stringInterrupt) { jectTransmit.stringInterrupt = ""; }
+
             const {
 
-                stringMode,
-                stringSymbolPair,
+                stringSeparator,
+                stringInterrupt,
 
             } = jectTransmit;
 
-            switch (stringMode) {
-
-                case "pair": {
-
-                    if (stringSymbolPair) {
-
-                        if (typeof(stringSymbolPair) !== "string") { return; };
-                        if (stringSymbolPair.length !== 1) { return; }
-
-                    } else { return; }
-
-                    return new RegExp(`([^${stringSymbolPair}]*)(?:(?:${stringSymbolPair}[^${stringSymbolPair}]*)${stringSymbolPair})+([^${stringSymbolPair}]*)?`);
-
-                };
-
-            };
+            return new RegExp(`([^${stringSeparator}]*)(?:(?:${stringSeparator}[^${stringSeparator}]*)${stringSeparator})+([^${stringSeparator}]*)?`);
 
         };
 
