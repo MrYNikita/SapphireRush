@@ -57,6 +57,7 @@
         stringElement : "\\*",
         jectParamStyle: {
 
+            color      : `rgba(255,255,255,255)`,
             margin     : `0`,
             padding    : `0`,
             fontFamily : `"Courier New", monospace`,

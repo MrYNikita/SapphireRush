@@ -227,6 +227,59 @@
             return strokeValue ?? "";
 
         };
+        function functionStylePropertyProcess(
+
+            jectTransmit = {
+
+                stringProperty: "",
+
+            },
+
+        ) {
+
+            let { stringProperty } = jectTransmit;
+
+            if (typeof(stringProperty) !== "string") {
+                
+                throw new Error(`functionStylePropertyProcess.jectTransmit.stringProperty - строка свойства не является строкой. stringProperty = ${stringProperty};`);
+            
+            };
+            if (!stringProperty) {
+
+                throw new Error(`functionStylePropertyProcess.jectTransmit.stringProperty - строка свойства пустая. stringProperty = "";`);
+
+            };
+            
+            for (let strokeCount = "A".charCodeAt(); strokeCount <= "Z".charCodeAt(); strokeCount++) {
+
+                const stringSymbol = String.fromCharCode(strokeCount);
+
+                if (stringProperty.includes(stringSymbol)) {
+
+                    stringProperty = functionStringReplace({
+
+                        stringParse   : stringProperty,
+                        stringExcerpt : `^${stringSymbol}`,
+                        stringReplace : `${stringSymbol.toLowerCase()}`,
+                        stringReplaced: stringSymbol,
+
+                    });
+                    stringProperty = functionStringReplace({
+
+                        stringParse   : stringProperty,
+                        stringReplace : `-${stringSymbol.toLowerCase()}`,
+                        stringReplaced: stringSymbol,
+                        boolReplaceAll: true,
+
+                    });
+
+                };
+
+            };
+            
+            return stringProperty ?? "";
+
+        };
         function functionStyleRGBAReplace(jectTransmit = {
 
             strokeRGBA: "",
@@ -318,6 +371,8 @@
 
             for (const arrayPairNow of arrayPair) {
 
+                //arrayPairNow[0] = functionStylePropertyProcess({ stringProperty: arrayPairNow[0], });
+
                 if(functionStylePropertyExtract({
 
                     domStyle     : styleElement,
@@ -350,8 +405,6 @@
 
             };
 
-            functionStyleProcess({ styleElement: styleElement, });
-
         };
         // Функция добавления новых свойств к указанному стилю;
         function functionStylePropertyAdd(
@@ -367,7 +420,7 @@
 
         ) {
             
-            const {
+            let {
 
                 stringValue,
                 styleElement,
@@ -380,15 +433,63 @@
             const stringParse = styleElement.innerHTML.match(regexpExcerpt)[0];
             // Проверка существования ключа;
             if (!Object.keys(document.createElement("sr").style).includes(stringProperty)) { return; };
+            // Форматирование ключа;
+            stringProperty = functionStylePropertyProcess({ stringProperty: stringProperty });
             // Проверка найденного участка строки на наличие;
-            if (stringParse) { styleElement.innerHTML = styleElement.innerHTML.replace(
+            if (stringParse) {
                 
-                stringParse,
-                stringParse.replace("}",`${stringProperty}:${stringValue};}`)
+                styleElement.innerHTML = styleElement.innerHTML.replace(
+                
+                    stringParse,
+                    stringParse.replace("}",`${stringProperty}:${stringValue};}`)
+                
+                );
             
-            ); };
+            };
 
         };
+        // Функция извлечения значения свойства у указанного стиля;
+        function functionStylePropertyGet(
+
+            jectTransmit = {
+                
+                domStyle      : document.createElement("style"),
+                domElement    : document.createElement("sr"),
+                stringExcerpt : "",
+                stringProperty: "",
+                
+            },
+
+        ) {
+
+            let {
+
+                domStyle,
+                domElement,
+                stringExcerpt,
+                stringProperty,
+
+            } = jectTransmit;
+
+            if (!stringExcerpt) { stringExcerpt = `#${domElement.id}`; };
+            if (!domStyle) { domStyle = functionStyleGetByElement({ domElement: domElement }); };
+            
+            let test = functionStringExtract({
+
+                stringParse  : domStyle.innerHTML,
+                stringExcerpt: `${stringExcerpt}{[^}]*${stringProperty}:(?<stringResult>[^;]*);`,
+
+            });
+
+            return functionStringExtract({
+
+                stringParse  : domStyle.innerHTML,
+                stringExcerpt: `${stringExcerpt}{[^}]*${stringProperty}:(?<stringResult>[^;]*);`,
+
+            });
+
+        };
+
         function functionStylePropertyExtract(jectTransmit = {
 
             domStyle: document.createElement("style"),
@@ -861,9 +962,9 @@
             if (boolReplaceAll) {
         
                 [...stringParse.matchAll(regexpExcerpt)].forEach((arrayFindNow) => {
-        
+
                     for (let numberIndex = 1; numberIndex < arrayFindNow.length; numberIndex++) {
-        
+
                         if (arrayFindNow[numberIndex] && arrayFindNow[numberIndex].includes(stringReplaced)) {
         
                             arrayStringFind.push(arrayFindNow[numberIndex]);
@@ -891,9 +992,9 @@
             };
 
             let stringResult = stringParse;
-        
+
             arrayStringFind.forEach((stringFindNow,numberIndexNow) => {
-        
+
                 stringResult = stringResult.replace(stringFindNow,stringFindNow.replaceAll(stringReplaced,stringReplace));
                 
             });
@@ -920,7 +1021,100 @@
             return strokeParse.match(new RegExp(/[0-9]+([.]{1}[0-9]+)?/,strokeTypeParse));
 
         };
-        
+
+        // Функция извлечения подстроки в строке;
+        function functionStringExtract(
+
+            jectTransmit = {
+
+                stringParse   : "",
+                stringExcerpt : "",
+                regexpExcerpt : /./,
+                boolExtractAll: false,
+
+            },
+
+        ) {
+
+            let {
+
+                stringParse,
+                stringExcerpt,
+                regexpExcerpt,
+                boolExtractAll,
+
+            } = jectTransmit;
+
+            if (typeof(stringParse) !== "string") { return; };
+            if (typeof(stringExcerpt) === "string") { regexpExcerpt = new RegExp(stringExcerpt,"g"); };
+            if (!(stringExcerpt) instanceof RegExp) { stringExcerpt = new RegExp(stringParse); };
+
+            let arrayStringFind = Array.from(stringParse.matchAll(regexpExcerpt));
+
+            arrayStringFind.forEach((arrayJectNow,numberIndex,arrayJect) => {
+
+                arrayJect[numberIndex] = (arrayJectNow.groups?.stringResult) ? arrayJectNow.groups.stringResult : undefined;
+
+            });
+
+            arrayStringFind = arrayStringFind.filter((stringNow) => {
+
+                return !!stringNow;
+                
+            });
+
+            return (boolExtractAll) ? arrayStringFind : arrayStringFind?.[0];
+
+        };
+        // Функция замены подстрок в строке;
+        function functionStringReplace(
+
+            jectTransmit = {
+
+                stringParse   : "",
+                stringReplace : "",
+                stringExcerpt : "",
+                regexpExcerpt : /./,
+                stringReplaced: "",
+                boolReplaceAll: false,
+
+            },
+
+        ) {
+
+            let {
+
+                stringParse,
+                stringExcerpt,
+                stringReplace,
+                regexpExcerpt,
+                stringReplaced,
+                boolReplaceAll,
+
+            } = jectTransmit;
+
+            if (stringReplace == undefined) { stringReplace = ""; };
+            if (stringReplaced == undefined) { stringReplaced = ""; };
+            if (typeof(stringExcerpt) === "string" && !regexpExcerpt) { regexpExcerpt = new RegExp(stringExcerpt,"g"); };
+            if (!regexpExcerpt) { regexpExcerpt = new RegExp(stringParse,"g"); };
+
+            const arrayStringFind = stringParse.match(regexpExcerpt);
+
+            if (arrayStringFind?.length) {
+
+                for (let numberIndex = (!boolReplaceAll) ? 0 : arrayStringFind.length - 1; numberIndex >= 0; numberIndex--) {
+
+                    const stringFindNow = arrayStringFind.pop();
+    
+                    stringParse = stringParse.replace(stringFindNow,stringFindNow.replace(stringReplaced,stringReplace));
+    
+                };
+
+            };
+
+            return stringParse;
+
+        };
 
     }
     { // Number;

@@ -4,20 +4,40 @@ class classAnimaParam {
 
         jectTransmit = {
 
-            domElement             : document.createElement("sr"),
-            numberBias             : NaN,
-            styleElement           : docuemnt.createElement("style"),
-            stringMeasure          : "",
-            arrayDomElement        : [docuemnt.createElement("sr")],
-            stringDirection        : "",
-            stringColorRGBA        : "",
-            numberBorderTop        : NaN,
-            numberBorderLeft       : NaN,
-            numberBorderRight      : NaN,
-            numberBorderBottom     : NaN,
-            numberColorProcent     : NaN,
-            arrayNumberColorRGBA   : [[[NaN]]],
-            arrayNumberColorProcent: [[[NaN]]],
+            domElement               : document.createElement("sr"),
+            numberBias               : NaN,
+            styleElement             : docuemnt.createElement("style"),
+            stringMeasure            : "",
+            arrayDomElement          : [docuemnt.createElement("sr")],
+            stringDirection          : "",
+            stringColorRGBA          : "",
+            numberBorderTop          : NaN,
+            numberBorderLeft         : NaN,
+            numberBorderRight        : NaN,
+            numberBorderBottom       : NaN,
+            numberColorProcent       : NaN,
+            arrayNumberColorRGBA     : [[[NaN]]],
+            arrayNumberColorProcent  : [[[NaN]]],
+            numberPositionEndTop     : 0,
+            numberPositionEndLeft    : 0,
+            numberPositionStartTop   : 0,
+            numberPositionEndRight   : 0,
+            numberPositionEndBottom  : 0,
+            numberPositionStartLeft  : 0,
+            numberPositionStartRight : 0,
+            numberPositionStartBottom: 0,
+            numberPositionBiasTop    : 0,
+            numberPositionBiasLeft   : 0,
+            numberPositionBiasRight  : 0,
+            numberPositionBiasBottom : 0,
+            numberStartWidth         : 0,
+            numberEndWidth           : 0,
+            numberBiasWidth          : 0,
+            numberEndHeight          : 0,
+            numberStartHeight        : 0,
+            numberBiasHeight         : 0,
+            stringTextNeed           : 0,
+            stringTextResult         : 0,
 
         },
 
@@ -39,23 +59,63 @@ class classAnimaParam {
             numberColorProcent,
             arrayNumberColorRGBA,
             arrayNumberColorProcent,
+            numberPositionEndTop,
+            numberPositionEndLeft,
+            numberPositionStartTop,
+            numberPositionEndRight,
+            numberPositionEndBottom,
+            numberPositionStartLeft,
+            numberPositionStartRight,
+            numberPositionStartBottom,
+            numberPositionBiasTop,   
+            numberPositionBiasLeft, 
+            numberPositionBiasRight, 
+            numberPositionBiasBottom,
+            numberStartWidth,
+            numberEndWidth,
+            numberBiasWidth,
+            numberBiasHeight,
+            numberStartHeight,
+            numberEndHeight,
+            stringTextNeed,
+            stringTextResult,
 
         } = jectTransmit;
 
-        this.domElement              = domElement;
-        this.numberBias              = numberBias;
-        this.styleElement            = styleElement;
-        this.stringMeasure           = stringMeasure;
-        this.arrayDomElement         = arrayDomElement;
-        this.stringColorRGBA         = stringColorRGBA;
-        this.stringDirection         = stringDirection;
-        this.numberBorderTop         = numberBorderTop;
-        this.numberBorderLeft        = numberBorderLeft;
-        this.numberBorderRight       = numberBorderRight;
-        this.numberBorderBottom      = numberBorderBottom;
-        this.numberColorProcent      = numberColorProcent;
-        this.arrayNumberColorRGBA    = arrayNumberColorRGBA;
-        this.arrayNumberColorProcent = arrayNumberColorProcent;
+        this.domElement                = domElement;
+        this.numberBias                = numberBias;
+        this.styleElement              = styleElement;
+        this.stringMeasure             = stringMeasure;
+        this.arrayDomElement           = arrayDomElement;
+        this.stringColorRGBA           = stringColorRGBA;
+        this.stringDirection           = stringDirection;
+        this.numberBorderTop           = numberBorderTop;
+        this.numberBorderLeft          = numberBorderLeft;
+        this.numberBorderRight         = numberBorderRight;
+        this.numberBorderBottom        = numberBorderBottom;
+        this.numberColorProcent        = numberColorProcent;
+        this.arrayNumberColorRGBA      = arrayNumberColorRGBA;
+        this.arrayNumberColorProcent   = arrayNumberColorProcent;
+        this.numberPositionEndTop      = numberPositionEndTop;
+        this.numberPositionEndLeft     = numberPositionEndLeft;
+        this.numberPositionStartTop    = numberPositionStartTop;
+        this.numberPositionEndRight    = numberPositionEndRight;
+        this.numberPositionEndBottom   = numberPositionEndBottom;
+        this.numberPositionStartLeft   = numberPositionStartLeft;
+        this.numberPositionStartRight  = numberPositionStartRight;
+        this.numberPositionStartBottom = numberPositionStartBottom;
+        this.numberPositionBiasTop     = numberPositionBiasTop;   
+        this.numberPositionBiasLeft    = numberPositionBiasLeft; 
+        this.numberPositionBiasRight   = numberPositionBiasRight; 
+        this.numberPositionBiasBottom  = numberPositionBiasBottom;
+        this.numberStartWidth          = numberStartWidth;
+        this.numberEndWidth            = numberEndWidth;
+        this.numberBiasWidth           = numberBiasWidth;
+        this.numberBiasHeight          = numberBiasHeight;
+        this.numberStartHeight         = numberStartHeight;
+        this.numberEndHeight           = numberEndHeight;
+        this.stringTextNeed            = stringTextNeed;
+        this.stringTextResult          = stringTextResult;
 
     };
 
@@ -361,8 +421,6 @@ class classAnimaSequence extends classAnimaCatalog {
     ) {
         
         super(jectTransmit);
-
-        this.arrayJectAnima = this.arrayJectAnima.reverse();
     
     };
 
@@ -372,6 +430,8 @@ class classAnimaSequence extends classAnimaCatalog {
 
             if (jectAnimaNow instanceof classAnimaImplementer) {
                 
+                if (!jectAnimaNow.jectParam.domElement) { jectAnimaNow.jectParam.domElement = this.domElement; };
+
                 await jectAnimaNow.functionExecute().functionBegin();
             
             };
@@ -397,7 +457,7 @@ class classAnimaDomMove extends classAnima {
         jectTransmit = {
 
             boolSkip     : jectConfigurate.boolSkipAnima,
-            jectParam    : new classAnimaParam({}),
+            jectParam    : new classAnimaDomMoveParam({}),
             stringName   : "",
             numberSpeed  : jectConfigurate.numberDefaultSpeedAnima,
             numberIterate: jectConfigurate.numberDefaultIterateAnima,
@@ -414,19 +474,317 @@ class classAnimaDomMove extends classAnima {
 
             const {
 
+                numberIterate,
+                numberIterateNow,
+
+            } = this;
+
+            const {
+
                 domElement,
 
             } = jectTransmit;
 
+            let {
+
+                numberPositionEndTop,
+                stringMeasure,
+                numberPositionEndLeft,
+                numberPositionEndRight,
+                numberPositionStartTop,
+                numberPositionEndBottom,
+                numberPositionStartLeft,
+                numberPositionStartRight,
+                numberPositionStartBottom,
+                numberPositionBiasTop,
+                numberPositionBiasLeft,
+                numberPositionBiasRight,
+                numberPositionBiasBottom,
+
+            } = jectTransmit;
+
+            if ((numberPositionStartTop && numberPositionEndTop) || numberPositionBiasTop) {
+
+                if (!numberPositionBiasTop) {
+
+                    numberPositionBiasTop              = (numberPositionEndTop - numberPositionStartTop) / numberIterate;
+                    jectTransmit.numberPositionBiasTop = numberPositionBiasTop;
+
+                };
+
+            }
+            else if(true) {};
+
             functionStylePropertySet({
 
                 domElement    : domElement,
-                stringValue   : `${this.numberIterateNow}px`,
+                stringValue   : `${numberPositionStartTop + numberPositionBiasTop * numberIterateNow}${stringMeasure}`,
                 stringProperty: "top",
 
             });
 
         };
+
+        super(jectTransmit);
+
+    };
+
+};
+class classAnimaDomMoveParam extends classAnimaParam {
+
+    constructor(
+
+        jectTransmit = {
+
+            domElement               : document.createElement("sr"),
+            stringMeasure            : "",
+            numberPositionEndTop     : 0,
+            numberPositionEndLeft    : 0,
+            numberPositionStartTop   : 0,
+            numberPositionEndRight   : 0,
+            numberPositionEndBottom  : 0,
+            numberPositionStartLeft  : 0,
+            numberPositionStartRight : 0,
+            numberPositionStartBottom: 0,
+            numberPositionBiasTop    : 0,
+            numberPositionBiasLeft   : 0,
+            numberPositionBiasRight  : 0,
+            numberPositionBiasBottom : 0,
+            
+
+        },
+
+    ) {
+
+        super(jectTransmit);
+
+    };
+
+};
+
+class classAnimaDomExpand extends classAnima {
+
+    constructor(
+
+        jectTransmit = {
+
+            boolSkip     : jectConfigurate.boolSkipAnima,
+            jectParam    : new classAnimaDomExpandParam({}),
+            stringName   : "",
+            numberSpeed  : jectConfigurate.numberDefaultSpeedAnima,
+            numberIterate: jectConfigurate.numberDefaultIterateAnima,
+
+        },
+
+    ) {
+
+        jectTransmit.functionAnima = async function(
+
+            jectTransmit = new classAnimaDomExpandParam({}),
+
+        ) {
+
+            const {
+
+                numberIterate,
+                numberIterateNow,
+
+            } = this;
+
+            let {
+
+                domElement,
+                stringMeasure,
+                numberEndWidth,
+                numberEndHeight,
+                numberBiasWidth,
+                numberBiasHeight,
+                numberStartWidth,
+                numberStartHeight,
+
+            } = jectTransmit;
+
+            if (!numberStartWidth) {
+
+                numberStartWidth = functionStylePropertyGet({ domElement: domElement, stringProperty: "width", }).match(/\d+/)[0] - 0;
+                jectTransmit.numberStartWidth = numberStartWidth;
+                
+            };
+            if (!numberStartHeight) {
+
+                numberStartHeight = functionStylePropertyGet({ domElement: domElement, stringProperty: "height", }).match(/\d+/)[0] - 0;
+                jectTransmit.numberStartHeight = numberStartHeight;
+
+            };
+            if (typeof(numberStartWidth) === "number" && typeof(numberEndWidth) === "number" && numberStartWidth !== numberEndWidth && !numberBiasWidth) {
+
+                console.log("WW");
+
+                numberBiasWidth = (numberEndWidth - numberStartWidth) / numberIterate;
+                jectTransmit.numberBiasWidth = numberBiasWidth;
+
+            };
+            if (typeof(numberStartHeight) === "number" && typeof(numberEndHeight) === "number" && numberStartHeight !== numberEndHeight && !numberBiasHeight) {
+
+                numberBiasHeight = (numberEndHeight - numberStartHeight) / numberIterate;
+                jectTransmit.numberBiasHeight = numberBiasHeight;
+
+            };
+
+            if (numberBiasWidth || numberBiasHeight) {
+
+                if (numberBiasWidth) {
+
+                    functionStylePropertySet({
+
+                        domElement    : domElement,
+                        stringValue   : `${numberStartWidth + numberBiasWidth * numberIterateNow}${stringMeasure}`,
+                        stringProperty: "width",
+
+                    });
+
+                };
+                if (numberBiasHeight) {
+
+
+
+                };
+
+            } else { this.numberIterateNow = this.numberIterate; };
+
+        };
+
+        super(jectTransmit);
+
+    };
+
+};
+class classAnimaDomExpandParam extends classAnimaParam {
+
+    constructor(
+
+        jectTransmit = {
+
+            domElement,
+            stringMeasure    : "",
+            numberEndWidth   : 0,
+            numberBiasWidth  : 0,
+            numberStartWidth : 0,
+            numberStartHeight: 0,
+
+        },
+
+    ) {
+
+        super(jectTransmit);
+
+    };
+
+};
+
+class classAnimaDomTextBust extends classAnima {
+
+    constructor(
+
+        jectTransmit = {
+
+            boolSkip     : jectConfigurate.boolSkipAnima,
+            jectParam    : new classAnimaDomTextBustParam({}),
+            stringName   : "",
+            numberSpeed  : jectConfigurate.numberDefaultSpeedAnima,
+            numberIterate: jectConfigurate.numberDefaultIterateAnima,
+
+        },
+
+    ) {
+
+        jectTransmit.functionAnima = async function(
+
+            jectTransmit = new classAnimaDomTextBustParam({}),
+
+        ) {
+
+            const {
+
+                boolSkip,
+                numberIterate,
+                numberIterateNow,
+
+            } = this;
+
+            let {
+
+                domElement,
+                stringTextNeed,
+                stringTextResult,
+
+            } = jectTransmit;
+
+            const arrayStringSymbol = [
+                
+                " ","!",",","?",":","-",
+                "0","1","2","3","4","5","6","7","8","9",
+                //"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+                //"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+                "А","Б","В","Г","Д","Е","Ё","Ж","З","И","Й","К","Л","М","Н","О","П","Р","С","Т","У","Ф","Х","Ц","Ч","Ш","Щ","Ъ","Ы","Ь","Э","Ю","Я",
+                "а","б","в","г","д","е","ё","ж","з","и","й","к","л","м","н","о","п","р","с","т","у","ф","х","ц","ч","ш","щ","ъ","ы","ь","э","ю","я",
+                
+            ];
+
+            if (numberIterateNow === numberIterate || boolSkip) {
+    
+                domElement.innerHTML = stringTextResult;
+
+            }
+            else {
+
+                let stringTextNow = domElement.innerHTML;
+
+                if (stringTextNow.length > stringTextNeed.length) { stringTextNow = stringTextNow.slice(0,-1); }
+                else if (stringTextNow.length < stringTextNeed.length) { stringTextNow += " "; };
+
+                let arrayStringTextNow = stringTextNow.split("");
+
+                arrayStringTextNow.forEach((stringSymbol,numberIndex) => {
+
+                    if (stringSymbol !== stringTextNeed[numberIndex]) {
+
+                        arrayStringTextNow[numberIndex] = arrayStringSymbol[functionGetNumberRandom({
+
+                            numberMin: 0,
+                            numberMax: arrayStringSymbol.length - 1
+
+                        })];
+
+                    };
+
+                });
+
+                stringTextNow = arrayStringTextNow.join("");
+                domElement.innerHTML = stringTextNow;
+
+            };
+
+        };
+
+        super(jectTransmit);
+
+    };
+
+};
+class classAnimaDomTextBustParam extends classAnimaParam {
+
+    constructor(
+
+        jectTransmit = {
+            
+            domElement,
+            stringTextNeed: "",
+            stringTextResult: "",
+            
+        },
+
+    ) {
 
         super(jectTransmit);
 

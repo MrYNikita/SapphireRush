@@ -109,6 +109,7 @@ class classStateButton extends classState {
             stringName             : "",
             stringText             : "",
             jectAnimaClick         : new classAnima(),
+            jectStyleButton        : document.createElement("sr").style,
             functionExecute        : async function() {},
             jectAnimaSequenceIntro : new classAnimaSequence(),
             jectAnimaSequenceFinish: new classAnimaSequence(),
@@ -122,22 +123,14 @@ class classStateButton extends classState {
             const [domButton,styleButton] = functionDomElementCreate({
                 
                 stringParms   : "button domButton x divBackground session",
-                jectParamStyle: {
-
-                    top      : "-100px",
-                    left     : "50%",
-                    width    : "10%",
-                    position : "absolute",
-                    transform: "translateX(-50%)"
-
-                },
+                jectParamStyle: this.jectStyleButton,
             
             });
 
             this.jectAnimaSequenceIntro.domElement = domButton;
 
             if (this.jectAnimaSequenceIntro) {
-                
+
                 await this.jectAnimaSequenceIntro.functionExecute();
             
             };
@@ -150,12 +143,14 @@ class classStateButton extends classState {
 
             stringText,
             jectAnimaClick,
+            jectStyleButton,
             functionExecute,
 
         } = jectTransmit;
 
         this.stringText      = stringText;
         this.jectAnimaClick  = jectAnimaClick;
+        this.jectStyleButton = jectStyleButton;
         this.functionExecute = functionExecute; 
 
     };
@@ -282,6 +277,19 @@ class classStateClaster extends classStateCatalog {
 
             new classStateButton({
 
+                jectStyleButton       : {
+
+                    top         : "-50%",
+                    left        : "50%",
+                    width       : "0%",
+                    height      : "10%",
+                    border      : "3px solid #505050",
+                    position    : "absolute",
+                    transform   : "translateX(-50%)",
+                    background  : "none",
+                    borderRadius: "25px",
+
+                },
                 jectAnimaSequenceIntro: new classAnimaSequence({
 
                     arrayJectAnima: [
@@ -298,15 +306,41 @@ class classStateClaster extends classStateCatalog {
                                 }).functionCreate({ numberIterate: 200, }),
                                 new classAnimaDomMove({
 
-                                    jectParam: new classAnimaParam({}),
+                                    jectParam: new classAnimaDomMoveParam({
+
+                                        numberPositionEndTop: 50,
+                                        stringMeasure: "%",
+                                        numberPositionStartTop: -50
+
+                                    }),
                                     stringName: "moveClassic",
 
 
-                                }).functionCreate({ numberIterate: 200, }),
+                                }).functionCreate({ numberIterate: 200, numberSpeed: 15, }),
     
                             ],
     
                         }),
+                        new classAnimaDomExpand({
+
+                            jectParam: new classAnimaDomExpandParam({
+
+                                stringMeasure : "%",
+                                numberEndWidth: 20,
+
+                            }),
+                            
+                        }).functionCreate({  }),
+                        new classAnimaDomTextBust({
+
+                            jectParam: new classAnimaDomTextBustParam({
+
+                                stringTextNeed  : "Начнём?",
+                                stringTextResult: "Начнём?",
+
+                            }),
+
+                        }).functionCreate({}),
 
                     ],
 
