@@ -737,17 +737,38 @@ class classAnimaDomTextBust extends classAnima {
             
             };
 
-            let stringTextNow = domElement?.domPText?.innerHTML;
+            let stringTextNow = functionDomElementTextGet({ domElement: domElement });
 
             if (numberIterateNow === numberIterate || boolSkip) {
     
-                domElement.domPText.innerHTML = stringTextResult;
+                functionDomElementTextChange({
+
+                    domElement: domElement,
+                    stringText: stringTextResult,
+
+                });
 
             }
             else {
 
-                if (stringTextNow.length > stringTextNeed.length) { stringTextNow = stringTextNow.slice(0,-1); }
-                else if (stringTextNow.length < stringTextNeed.length) { stringTextNow += " "; };
+                if (stringTextNow.length > stringTextNeed.length) {
+                    
+                    if (Math.floor(numberIterate / (stringTextNow.length - stringTextNeed.length)) % numberIterateNow === 0) {
+
+                        stringTextNow = stringTextNow.slice(0,-1);
+
+                    };
+                
+                }
+                else if (stringTextNow.length < stringTextNeed.length) {
+                    
+                    if (Math.floor(numberIterate / (stringTextNeed.length - stringTextNow.length)) % numberIterateNow === 0) {
+
+                        stringTextNow += " ";
+
+                    };
+                
+                };
 
                 let arrayStringTextNow = stringTextNow.split("");
 
@@ -767,7 +788,12 @@ class classAnimaDomTextBust extends classAnima {
                 });
 
                 stringTextNow = arrayStringTextNow.join("");
-                domElement.domPText.innerHTML = stringTextNow;
+                functionDomElementTextChange({
+
+                    domElement: domElement,
+                    stringText: stringTextNow,
+
+                });
 
             };
 

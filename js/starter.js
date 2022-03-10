@@ -1,17 +1,19 @@
 (async function() {
 
-    jectSession.jectControllerState.functionStateAdd([
+    // jectSession.jectControllerState.functionStateAdd([
 
-        functionArrayGetByName({
+    //     functionArrayGetByName({
 
-            stringName: "introdaction",
-            arrayJectParse: jectSession.arrayJectStateClaster,
+    //         stringName: "introdaction",
+    //         arrayJectParse: jectSession.arrayJectStateClaster,
 
-        }),
+    //     }),
 
-    ]);
+    // ]);
     
-    await jectSession.jectControllerState.functionStateSequenceRedefinite();
+    // await jectSession.jectControllerState.functionStateSequenceRedefinite();
+
+    
 
 })();
 

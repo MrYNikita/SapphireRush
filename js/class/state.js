@@ -123,7 +123,7 @@ class classStateButton extends classState {
             const [domButton,styleButton] = functionDomElementCreate({
                 
                 boolText      : true,
-                stringParms   : "button button x divBackground session",
+                stringParms   : "button button [elementSelect] divBackground session",
                 jectParamStyle: this.jectStyleButton,
             
             });
@@ -134,6 +134,10 @@ class classStateButton extends classState {
 
                 await this.jectAnimaSequenceIntro.functionExecute();
             
+            };
+
+            function functionClick() {
+
             };
             
         };
@@ -280,17 +284,20 @@ class classStateClaster extends classStateCatalog {
 
                 jectStyleButton       : {
 
-                    top          : "-50%",
-                    left         : "50%",
-                    width        : "0%",
-                    height       : "10%",
-                    border       : "3px solid #505050",
-                    position     : "absolute",
-                    transform    : "translateX(-50%)",
-                    background   : "none",
-                    whiteSpace   : "pre-wrap",
-                    borderRadius : "25px",
-                    letterSpacing: "20px",
+                    top            : "-50%",
+                    left           : "50%",
+                    width          : "0%",
+                    height         : "10%",
+                    border         : "3px solid",
+                    position       : "absolute",
+                    transform      : "translateX(-50%)",
+                    background     : "none",
+                    whiteSpace     : "pre-wrap",
+                    borderColor    : jectConfigurate.stringDefaultSessionBorderColor,
+                    borderRadius   : "25px",
+                    letterSpacing  : "20px",
+                    backgroundColor: "rgba(0,0,0,0)",
+                    transitionProperty: "color",
 
                 },
                 jectAnimaSequenceIntro: new classAnimaSequence({
@@ -339,7 +346,7 @@ class classStateClaster extends classStateCatalog {
                             jectParam: new classAnimaDomTextBustParam({
 
                                 stringTextNeed  : "Начнём?",
-                                stringTextResult: `Начнём<span style="letter-spacing: none;">?</span>`,
+                                stringTextResult: `Начнём?`,
 
                             }),
 

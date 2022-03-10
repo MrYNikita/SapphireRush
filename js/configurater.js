@@ -23,6 +23,11 @@ jectConfigurate.numberDivBackgroundGridRows    = 11;
 jectConfigurate.numberDivBackgroundGridColumns = 9;
 
 // Строковые данные;
+jectConfigurate.stringDefaultClassText              = "elementText";
+jectConfigurate.stringDefaultColorPurple            = "rgba(210,0,255,1)";
+jectConfigurate.stringDefaultColorOrange            = "rgba(255,120,0,1)";
+jectConfigurate.stringDefaultSessionBorderColor     = "rgba(145,145,145,1)";
+jectConfigurate.stringDefaultSessionBackgroundColor = "rgba(0,0,0,1)";
 
 // Каталоги данных;
 jectConfigurate.arrayNumberSpeedGameMode = [0.25,0.5,1,2,4];

@@ -6,6 +6,43 @@
     }
     { // Dom;
 
+        // Функция для извлечения текста из элемента;
+        function functionDomElementTextGet(
+
+            jectTransmit = {
+
+                domElement: document.createElement("sr"),
+
+            },
+
+        ) {
+
+            let {
+
+                domElement,
+
+            } = jectTransmit;
+
+            const stringTextNow = domElement?.domPText?.innerHTML;
+
+            if (!stringTextNow && stringTextNow !== "") { return; };
+
+            return functionStringReplace({
+
+                stringParse       : stringTextNow,
+                stringExcerpt     : `<span.*?>.*?</span>`,
+                boolReplaceAll    : true,
+                arrayStringReplace: functionStringExtract({
+
+                    stringParse   : stringTextNow,
+                    stringExcerpt : `<span.*?>(?<stringResult>.*?)</span>`,
+                    boolExtractAll: true,
+
+                }),
+
+            });
+
+        };
         // Функция для изменения текста у элемента;
         function functionDomElementTextChange(
 
@@ -29,26 +66,7 @@
 
             if (!domPText || !(domPText instanceof HTMLParagraphElement)) { return; };
 
-            let stringTextNow = stringText;
-
-            stringTextNow = functionStringReplace({
-
-                stringParse       : stringTextNow,
-                stringExcerpt     : `<span.*?>.*?</span>`,
-                boolReplaceAll    : true,
-                arrayStringReplace: functionStringExtract({
-
-                    stringParse   : stringTextNow,
-                    stringExcerpt : `<span.*?>(?<stringResult>.*?)</span>`,
-                    boolExtractAll: true,
-
-                }),
-
-            });
-
-            domPText.innerHTML = stringTextNow;
-
-
+            domPText.innerHTML = `${stringText.slice(0,-1)}<span class="spanEnd">${stringText.slice(-1)}</span>`;
 
         };
         function functionDomElementCreate(jectTransmit = {
@@ -86,6 +104,13 @@
 
                 const arrayStringParms = stringParms.split(" ");
 
+                arrayStringParms[2] = functionStringExtract({
+
+                    stringParse  : arrayStringParms[2],
+                    regexpExcerpt: /\[(?<stringResult>[\w]*)\]/g,
+
+                });
+                
                 [domElement,styleElement] = functionDomElementCreate({
 
                     boolText                : boolText,
@@ -141,6 +166,8 @@
                         domPText.id = `${stringElementId}P`;
                     
                     };
+
+                    domPText.className = jectConfigurate.stringDefaultClassText;
     
                     domElement.appendChild(domPText);
     
@@ -222,87 +249,6 @@
     }
     { // Style;
 
-        // Функция определения стиля по элементу;
-        function functionStyleGetByElement(
-
-            jectTransmit = {
-
-                domElement: document.createElement("sr"),
-
-            },
-
-        ) {
-
-            const {
-
-                domElement,
-
-            } = jectTransmit;
-
-            let styleElement = undefined;
-
-            if (jectSession.arrayDomElementPlot.includes(domElement)) { styleElement = jectSession.domStylePlot; };
-            if (jectSession.arrayDomElementSession.includes(domElement)) { styleElement = jectSession.domStyleSession; };
-
-            return (styleElement instanceof HTMLStyleElement) ? styleElement : undefined;
-
-        };
-        function functionStyleProcess(jectTransmit = {
-
-            strokeValue: "",
-            styleElement: document.createElement("style"),
-
-        }) {
-
-            let {
-
-                strokeValue,
-                styleElement,
-
-            } = jectTransmit;
-
-            if (styleElement) { strokeValue = styleElement.innerHTML; }
-
-            strokeValue = functionStrokeReplace({
-
-                stringParse   : strokeValue,
-                stringReplace : "",
-                regexpExcerpt : functionGetRegexpIgnore({ stringInterrupt: ";", stringSeparator: `"()`, }),
-                stringReplaced: " ",
-                boolReplaceAll: true,
-
-            });
-
-            for (let strokeCount = "A".charCodeAt(); strokeCount <= "Z".charCodeAt(); strokeCount++) {
-
-                const stringSymbol = String.fromCharCode(strokeCount);
-
-                strokeValue = functionStrokeReplace({
-
-                    stringParse   : strokeValue,
-                    stringReplace : `-${stringSymbol.toLowerCase()}`,
-                    regexpExcerpt : new RegExp(`(?:[\d; ]*([^;]${stringSymbol}[^{"]*?):)`),
-                    stringReplaced: stringSymbol,
-                    boolReplaceAll: true,
-                    
-                }) ?? "";
-                strokeValue = functionStrokeReplace({
-
-                    stringParse   : strokeValue,
-                    stringReplace : `${stringSymbol.toLowerCase()}`,
-                    regexpExcerpt : new RegExp(`(?:[\d; ]*(;${stringSymbol}[^{"]*?):)`),
-                    stringReplaced: stringSymbol,
-                    boolReplaceAll: true,
-                    
-                }) ?? "";
-
-            };
-
-            if (styleElement) { styleElement.innerHTML = strokeValue; }
-
-            return strokeValue ?? "";
-
-        };
         function functionStylePropertyProcess(
 
             jectTransmit = {
@@ -356,18 +302,86 @@
             return stringProperty ?? "";
 
         };
+        // Функция определения стиля по элементу;
+        function functionStyleGetByElement(
+
+            jectTransmit = {
+
+                domElement: document.createElement("sr"),
+
+            },
+
+        ) {
+
+            const {
+
+                domElement,
+
+            } = jectTransmit;
+
+            let styleElement = undefined;
+
+            if (jectSession.arrayDomElementPlot.includes(domElement)) { styleElement = jectSession.domStylePlot; };
+            if (jectSession.arrayDomElementSession.includes(domElement)) { styleElement = jectSession.domStyleSession; };
+
+            return (styleElement instanceof HTMLStyleElement) ? styleElement : undefined;
+
+        };
+        // Функция предустановки для указанного стиля или элемента;
+        function functionStylePropertyPreset(
+
+            jectTransmit = {
+
+                domElement   : document.createElement("sr"),
+                styleElement : document.createElement("style"),
+                stringElement: "",
+                
+            },
+
+        ) {
+
+            let {
+
+                domElement,
+                styleElement,
+                stringElement,
+
+            } = jectTransmit;
+
+            return function(
+
+                jectTransmit = {
+
+                    stringValue   : "",
+                    stringExcerpt : "",
+                    stringProperty: "",
+                    jectParamStyle: document.createElement("sr").style,
+
+                },
+
+            ) {
+
+                jectTransmit.domElement    = domElement;
+                jectTransmit.styleElement  = styleElement;
+                jectTransmit.stringElement = stringElement; 
+
+                functionStylePropertySet(jectTransmit);
+
+            };
+
+        };
         // Функция установки свойства к указанному стилю;
         function functionStylePropertySet(
 
             jectTransmit = {
                 
-                domElement    : document.createElement("sr"),
-                stringValue   : "",
-                styleElement  : document.createElement("style"),
-                stringElement : "",
-                stringExcerpt : "",
-                stringProperty: "",
-                jectParamStyle: document.createElement("sr").style,
+                domElement     : document.createElement("sr"),
+                stringValue    : "",
+                stringElement  : "",
+                stringExcerpt  : "",
+                stringProperty : "",
+                jectParamStyle : document.createElement("sr").style,
+                domStyleElement: document.createElement("style"),
 
             },
 
@@ -379,8 +393,8 @@
 
             if (domElement) {
 
-                jectTransmit.styleElement  = functionStyleGetByElement({ domElement: domElement, });
-                jectTransmit.stringExcerpt = domElement.id;
+                jectTransmit.domStyleElement  = functionStyleGetByElement({ domElement: domElement, });
+                jectTransmit.stringExcerpt = `#${domElement.id}`;
 
             }
             else if (stringElement) {
@@ -389,55 +403,69 @@
 
             };
             
-            const {
+            let {
                 
                 stringValue,
-                styleElement,
+                domStyleElement,
                 stringExcerpt,
                 stringProperty,
                 jectParamStyle,
             
             } = jectTransmit;
 
-            if (!styleElement) { throw new Error(); };
+            if (!domStyleElement) { throw new Error(); };
             if (jectParamStyle) { arrayPair = Object.entries(jectParamStyle); };
-            if (stringProperty && stringValue) { arrayPair = [[stringProperty,stringValue]]; }
+            if (stringProperty && stringValue) { arrayPair = [[stringProperty,stringValue]]; };
+
+            let stringStyle = functionStringExtractMany({
+
+                stringParse       : domStyleElement.innerHTML,
+                boolExtractAll    : false,
+                arrayStringExcerpt: [
+
+                    `^(?<stringResult>${stringExcerpt}.*?})`,
+                    `}(?<stringResult>${stringExcerpt}.*?})`,
+
+                ],
+
+            })[0];
 
             for (const arrayPairNow of arrayPair) {
 
-                //arrayPairNow[0] = functionStylePropertyProcess({ stringProperty: arrayPairNow[0], });
+                arrayPairNow[0] = functionStylePropertyProcess({ stringProperty: arrayPairNow[0] });
 
-                if(functionStylePropertyExtract({
+                let stringExcerpt  = "";
+                let stringReplace  = "";
+                let stringReplaced = "";
 
-                    domStyle     : styleElement,
-                    strokeFind   : arrayPairNow[0],
-                    strokeExcerpt: stringExcerpt,
-    
-                })[0]) {
-    
-                    functionStylePropertyReplace({
-    
-                        domStyle     : styleElement,
-                        strokeFind   : arrayPairNow[0],
-                        strokeExcerpt: stringExcerpt,
-                        strokeReplace: arrayPairNow[1],
-    
-                    });
+                console.log(stringStyle,arrayPairNow);
+
+                if (stringStyle.includes(arrayPairNow[0])) {
+
+                    stringExcerpt  = `${arrayPairNow[0]}:[^;]*;`;
+                    stringReplace  = `${arrayPairNow[0]}:${arrayPairNow[1]};`;
+                    stringReplaced = undefined;
     
                 } else {
     
-                    functionStylePropertyAdd({
-    
-                        stringValue   : arrayPairNow[1],
-                        styleElement  : styleElement,
-                        regexpExcerpt : functionGetRegexpStyle({ stringStyle: stringExcerpt }),
-                        stringProperty: arrayPairNow[0],
-    
-                    });
+                    stringExcerpt  = undefined;
+                    stringReplace  = `${arrayPairNow[0]}:${arrayPairNow[1]};}`;
+                    stringReplaced = `}`;
     
                 };
 
+                stringStyle = functionStringReplace({
+    
+                    stringParse   : stringStyle,
+                    stringExcerpt : stringExcerpt,
+                    stringReplace : stringReplace,
+                    stringReplaced: stringReplaced,
+
+                });
+
             };
+
+            domStyleElement.innerHTML = domStyleElement.innerHTML.replace(new RegExp(`${stringExcerpt}{[^}]*}`),stringStyle);
 
         };
         // Функция добавления новых свойств к указанному стилю;
@@ -489,6 +517,7 @@
                 
                 domStyle      : document.createElement("style"),
                 domElement    : document.createElement("sr"),
+                stringStyle   : "",
                 stringExcerpt : "",
                 stringProperty: "",
                 
@@ -500,24 +529,18 @@
 
                 domStyle,
                 domElement,
+                stringStyle,
                 stringExcerpt,
                 stringProperty,
 
             } = jectTransmit;
 
             if (!stringExcerpt) { stringExcerpt = `#${domElement.id}`; };
-            if (!domStyle) { domStyle = functionStyleGetByElement({ domElement: domElement }); };
+            if (!domStyle && !stringStyle && domElement) { stringStyle = functionStyleGetByElement({ domElement: domElement }).innerHTML; };
             
-            let test = functionStringExtract({
-
-                stringParse  : domStyle.innerHTML,
-                stringExcerpt: `${stringExcerpt}{[^}]*${stringProperty}:(?<stringResult>[^;]*);`,
-
-            });
-
             return functionStringExtract({
 
-                stringParse  : domStyle.innerHTML,
+                stringParse  : stringStyle,
                 stringExcerpt: `${stringExcerpt}{[^}]*${stringProperty}:(?<stringResult>[^;]*);`,
 
             });
@@ -1070,6 +1093,8 @@
 
         ) {
 
+            const arrayStringResult = [];
+
             let {
 
                 stringParse,
@@ -1099,17 +1124,141 @@
 
             arrayStringFind.forEach((arrayJectNow,numberIndex,arrayJect) => {
 
-                arrayJect[numberIndex] = (arrayJectNow.groups?.stringResult) ? arrayJectNow.groups.stringResult : undefined;
+                if (arrayJectNow.groups?.stringResult) { arrayStringResult.push(arrayJectNow.groups.stringResult); };
 
             });
 
-            arrayStringFind = arrayStringFind.filter((stringNow) => {
+            return (boolExtractAll) ? arrayStringResult : arrayStringResult[0];
 
-                return !!stringNow;
+        };
+        // Функция извлечения подстрок в строке;
+        function functionStringExtractMany(
+
+            jectTransmit = {
+
+                stringParse       : "",
+                boolExtractAll    : false,
+                arrayStringExcerpt: [""],
+                arrayRegexpExcerpt: [/./],
+
+            },
+
+        ) {
+
+            let {
+
+                stringParse,
+                boolExtractAll,
+                arrayRegexpExcerpt,
+                arrayStringExcerpt,
+
+            } = jectTransmit;
+
+            let arrayStringResult = [];
+
+            if ((!arrayStringExcerpt && !arrayRegexpExcerpt) || !stringParse) {
+
+                throw new Error(`functionStringExtractMany.jectTransmit - отсутсвуют ключевые аргументы;`);
+
+            };
+
+            if (arrayStringExcerpt) {
+
+                arrayRegexpExcerpt = [];
+
+                for (let stringExcerptNow of arrayStringExcerpt) {
+
+                    arrayRegexpExcerpt.push(new RegExp(stringExcerptNow,"g"));
+
+                };
+
+            };
+
+            for (let regexpExcerptNow of arrayRegexpExcerpt) {
+
+                const arrayStringFind = functionStringExtract({
+
+                    stringParse   : stringParse,
+                    regexpExcerpt : regexpExcerptNow,
+                    boolExtractAll: boolExtractAll,
+
+                });
+
+                if (arrayStringFind?.length) { arrayStringResult = arrayStringResult.concat(arrayStringFind); };
+
+                if (!boolExtractAll && arrayStringResult.length) { break; }
+
+            };
+
+            return arrayStringResult;
+
+        };
+        // Функция извлечения подстрок в строке с сортировкой по группам;
+        function functionStringExtractGroup(
+
+            jectTransmit = {
+
+                stringParse   : "",
+                stringExcerpt : "",
+                regexpExcerpt : /./,
+                boolExtractAll: false,
+
+            },
+
+        ) {
+
+            const jectResult = {};
+
+            let {
+
+                stringParse,
+                stringExcerpt,
+                regexpExcerpt,
+                boolExtractAll,
+
+            } = jectTransmit;
+
+            if (typeof(stringParse) !== "string") {
                 
+                return;
+            
+            };
+            if (typeof(stringExcerpt) === "string") {
+                
+                regexpExcerpt = new RegExp(stringExcerpt,"g");
+            
+            };
+            if (!(stringExcerpt) instanceof RegExp) {
+                
+                stringExcerpt = new RegExp(stringParse);
+            
+            };
+
+            let arrayStringFind = Array.from(stringParse.matchAll(regexpExcerpt));
+
+            arrayStringFind.forEach((arrayJectNow,numberIndex,arrayJect) => {
+
+                if (arrayJectNow.groups) {
+
+                    Object.entries(arrayJectNow.groups).forEach((arrayJectPair) => {
+
+                        if (arrayJectPair[1]) {
+                            
+                            if (arrayJectPair[0]) { jectResult[arrayJectPair[0]] = []; };
+
+                            jectResult[arrayJectPair[0]].push(arrayJectPair[1]);
+                        
+                        };
+
+                    });
+
+                };
+
+                arrayJect[numberIndex] = (arrayJectNow.groups) ? arrayJectNow.groups : undefined;
+
             });
 
-            return (boolExtractAll) ? arrayStringFind : arrayStringFind?.[0];
+            return (!boolExtractAll) ? jectResult?.stringResult?.[0] : jectResult;
 
         };
         // Функция замены подстрок в строке;
@@ -1261,7 +1410,7 @@
 
             const { stringStyle, stringMode } = jectTransmit;
 
-            return new RegExp(`${stringStyle}[^}]*}`,stringMode);
+            return new RegExp(`}${stringStyle}[^}]*}`,stringMode);
 
         };
         function functionGetRegexpIgnore(
