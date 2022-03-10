@@ -618,8 +618,6 @@ class classAnimaDomExpand extends classAnima {
             };
             if (typeof(numberStartWidth) === "number" && typeof(numberEndWidth) === "number" && numberStartWidth !== numberEndWidth && !numberBiasWidth) {
 
-                console.log("WW");
-
                 numberBiasWidth = (numberEndWidth - numberStartWidth) / numberIterate;
                 jectTransmit.numberBiasWidth = numberBiasWidth;
 
@@ -731,14 +729,22 @@ class classAnimaDomTextBust extends classAnima {
                 
             ];
 
+            if (!domElement?.domPText) {
+                
+                jectTransmit.numberIterateNow = numberIterate;
+            
+                return;
+            
+            };
+
+            let stringTextNow = domElement?.domPText?.innerHTML;
+
             if (numberIterateNow === numberIterate || boolSkip) {
     
-                domElement.innerHTML = stringTextResult;
+                domElement.domPText.innerHTML = stringTextResult;
 
             }
             else {
-
-                let stringTextNow = domElement.innerHTML;
 
                 if (stringTextNow.length > stringTextNeed.length) { stringTextNow = stringTextNow.slice(0,-1); }
                 else if (stringTextNow.length < stringTextNeed.length) { stringTextNow += " "; };
@@ -761,7 +767,7 @@ class classAnimaDomTextBust extends classAnima {
                 });
 
                 stringTextNow = arrayStringTextNow.join("");
-                domElement.innerHTML = stringTextNow;
+                domElement.domPText.innerHTML = stringTextNow;
 
             };
 

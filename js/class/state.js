@@ -122,7 +122,8 @@ class classStateButton extends classState {
 
             const [domButton,styleButton] = functionDomElementCreate({
                 
-                stringParms   : "button domButton x divBackground session",
+                boolText      : true,
+                stringParms   : "button button x divBackground session",
                 jectParamStyle: this.jectStyleButton,
             
             });
@@ -279,15 +280,17 @@ class classStateClaster extends classStateCatalog {
 
                 jectStyleButton       : {
 
-                    top         : "-50%",
-                    left        : "50%",
-                    width       : "0%",
-                    height      : "10%",
-                    border      : "3px solid #505050",
-                    position    : "absolute",
-                    transform   : "translateX(-50%)",
-                    background  : "none",
-                    borderRadius: "25px",
+                    top          : "-50%",
+                    left         : "50%",
+                    width        : "0%",
+                    height       : "10%",
+                    border       : "3px solid #505050",
+                    position     : "absolute",
+                    transform    : "translateX(-50%)",
+                    background   : "none",
+                    whiteSpace   : "pre-wrap",
+                    borderRadius : "25px",
+                    letterSpacing: "20px",
 
                 },
                 jectAnimaSequenceIntro: new classAnimaSequence({
@@ -336,7 +339,7 @@ class classStateClaster extends classStateCatalog {
                             jectParam: new classAnimaDomTextBustParam({
 
                                 stringTextNeed  : "Начнём?",
-                                stringTextResult: "Начнём?",
+                                stringTextResult: `Начнём<span style="letter-spacing: none;">?</span>`,
 
                             }),
 

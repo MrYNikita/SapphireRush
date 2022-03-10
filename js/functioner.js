@@ -6,10 +6,56 @@
     }
     { // Dom;
 
+        // Функция для изменения текста у элемента;
+        function functionDomElementTextChange(
+
+            jectTransmit = {
+
+                domElement: document.createElement("sr"),
+                stringText: "",
+
+            },
+
+        ) {
+
+            let {
+
+                domElement,
+                stringText,
+
+            } = jectTransmit;
+
+            let domPText = domElement?.domPText;
+
+            if (!domPText || !(domPText instanceof HTMLParagraphElement)) { return; };
+
+            let stringTextNow = stringText;
+
+            stringTextNow = functionStringReplace({
+
+                stringParse       : stringTextNow,
+                stringExcerpt     : `<span.*?>.*?</span>`,
+                boolReplaceAll    : true,
+                arrayStringReplace: functionStringExtract({
+
+                    stringParse   : stringTextNow,
+                    stringExcerpt : `<span.*?>(?<stringResult>.*?)</span>`,
+                    boolExtractAll: true,
+
+                }),
+
+            });
+
+            domPText.innerHTML = stringTextNow;
+
+
+
+        };
         function functionDomElementCreate(jectTransmit = {
 
             jectParamStyle          : {},
             domElementOver          : document.createElement("sr"),
+            boolText                : false,
             stringParms             : "",
             stringElementId         : "",
             stringElementType       : "",
@@ -20,6 +66,7 @@
 
             const {
 
+                boolText,
                 stringParms,
                 domElementOver,
                 jectParamStyle,
@@ -30,8 +77,10 @@
 
             } = jectTransmit;
 
-            let domElement = document.createElement("sr");
-            let styleElement = document.createElement("style");
+            let domPText      = document.createElement("p");
+            let domElement    = document.createElement("sr");
+            let stylePText    = domPText.style;
+            let styleElement  = document.createElement("style");
 
             if (typeof(stringParms) === "string") {
 
@@ -39,6 +88,7 @@
 
                 [domElement,styleElement] = functionDomElementCreate({
 
+                    boolText                : boolText,
                     domElementOver          : (document.getElementById(arrayStringParms[3]))
                     ? document.getElementById(arrayStringParms[3]) : (arrayStringParms[3] === "body")
                     ? document.body : (arrayStringParms[3] === "head")
@@ -53,12 +103,24 @@
 
             } else if (!stringParms) {
 
-                domElement = document.createElement(stringElementType);
+                domElement   = document.createElement(stringElementType);
                 styleElement = domElement.style;
 
-                if (domElementOver) { domElementOver.appendChild(domElement); }
-                if (stringElementId) { domElement.id = stringElementId; }
-                if (stringElementClass) { domElement.className = stringElementClass; }
+                if (domElementOver) {
+                    
+                    domElementOver.appendChild(domElement);
+                
+                };
+                if (stringElementId) {
+                    
+                    domElement.id  = stringElementId;
+                
+                };
+                if (stringElementClass) {
+                    
+                    domElement.className = stringElementClass;
+                
+                };
                 if (stringElementAffiliation) {
 
                     const domStyle        = jectSession[`domStyle${stringElementAffiliation[0].toUpperCase() + stringElementAffiliation.substring(1)}`];
@@ -68,6 +130,20 @@
                     if (arrayDomElement) { arrayDomElement.push(domElement); };
 
 
+                };
+
+                if (boolText) {
+
+                    domElement.domPText = domPText;
+    
+                    if (stringElementId) {
+                        
+                        domPText.id = `${stringElementId}P`;
+                    
+                    };
+    
+                    domElement.appendChild(domPText);
+    
                 };
 
             };
@@ -84,7 +160,7 @@
                 
             };
 
-            return [domElement,styleElement];
+            return [domElement,styleElement,domPText,stylePText];
 
         };
         function functionDomElementCreatePreset(jectTransmit = {
@@ -278,48 +354,6 @@
             };
             
             return stringProperty ?? "";
-
-        };
-        function functionStyleRGBAReplace(jectTransmit = {
-
-            strokeRGBA: "",
-            arrayNumberBias: [],
-
-        }) {
-
-            let {
-
-                strokeRGBA,
-                arrayNumberBias,
-
-            } = jectTransmit;
-
-            let arrayResult = strokeRGBA.match(/(rgb[a]?)[(]{1}(([0-9]+,? ?){3,4})[)]{1}/);
-            let strokeType = arrayResult[1];
-            let arrayStrokeRGBA = arrayResult[2].split(",");
-
-            if (strokeType === "rgb" && arrayNumberBias.length === 4) { arrayNumberBias.pop(); }
-            if (strokeType === "rgb" && arrayStrokeRGBA.length === 4) { arrayStrokeRGBA.pop(); }
-            if (strokeType === "rgba" && arrayStrokeRGBA.length === 3) { arrayStrokeRGBA.push("0"); }
-            if (strokeType === "rgba" && arrayNumberBias.length === 3) { arrayNumberBias.push(0); }
-
-            arrayNumberBias = arrayNumberBias.filter((numberBiasNow) => { return typeof(numberBiasNow) === "number"; });
-
-            arrayNumberBias.forEach((numberBiasNow,numberIndexNow) => {
-
-                if (numberBiasNow >= 510) { arrayStrokeRGBA[numberBiasNow] = "255"; return; }
-                if (numberBiasNow <= -510) { arrayStrokeRGBA[numberBiasNow] = "-255"; return; }
-
-                let numberColorIndexNow = arrayStrokeRGBA[numberIndexNow] - 0 + numberBiasNow;
-                    
-                if (numberColorIndexNow > 255) { numberColorIndexNow = 255; }
-                else if (numberColorIndexNow < -255) { numberColorIndexNow = -255; }
-
-                arrayStrokeRGBA[numberIndexNow] = numberColorIndexNow;
-
-            });
-
-            return `${strokeType}(${arrayStrokeRGBA.join(",")})`;
 
         };
         // Функция установки свойства к указанному стилю;
@@ -879,7 +913,7 @@
         };
 
     }
-    { // Stroke;
+    { // String;
 
         function functionStrokeExtract(jectTransmit = {
 
@@ -1045,9 +1079,21 @@
 
             } = jectTransmit;
 
-            if (typeof(stringParse) !== "string") { return; };
-            if (typeof(stringExcerpt) === "string") { regexpExcerpt = new RegExp(stringExcerpt,"g"); };
-            if (!(stringExcerpt) instanceof RegExp) { stringExcerpt = new RegExp(stringParse); };
+            if (typeof(stringParse) !== "string") {
+                
+                return;
+            
+            };
+            if (typeof(stringExcerpt) === "string") {
+                
+                regexpExcerpt = new RegExp(stringExcerpt,"g");
+            
+            };
+            if (!(stringExcerpt) instanceof RegExp) {
+                
+                stringExcerpt = new RegExp(stringParse);
+            
+            };
 
             let arrayStringFind = Array.from(stringParse.matchAll(regexpExcerpt));
 
@@ -1071,12 +1117,13 @@
 
             jectTransmit = {
 
-                stringParse   : "",
-                stringReplace : "",
-                stringExcerpt : "",
-                regexpExcerpt : /./,
-                stringReplaced: "",
-                boolReplaceAll: false,
+                stringParse       : "",
+                stringReplace     : "",
+                stringExcerpt     : "",
+                regexpExcerpt     : /./,
+                stringReplaced    : "",
+                boolReplaceAll    : false,
+                arrayStringReplace: [""],
 
             },
 
@@ -1090,24 +1137,62 @@
                 regexpExcerpt,
                 stringReplaced,
                 boolReplaceAll,
+                arrayStringReplace,
 
             } = jectTransmit;
 
-            if (stringReplace == undefined) { stringReplace = ""; };
-            if (stringReplaced == undefined) { stringReplaced = ""; };
-            if (typeof(stringExcerpt) === "string" && !regexpExcerpt) { regexpExcerpt = new RegExp(stringExcerpt,"g"); };
-            if (!regexpExcerpt) { regexpExcerpt = new RegExp(stringParse,"g"); };
+            let regexpReplaced = "";
 
-            const arrayStringFind = stringParse.match(regexpExcerpt);
+            if (stringReplace == undefined) {
+                
+                stringReplace = "";
+            
+            };
+            if (stringReplaced == undefined) {
+                
+                stringReplaced = "";
+            
+            };
+            if ((stringReplace || stringReplace === "") && !arrayStringReplace) {
+
+                arrayStringReplace = [stringReplace];
+
+            };
+            if (typeof(stringExcerpt) === "string" && !regexpExcerpt) {
+                
+                regexpExcerpt = new RegExp(stringExcerpt,"g");
+
+                if (!stringReplaced) { regexpReplaced = new RegExp(stringExcerpt); }
+            
+            };
+            if (!regexpExcerpt) {
+                
+                regexpExcerpt = new RegExp(stringParse,"g");
+            
+            };
+
+            const arrayStringFind      = stringParse.match(regexpExcerpt);
+            const stringDefaultReplace = arrayStringReplace.pop();
 
             if (arrayStringFind?.length) {
 
                 for (let numberIndex = (!boolReplaceAll) ? 0 : arrayStringFind.length - 1; numberIndex >= 0; numberIndex--) {
 
                     const stringFindNow = arrayStringFind.pop();
+
+                    stringReplace = (arrayStringReplace[numberIndex]) ? arrayStringReplace[numberIndex] : stringDefaultReplace;
     
-                    stringParse = stringParse.replace(stringFindNow,stringFindNow.replace(stringReplaced,stringReplace));
-    
+                    if (stringReplaced) {
+                        
+                        stringParse = stringParse.replace(stringFindNow,stringFindNow.replace(stringReplaced,stringReplace));
+                    
+                    };
+                    if (regexpReplaced) {
+                        
+                        stringParse = stringParse.replace(stringFindNow,stringFindNow.replace(regexpReplaced,stringReplace));
+                    
+                    };
+
                 };
 
             };

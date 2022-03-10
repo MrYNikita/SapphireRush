@@ -50,19 +50,21 @@
 
 
     // Группы;
-    domStyleSession.innerHTML += `body{}*{}`;
+    domStyleSession.innerHTML += `body{}*{}.spanEnd{}`;
     functionStylePropertySet({
 
         styleElement  : jectSession.domStyleSession,
         stringElement : "\\*",
         jectParamStyle: {
 
-            color      : `rgba(255,255,255,255)`,
-            margin     : `0`,
-            padding    : `0`,
-            fontFamily : `"Courier New", monospace`,
-            marginLeft : `auto`,
-            marginRight: `auto`,
+            color        : `rgba(255,255,255,255)`,
+            margin       : `0`,
+            padding      : `0`,
+            fontSize     : `25px`,
+            textAlign    : `center`,
+            fontFamily   : `"Courier New", monospace`,
+            marginLeft   : `auto`,
+            marginRight  : `auto`,
 
         },
 
@@ -74,6 +76,28 @@
         jectParamStyle: {
 
             background: "rgba(255,255,255,0)",
+
+        },
+
+    });
+    functionStylePropertySet({
+
+        styleElement  : jectSession.domStyleSession,
+        stringElement : "body",
+        jectParamStyle: {
+
+            background: "rgba(255,255,255,0)",
+
+        },
+
+    });
+    functionStylePropertySet({
+
+        styleElement  : jectSession.domStyleSession,
+        stringElement : ".spanEnd",
+        jectParamStyle: {
+
+            letterSpacing: "0px",
 
         },
 
