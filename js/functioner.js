@@ -167,7 +167,7 @@
                     
                     };
 
-                    domPText.className = jectConfigurate.stringDefaultClassText;
+                    domPText.className = jectConfigurate.stringDefaultStyleClassText;
     
                     domElement.appendChild(domPText);
     
@@ -432,40 +432,38 @@
 
             for (const arrayPairNow of arrayPair) {
 
-                arrayPairNow[0] = functionStylePropertyProcess({ stringProperty: arrayPairNow[0] });
-
-                let stringExcerpt  = "";
                 let stringReplace  = "";
                 let stringReplaced = "";
 
-                console.log(stringStyle,arrayPairNow);
-
                 if (stringStyle.includes(arrayPairNow[0])) {
 
-                    stringExcerpt  = `${arrayPairNow[0]}:[^;]*;`;
+                    stringExcerpt  = `${stringExcerpt}.*?${arrayPairNow[0]}:.*?;`;
                     stringReplace  = `${arrayPairNow[0]}:${arrayPairNow[1]};`;
                     stringReplaced = undefined;
+
+                    functionStylePropertyReplace({
+
+                        stringValue    : arrayPairNow[1],
+                        regexpExcerpt  : new RegExp(stringExcerpt),
+                        stringProperty : arrayPairNow[0],
+                        domStyleElement: domStyleElement,
+
+                    });
     
                 } else {
     
-                    stringExcerpt  = undefined;
-                    stringReplace  = `${arrayPairNow[0]}:${arrayPairNow[1]};}`;
-                    stringReplaced = `}`;
-    
+                    functionStylePropertyAdd({
+
+                        stringValue    : arrayPairNow[1],
+                        regexpExcerpt  : new RegExp(`${stringExcerpt}{.*?}`),
+                        stringProperty : arrayPairNow[0],
+                        domStyleElement: domStyleElement,
+
+                    });
+                    
                 };
 
-                stringStyle = functionStringReplace({
-    
-                    stringParse   : stringStyle,
-                    stringExcerpt : stringExcerpt,
-                    stringReplace : stringReplace,
-                    stringReplaced: stringReplaced,
-
-                });
-
             };
-
-            domStyleElement.innerHTML = domStyleElement.innerHTML.replace(new RegExp(`${stringExcerpt}{[^}]*}`),stringStyle);
 
         };
         // Функция добавления новых свойств к указанному стилю;
@@ -473,10 +471,10 @@
 
             jectTransmit = {
 
-                stringValue   : "",
-                styleElement  : document.createElement("style"),
-                regexpExcerpt : /./,
-                stringProperty: "",
+                stringValue    : "",
+                regexpExcerpt  : /./,
+                stringProperty : "",
+                domStyleElement: document.createElement("style"),
 
             },
 
@@ -485,14 +483,14 @@
             let {
 
                 stringValue,
-                styleElement,
                 regexpExcerpt,
                 stringProperty,
+                domStyleElement,
 
             } = jectTransmit;
 
             // Переменная с нужной частью строки;
-            const stringParse = styleElement.innerHTML.match(regexpExcerpt)[0];
+            const stringParse = domStyleElement.innerHTML.match(regexpExcerpt)[0];
             // Проверка существования ключа;
             if (!Object.keys(document.createElement("sr").style).includes(stringProperty)) { return; };
             // Форматирование ключа;
@@ -500,7 +498,7 @@
             // Проверка найденного участка строки на наличие;
             if (stringParse) {
                 
-                styleElement.innerHTML = styleElement.innerHTML.replace(
+                domStyleElement.innerHTML = domStyleElement.innerHTML.replace(
                 
                     stringParse,
                     stringParse.replace("}",`${stringProperty}:${stringValue};}`)
@@ -546,93 +544,53 @@
             });
 
         };
+        // Функция замены значения свойства у указанного стиля;
+        function functionStylePropertyReplace(
 
-        function functionStylePropertyExtract(jectTransmit = {
+            jectTransmit = {
 
-            domStyle: document.createElement("style"),
-            strokeStop: "",
-            strokeFind: "",
-            strokeExcerpt: "",
-            arrayStrokeFind: [""],
+                stringValue    : "",
+                regexpExcerpt  : /./,
+                stringProperty : "",
+                domStyleElement: document.createElement("sr"),
 
-        }) {
+            },
+
+        ) {
 
             let {
 
-                domStyle,
-                strokeStop,
-                strokeFind,
-                strokeExcerpt,
-                arrayStrokeFind,
+                stringValue,
+                regexpExcerpt,
+                stringProperty,
+                domStyleElement,
 
             } = jectTransmit;
 
-            strokeStop = strokeStop ?? ";";
-            arrayStrokeFind = (strokeFind) ? [strokeFind] : arrayStrokeFind;
-
-            arrayStrokeFind.filter((strokeFindNow) => {
-
-                if (strokeFindNow) { return true; }
-
-            });
-            arrayStrokeFind.forEach((strokeFindNow,numberIndexNow) => {
-
-                arrayStrokeFind[numberIndexNow] = domStyle.innerHTML.match(functionGetRegexpStyle({
-                    
-                    stringMode : "s",
-                    stringStyle: strokeExcerpt,
-
-                }))[0];
-                arrayStrokeFind[numberIndexNow] = arrayStrokeFind[numberIndexNow].match(new RegExp(`${strokeFindNow}:([^;]*);`))?.[1];
-
-            });
-            
-            return arrayStrokeFind;
-
-        };
-        function functionStylePropertyReplace(jectTransmit = {
-
-            domStyle: document.createElement("style"),
-            strokeStop: ";",
-            strokeFind: "",
-            strokeReplace: "",
-            strokeExcerpt: "",
-            arrayStrokeFind: [],
-            arrayStrokeReplace: [],
-
-        }) {
-
-            let {
+            // Переменная с нужной частью строки;
+            const stringParse = domStyleElement.innerHTML.match(regexpExcerpt)[0];
+            // Проверка существования ключа;
+            if (!Object.keys(document.createElement("sr").style).includes(stringProperty)) { return; };
+            // Форматирование ключа;
+            stringProperty = functionStylePropertyProcess({ stringProperty: stringProperty });
+            // Проверка найденного участка строки на наличие;
+            if (stringParse) {
                 
-                domStyle,
-                strokeStop,
-                strokeFind,
-                strokeReplace,
-                strokeExcerpt,
-                arrayStrokeFind,
-                arrayStrokeReplace,
+                domStyleElement.innerHTML = functionStringReplace({
+    
+                    stringParse   : domStyleElement.innerHTML,
+                    regexpExcerpt : regexpExcerpt,
+                    stringReplace : `${stringProperty}:${stringValue};`,
+                    stringReplaced: functionStringExtract({
 
-            } = jectTransmit;
+                        stringParse  : stringParse,
+                        stringExcerpt: `(?<stringResult>${stringProperty}:.*?;)`,
 
-            strokeStop = strokeStop ?? ";";
-            arrayStrokeFind = (strokeFind) ? [strokeFind] : arrayStrokeFind;
-            arrayStrokeReplace = (strokeReplace) ? [strokeReplace] : arrayStrokeReplace; 
+                    }),
 
-            arrayStrokeFind.filter((strokeFindNow) => {
-
-                if (strokeFindNow) { return true; }
-
-            });
-            arrayStrokeFind.forEach((strokeFindNow,numberIndexNow) => {
-
-                let strokeStyle = domStyle.innerHTML;
-                let strokeClass = strokeStyle.match(new RegExp(`${strokeExcerpt}[^}]*`,"s"))[0];
-
-                strokeClass = strokeClass.replace(new RegExp(`${strokeFindNow}:[^;]*;`),`${strokeFindNow}:${arrayStrokeReplace[numberIndexNow]};`);
-                domStyle.innerHTML = domStyle.innerHTML.replace(new RegExp(`${strokeExcerpt}[^}]*`,"s"),strokeClass);
-
-            });
-
+                });
+            
+            };
 
         };
 
@@ -938,147 +896,6 @@
     }
     { // String;
 
-        function functionStrokeExtract(jectTransmit = {
-
-            strokeStop: "",
-            strokeParse: "",
-            strokeExcerpt: "",
-            regexpExcerpt: /./,
-            arrayStrokeFind: [],
-
-        }) {
-
-            if (jectTransmit.strokeExcerpt) {
-
-                jectTransmit.regexpExcerpt = new RegExp(jectTransmit.strokeExcerpt);
-
-            }
-
-            const {
-
-                strokeParse,
-                strokeExcerpt,
-                regexpExcerpt,
-
-            } = jectTransmit;
-
-            return strokeParse.match(regexpExcerpt);
-
-        };
-        function functionStrokeReplace(
-            
-            jectTransmit = {
-        
-                stringParse   : "",
-                stringExcerpt : "",
-                regexpExcerpt : /./,
-                stringReplace : "",
-                stringReplaced: "",
-                boolReplaceAll: false,
-        
-            }
-        
-        ) {
-        
-            {
-        
-                if (jectTransmit.stringParse) {
-                    
-                    if (typeof(jectTransmit.stringParse) !== "string") { return; };
-        
-                } else { return; };
-                if (jectTransmit.stringExcerpt) {
-        
-                    if (typeof(jectTransmit.stringExcerpt) !== "string") { return; };
-        
-                    jectTransmit.regexpExcerpt = new RegExp(jectTransmit.stringExcerpt,(jectTransmit.boolReplaceAll) ? "g" : "");
-        
-                };
-                if (jectTransmit.regexpExcerpt) {
-        
-                    if (!(jectTransmit.regexpExcerpt instanceof RegExp)) { return; }
-        
-                    jectTransmit.regexpExcerpt = new RegExp(jectTransmit.regexpExcerpt,(jectTransmit.boolReplaceAll) ? "g" : "");
-        
-                } else { return; }
-        
-            }
-
-            const {
-        
-                stringParse,
-                stringReplace,
-                regexpExcerpt,
-                stringReplaced,
-                boolReplaceAll,
-        
-            } = jectTransmit;
-
-            const arrayStringFind = [];
-        
-            if (boolReplaceAll) {
-        
-                [...stringParse.matchAll(regexpExcerpt)].forEach((arrayFindNow) => {
-
-                    for (let numberIndex = 1; numberIndex < arrayFindNow.length; numberIndex++) {
-
-                        if (arrayFindNow[numberIndex] && arrayFindNow[numberIndex].includes(stringReplaced)) {
-        
-                            arrayStringFind.push(arrayFindNow[numberIndex]);
-        
-                        };
-        
-                    };
-                
-                });
-        
-            } else {
-        
-                const arrayFindNow = stringParse.match(regexpExcerpt);
-        
-                for (let numberIndex = 1; numberIndex < arrayFindNow.length; numberIndex++) {
-        
-                    if (arrayFindNow[numberIndex] && arrayFindNow[numberIndex].includes(stringReplaced)) {
-        
-                        arrayStringFind.push(arrayFindNow[numberIndex]);
-        
-                    };
-        
-                };
-        
-            };
-
-            let stringResult = stringParse;
-
-            arrayStringFind.forEach((stringFindNow,numberIndexNow) => {
-
-                stringResult = stringResult.replace(stringFindNow,stringFindNow.replaceAll(stringReplaced,stringReplace));
-                
-            });
-        
-            return stringResult;
-        
-        };
-        function functionStrokeExtractNumber(jectTransmit = {
-
-            strokeParse: "",
-            strokeTypeParse: "",
-
-        }) {
-
-            let {
-
-                strokeParse,
-                strokeTypeParse,
-
-            } = jectTransmit;
-
-            strokeTypeParse = strokeTypeParse ?? "";
-
-            return strokeParse.match(new RegExp(/[0-9]+([.]{1}[0-9]+)?/,strokeTypeParse));
-
-        };
-
         // Функция извлечения подстроки в строке;
         function functionStringExtract(
 
@@ -1315,8 +1132,11 @@
             
             };
             if (!regexpExcerpt) {
-                
-                regexpExcerpt = new RegExp(stringParse,"g");
+
+                stringExcerpt = stringParse.replace("*","\\*");
+                stringExcerpt = stringExcerpt.replaceAll(")","\\)");
+                stringExcerpt = stringExcerpt.replaceAll("(","\\(");
+                regexpExcerpt = new RegExp(stringExcerpt,"g");
             
             };
 
