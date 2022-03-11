@@ -29,11 +29,8 @@
             width              : `100%`,
             height             : `100%`,
             display            : `grid`,
-            color              : `red`,
             gridTemplateRows   : `repeat(${jectConfigurate.numberDivBackgroundGridRows},1fr)`,
             gridTemplateColumns: `repeat(${jectConfigurate.numberDivBackgroundGridColumns},1fr)`,
-            textAlign          : `center`,
-            fontSize           : `5px`,
 
         },
 
@@ -83,6 +80,7 @@
     });
 
     // Классы;
+
     domStyleSession.innerHTML += `.${jectConfigurate.stringDefaultStyleClassText}{}`;
     functionStylePropertySet({
 
@@ -90,7 +88,22 @@
         domStyleElement: domStyleSession,
         jectParamStyle : {
 
-            letterSpacing: `5px`,
+            letterSpacing: `20px`,
+
+        },
+
+    });
+
+    domStyleSession.innerHTML += `.${jectConfigurate.stringDefaultStyleClassSelect}{}`;
+    functionStylePropertySet({
+
+        stringElement  : `.${jectConfigurate.stringDefaultStyleClassSelect}`,
+        domStyleElement: domStyleSession,
+        jectParamStyle : {
+
+            color             : `rgba(255,255,255,1)`,
+            transitionDuration: `1s`,
+            transitionProperty: `color`,
 
         },
 
@@ -109,8 +122,10 @@
 
     });
 
-    // Аниматоры;
+    // Наследования;
     
+    
+    // Аниматоры;
 
 
 }

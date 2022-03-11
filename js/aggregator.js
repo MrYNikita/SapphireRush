@@ -35,49 +35,7 @@
     // Прослушиватель переопределения размера;
     window.addEventListener("resize",() => {
 
-        let { width, height } = window.screen;
-
-        let numberDivBackgroundGridRows    = functionStrokeExtract({
-            
-            strokeParse: functionStylePropertyExtract({
-
-                domStyle: jectSession.domStyleSession,
-                strokeFind: "grid-template-rows",
-                strokeExcerpt: "divBackground",
-
-            })[0],
-            regexpExcerpt: /repeat[(]{1}([0-9]*){1}[,]{1}/
-
-        })[1] - 0;
-        let numberDivBackgroundGridColumns = functionStrokeExtract({
-            
-            strokeParse: functionStylePropertyExtract({
-
-                domStyle: jectSession.domStyleSession,
-                strokeFind: "grid-template-columns",
-                strokeExcerpt: "divBackground",
-
-            })[0],
-            regexpExcerpt: /repeat[(]{1}([0-9]*){1}[,]{1}/
-
-        })[1] - 0;
-
-        console.log(window.screen.availWidth,window.screen.availHeight);
-
-        if (width < jectConfigurate.numberScreenWidthMin) {
-
-            
-
-        } else {
-
-
-
-        }
-        if (height < jectConfigurate.numberScreenHeightMin) {
-
-            
-
-        }
+        
 
     });
     // Прослушиватель нажатий клавиш;

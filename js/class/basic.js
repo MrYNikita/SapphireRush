@@ -69,6 +69,7 @@ class classBasicTimer extends classBasic {
         this.jectParam             = (typeof(jectParam) === "object") ? jectParam : {}; 
         this.numberSpeed           = (numberSpeed > 0) ? numberSpeed : jectConfigurate.numberDefaultSpeedTimer;
         this.functionExecute       = functionExecute;
+        this.numberIterateNow      = 0;
         this.functionResolveFinite = undefined;
 
     };
@@ -84,6 +85,8 @@ class classBasicTimer extends classBasic {
 
     ) {
 
+        clearInterval(this.intervalExecute);
+
         this.intervalExecute = undefined;
 
         if (this.functionResolveFinite) {
@@ -92,7 +95,7 @@ class classBasicTimer extends classBasic {
         
             this.functionResolveFinite = undefined;
         
-        }
+        };
 
     };
     // Функция запуска таймера;
@@ -141,7 +144,13 @@ class classBasicTimer extends classBasic {
         ? numberSpeed : (numberSpeedMode > 0)
         ? this.numberSpeed * numberSpeedMode : this.numberSpeed;
 
-        this.intervalExecute = setInterval(this.functionExecute,this.numberSpeed,this.jectParam);
+        this.intervalExecute = setInterval(() => {
+
+            this.numberIterateNow++;
+
+            this.functionExecute(this.jectParam);
+
+        },this.numberSpeed,this.jectParam);
     
     };
     // Функция запуска интревала;
@@ -177,6 +186,28 @@ class classBasicTimerPlot extends classBasicTimer {
     };
 
 };
+class classBasicTimerSession extends classBasicTimer {
+
+    constructor(
+        
+        jectTransmit = {
+
+            stringName     : "",
+            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
+            functionExecute: function() {},
+
+        },
+        
+    ) {
+
+        super(jectTransmit);
+
+        jectSession.arrayJectTimerSession.push(this);
+
+    };
+
+};
+
 class classBasicTimerFinite extends classBasicTimer {
 
     constructor(
@@ -257,27 +288,6 @@ class classBasicTimerFinite extends classBasicTimer {
     };
 
 };
-class classBasicTimerSession extends classBasicTimer {
-
-    constructor(
-        
-        jectTransmit = {
-
-            stringName     : "",
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            functionExecute: function() {},
-
-        },
-        
-    ) {
-
-        super(jectTransmit);
-
-        jectSession.arrayJectTimerSession.push(this);
-
-    };
-
-};
 class classBasicTimerFinitePlot extends classBasicTimerFinite {
 
     constructor(
@@ -320,6 +330,179 @@ class classBasicTimerFiniteSession extends classBasicTimerFinite {
 
         jectSession.arrayJectTimerSession.push(this);
 
+    };
+
+};
+
+class classBasicTimerConditional extends classBasicTimer {
+
+    constructor(
+
+        jectTransmit = {
+
+            jectParam      : {},
+            stringName     : "",
+            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
+            boolСondition  : false,
+            functionExecute: function() {},
+
+        },
+
+    ) {
+        
+        super(jectTransmit);
+
+        const {
+            
+            boolСondition,
+        
+        } = jectTransmit;
+
+        this.boolСondition = boolСondition;
+
+    };
+
+    async functionBegin(
+
+        jectTransmit = {
+
+            boolСondition: false,
+
+        },
+
+    ) {
+
+        const jectTimer = this;
+
+        const {
+
+            boolСondition,
+
+        } = jectTransmit;
+
+        this.boolСondition = boolСondition;
+
+        await new Promise(async function(functionResolveFinite) {
+
+            jectTimer.functionResolveFinite = functionResolveFinite;
+
+            await jectTimer.functionUpdate(jectTransmit);
+
+        });
+
+    };
+    async functionUpdate(
+
+        jectTransmit = {
+
+            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
+            boolСondition  : false,
+            numberSpeedMode: 1,
+
+        },
+
+    ) {
+        
+        const {
+
+            numberSpeed,
+            boolСondition,
+            numberSpeedMode,
+
+        } = jectTransmit;
+
+        this.numberSpeed = (numberSpeed > 0 && numberSpeedMode > 0)
+        ? numberSpeed * numberSpeedMode : (numberSpeed > 0)
+        ? numberSpeed : (numberSpeedMode > 0)
+        ? this.numberSpeed * numberSpeedMode : this.numberSpeed;
+
+        this.boolСondition = boolСondition;
+
+        this.intervalExecute = setInterval(() => {
+
+            if (this.boolСondition) {
+
+                this.numberIterateNow++;
+
+                this.functionExecute(this.jectParam);
+
+            };
+
+        },this.numberSpeed,this.jectParam);
+    
+    };
+
+};
+
+class classBasicTimerConditionalRegressive extends classBasicTimerConditional {
+
+    constructor(
+
+        jectTransmit = {
+
+            jectParam      : {},
+            stringName     : "",
+            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
+            boolСondition  : false,
+            functionExecute: function() {},
+
+        },
+
+    ) {
+
+        super(jectTransmit);
+
+    };
+
+    async functionUpdate(
+
+        jectTransmit = {
+
+            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
+            boolСondition  : false,
+            numberSpeedMode: 1,
+
+        },
+
+    ) {
+        
+        const {
+
+            numberSpeed,
+            boolСondition,
+            numberSpeedMode,
+
+        } = jectTransmit;
+
+        this.numberSpeed = (numberSpeed > 0 && numberSpeedMode > 0)
+        ? numberSpeed * numberSpeedMode : (numberSpeed > 0)
+        ? numberSpeed : (numberSpeedMode > 0)
+        ? this.numberSpeed * numberSpeedMode : this.numberSpeed;
+
+        this.boolСondition = boolСondition;
+
+        this.intervalExecute = setInterval(() => {
+
+            if (this.boolСondition) {
+
+                this.numberIterateNow++;
+
+                this.functionExecute(this.jectParam);
+
+            } else {
+
+                if (this.numberIterateNow > 1) {
+                    
+                    --this.numberIterateNow;
+                
+                    this.functionExecute(this.jectParam);
+
+                };
+
+            };
+
+        },this.numberSpeed,this.jectParam);
+    
     };
 
 };

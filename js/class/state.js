@@ -295,9 +295,6 @@ class classStateClaster extends classStateCatalog {
                     whiteSpace     : "pre-wrap",
                     borderColor    : jectConfigurate.stringDefaultSessionBorderColor,
                     borderRadius   : "25px",
-                    letterSpacing  : "20px",
-                    backgroundColor: "rgba(0,0,0,0)",
-                    transitionProperty: "color",
 
                 },
                 jectAnimaSequenceIntro: new classAnimaSequence({
