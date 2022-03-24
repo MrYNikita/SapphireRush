@@ -2,20 +2,20 @@
 const jectSession = {};
 
 // Числовые данные;
-jectSession.numberSpeedGameMode  = 1;
+jectSession.numberSpeedGameMode = 1;
 jectSession.numberRechargeScript = 5;
 
 // Каталоги данных;
-jectSession.arrayJectState         = [];
-jectSession.arrayJectAnima         = [];
-jectSession.arrayJectError         = [];
-jectSession.arrayJectScript        = [];
-jectSession.arrayStringError       = [];
-jectSession.arrayJectTimerPlot     = [];
-jectSession.arrayJectStatePlot     = [];
-jectSession.arrayDomElementPlot    = [];
-jectSession.arrayJectTimerSession  = [];
-jectSession.arrayJectStateClaster  = [];
+jectSession.arrayJectState = [];
+jectSession.arrayJectAnima = [];
+jectSession.arrayJectError = [];
+jectSession.arrayJectScript = [];
+jectSession.arrayStringError = [];
+jectSession.arrayJectTimerPlot = [];
+jectSession.arrayJectStatePlot = [];
+jectSession.arrayDomElementPlot = [];
+jectSession.arrayJectTimerSession = [];
+jectSession.arrayJectStateClaster = [];
 jectSession.arrayJectAnimaSequence = [];
 jectSession.arrayJectAnimaTeamwise = [];
 jectSession.arrayJectAnimaExecuter = [];
@@ -23,23 +23,23 @@ jectSession.arrayJectStateSequence = [];
 jectSession.arrayDomElementSession = [];
 
 // Style элементы;
-jectSession.domStylePlot    = functionDomElementCreate({ stringParms: "style stylePlot x head" })[0];
-jectSession.domStyleBuffer  = functionDomElementCreate({ stringParms: "style styleBuffer x head" })[0];
+jectSession.domStylePlot = functionDomElementCreate({ stringParms: "style stylePlot x head" })[0];
+jectSession.domStyleBuffer = functionDomElementCreate({ stringParms: "style styleBuffer x head" })[0];
 jectSession.domStyleSession = functionDomElementCreate({ stringParms: "style styleSession x head" })[0];
 
 // HTML элементы;
-jectSession.domDivBody          = functionDomElementCreate({ stringParms: "div divBody x body session" })[0];
-jectSession.domDivBackground    = functionDomElementCreate({ stringParms: "div divBackground x divBody session" })[0];
+jectSession.domDivBody = functionDomElementCreate({ stringParms: "div divBody x body session" })[0];
+jectSession.domDivBackground = functionDomElementCreate({ stringParms: "div divBackground x divBody session" })[0];
 jectSession.domCanvasBackground = functionDomElementCreate({ stringParms: "canvas canvasBackground x divBody session" })[0];
 
 // Объектные данные;
 jectSession.jectControllerState = {
 
     // Функция добавления состояния;
-    functionStateAdd               : function(
+    functionStateAdd: function (
 
         arrayJectState = [new classState(), new classStateClaster()],
-        
+
     ) {
 
         // Перебор состояний аргумента массива и сохранение их в последовательность состояний;
@@ -58,7 +58,7 @@ jectSession.jectControllerState = {
 
     },
     // Функция выбора сюжета;
-    functionStatePlotSelect        : function(
+    functionStatePlotSelect: function (
 
         jectStatePlot = new classStatePlot(),
 
@@ -75,10 +75,10 @@ jectSession.jectControllerState = {
 
     },
     // Функция запуска последовательности событий;
-    functionStateSequenceRedefinite: async function() {
+    functionStateSequenceRedefinite: async function () {
 
         // Последовательность событий перебирается с первого события по последнее;
-        while(jectSession.arrayJectStateSequence.length) {
+        while (jectSession.arrayJectStateSequence.length) {
 
             const jectState = jectSession.arrayJectStateSequence.pop();
 
@@ -99,8 +99,8 @@ jectSession.jectControllerState = {
 
 };
 // Функция переопределния перезарядки скрипта;
-jectSession.functionRechargeScript = function(
-    
+jectSession.functionRechargeScript = function (
+
     jectTransmit = {
 
 
@@ -112,20 +112,20 @@ jectSession.functionRechargeScript = function(
     return setInterval(() => {
 
         if (jectSession.numberRechargeScript) {
-        
+
             jectSession.numberRechargeScript--;
-        
+
         } else {
-    
+
             jectSession.intervalRechargeScript = undefined;
-    
+
         };
 
     }, (1000 * jectSession.numberSpeedMode));
 
 };
 // Функция обновления интервалов;
-jectSession.functionSpeedGameChange = function(
+jectSession.functionSpeedGameChange = function (
 
     jectTransmit = {
 

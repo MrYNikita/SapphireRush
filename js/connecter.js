@@ -24,11 +24,6 @@ let functionResolveConnect;
     let arrayStringScriptsClasses = [
 
         "basic",
-        "thing",
-        "being",
-        "anima",
-        "state",
-        "script",
 
     ];
 

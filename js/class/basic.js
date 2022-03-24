@@ -1,510 +1,610 @@
+// Базовый класс;
 class classBasic {
 
-    constructor(
-        
-        jectTransmit = {
+    static jectTransmit = {
 
-            stringName     : "",
+        stringName: "",
 
-        },
+    };
 
-    ) {
+    constructor(jectTransmit = classBasic.jectTransmit) {
 
-        const {
+        let {
 
             stringName,
 
         } = jectTransmit;
 
-        this.stringName = (typeof(stringName) === "string") ? stringName : "";
+        this.stringName = stringName;
 
     };
 
 };
-class classBasicImplementing extends classBasic {
 
-    constructor(
+// Базовые классы: исполнители;
+class classBasicExecutor extends classBasic {
 
-        jectTransmit = {
+    static jectTransmit = Object.assign(classBasic.jectTransmit,{
 
-            stringName: "",
-
-        },
-
-    ) {
-
-        super(jectTransmit);
-
-        this.arrayJectImplementer = [];
-
-    };
+        boolCondition: false,
+        jectCatalog: new Array() ?? new Map() ?? new Set(),
+        functionExecute: new Function(),
+        arrayFunctionExecute: [new Function()],
     
-};
+    });
 
-class classBasicTimer extends classBasic {
-
-    constructor(
-
-        jectTransmit = {
-
-            jectParam      : {},
-            stringName     : "",
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            functionExecute: function() {},
-
-        },
-
-    ) {
+    constructor(jectTransmit = classBasicExecutor.jectTransmit) {
 
         super(jectTransmit);
 
-        const {
-            
-            jectParam,
-            numberSpeed,
+        let {
+
+            jectCatalog,
+            boolCondition,
             functionExecute,
-        
+            arrayFunctionExecute,
+
         } = jectTransmit;
 
-        this.jectParam             = (typeof(jectParam) === "object") ? jectParam : {}; 
-        this.numberSpeed           = (numberSpeed > 0) ? numberSpeed : jectConfigurate.numberDefaultSpeedTimer;
-        this.functionExecute       = functionExecute;
-        this.numberIterateNow      = 0;
-        this.functionResolveFinite = undefined;
+        if (functionExecute) {
+            
+            arrayFunctionExecute = [functionExecute];
+        
+        } else if (arrayFunctionExecute instanceof Array) {
+
+            arrayFunctionExecute = functionArrayFilter({ arrayJect: arrayFunctionExecute, classNeed: Function, });
+
+        };
+
+        if (jectCatalog instanceof Array) { jectCatalog.push(this); } else if (jectCatalog instanceof Map || jectCatalog instanceof Set) { jectCatalog.add(this); };
+
+        this.boolCondition = (boolCondition !== false) ? true : false;
+        this.arrayFunctionExecute = arrayFunctionExecute ?? [];
 
     };
 
-    // Функция остановки интервала;
-    functionStop(
+    functionDelete() {
 
-        jectTransmit = {
+        // Удаление исполнителя из каталога исполнителей;
+        if (this.jectCatalog instanceof Array) { functionArrayRemove({ arrayJect: this.jectCatalog, jectRemove: this }); } else if (this.jectCatalog instanceof Map || this.jectCatalog instanceof Set) { this.jectCatalog.delete(this); };
 
+    };
 
+    async functionExecute() {
 
-        },  
+        functionArrayFunctionExecute.apply(this,[this.arrayFunctionExecute]);
 
-    ) {
+    };
 
-        clearInterval(this.intervalExecute);
+};
+class classBasicExecutorTime extends classBasicExecutor {
 
-        this.intervalExecute = undefined;
+    /*
+        Временной исполнитель - это обертка над интервалом созданная от исполнителей. Основная задача временного исполнителя - выполнять опредленные действия с
+        привязкой ко времени исполнения. Для наследников данного класса можно указать собственные правила работы во времени;
 
-        if (this.functionResolveFinite) {
-            
-            this.functionResolveFinite();
+        Временные исполнители обладают рядом свойств:
+        * boolSkip - пропуск исполнителя - если значение истиное, то исполнитель моментально завершается;
+        * numberSpeed - скорость исполнителя - определяет частоту срабатывания исполнителя;
+        * numberCountFinish - конечное кол-во итераций - определяет 
+        * numberCountNow - кол-во отработанных итераций - определяет кол-во отработанных на данный момент итераций;
+        * functionExecuteDone - функция завершения ожидания - функция, вызов который уведомляет программу, что дожидаться исполнителя более не нужно;
+         
+        Временные исполнители имеют несколько массивов для выполнения функций на разных этапах своего исполнения:
+        * arrayFunctionFinish - конечные функции - функции, которые выполняются при завершении работы исполнителя;
+        * arrayFunctionPermanent - постоянные функции - функции, которые выполняются при на каждой итерации исполнителя;
+        * arrayFunctionConditional - условные функции - функции, которые выполняются при выполнении условия;
+    */
+
+    static jectTransmit = Object.assign(classBasicExecutor.jectTransmit,{
+
+        boolSkip: false,
+        boolReverse: false,
+        numberSpeed: NaN,
+        numberCountFinish: NaN,
+        arrayFunctionFinish: [new Function()],
+        arrayFunctionPermanent: [new Function()],
+        arrayFunctionConditional: [new Function()],
         
-            this.functionResolveFinite = undefined;
-        
+    });
+
+    constructor (jectTransmit = classBasicExecutorTime.jectTransmit) {
+
+        super(jectTransmit);
+
+        let {
+
+            boolSkip,
+            numberSpeed,
+            numberCountFinish,
+            arrayFunctionFinish,
+            arrayFunctionPermanent,
+            arrayFunctionConditional,
+
+        } = jectTransmit;
+
+        // Поле, хранящее значение пропуска исполнителя;
+        this.boolSkip = (boolSkip) ? true : jectConfigurate.boolSkip;
+        // Поле, хранящее значение скорости работы;
+        this.numberSpeed = numberSpeed;
+        // Поле, хранящее индекс интервала;
+        this.jectInterval = NaN;
+        // Поле, хранящее индекс текущей итерации;
+        this.numberCountNow = 1;
+        // Поле, хранящее номер конечной итерации;
+        this.numberCountFinish = numberCountFinish;
+        // Поле, хранящее функция прерывания промиса;
+        this.functionExecuteDone = new Function();
+        // Поле, хранящее функции итогового исполнения; 
+        this.arrayFunctionFinish = arrayFunctionFinish ?? [];
+        // Поле, хранящее функции постоянного исполнения;
+        this.arrayFunctionPermanent = arrayFunctionPermanent ?? [];
+        // Поле, хранящее функции условного исполнения;
+        this.arrayFunctionConditional = arrayFunctionConditional ?? [];
+        // Поле, хранящее объект функций;
+        this.jectFunction = {
+
+            functionFinish() {
+
+                let boolFinish = false;
+
+                switch(this.constructor.name) {
+
+                    case classBasicTimer.name: {
+
+                        if (this.numberCountNow <= this.numberCountFinish) { boolFinish = true; };
+
+                    } break;
+                    case classBasicTicker.name: {
+
+                        if (this.numberCountNow === this.numberCountFinish) {
+
+                            let numberBuffer = this.numberCountBegin;
+
+                            this.boolReverse = !this.boolReverse;
+                            this.numberCountBegin = this.numberCountFinish;
+                            this.numberCountFinish = numberBuffer;
+
+                        };
+
+                    } break;
+                    case classBasicWalker.name: {
+
+                        if (
+
+                            functionArrayPointEquals(
+
+                                this.arrayNumberPointBias,
+                                new Array(this.arrayNumberPoint[0].length).fill(0)
+
+                            )
+
+                        ) {
+
+                            this.arrayNumberPointLast = this.arrayNumberPointNext;
+                            this.arrayNumberPointNext = functionArrayNext({ arrayNow: this.arrayNumberPoint, jectNow: this.arrayNumberPointNext });
+
+
+                        };
+
+                    }; break;
+                    case classBasicHoarder.name: {
+
+                        if (this.boolReverse && this.numberCountNow <= this.numberCountFinish) { boolFinish = true; }
+                        else if (!this.boolReverse && this.numberCountNow >= this.numberCountFinish) { boolFinish = true; };
+
+                    } break;
+                    case classBasicRepeater.name: {
+
+                        if (this.boolReverse && this.numberCountNow <= this.numberCountFinish) { boolFinish = true; }
+                        else if (!this.boolReverse && this.numberCountNow >= this.numberCountFinish) { boolFinish = true; };
+
+                    } break;
+
+                };
+
+                if (boolFinish) { this.functionRedefenite(); };
+
+            },
+            functionPermanent() {
+
+                functionArrayFunctionExecute(this.arrayFunctionPermanent);
+
+            },
+            functionConditional() {
+                
+                if (this.boolCondition) { functionArrayFunctionExecute(this.arrayFunctionConditional); };
+
+            },
+            functionCountNowChange() {
+
+                switch (this.constructor.name) {
+
+                    case classBasicTimer.name: {
+
+                        if (this.boolCondition) { this.numberCountNow++ };
+
+                    } break;
+                    case classBasicWalker.name: {
+
+                        if (this.arrayNumberPointNext === this.arrayNumberPoint[0]) { this.numberCountNow++; };
+
+                    };
+                    case classBasicTicker.name: {
+
+                        if (this.boolCondition) {
+
+                            if (this.boolReverse && this.numberCountNow > this.numberCountFinish) { this.numberCountNow--; }
+                            else if (!this.boolReverse && this.numberCountNow < this.numberCountFinish) { this.numberCountNow++; };
+
+                        };
+
+                    }; break;
+                    case classBasicHoarder.name: {
+
+                        if (this.boolCondition) {
+
+                            if (this.boolReverse && this.numberCountNow > this.numberCountFinish) { this.numberCountNow--; }
+                            else if (!this.boolReverse && this.numberCountNow < this.numberCountFinish) { this.numberCountNow++; };
+
+                        }
+                        else {
+
+                            if (this.boolReverse && this.numberCountNow < this.numberCountBegin) { this.numberCountNow++; }
+                            else if (!this.boolReverse && this.numberCountNow > this.numberCountBegin) { this.numberCountNow--; };
+
+                        };
+
+
+                    } break;
+                    case classBasicRepeater.name: {
+
+                        if (this.boolCondition) {
+
+                            if (this.boolReverse && this.numberCountNow > this.numberCountFinish) { this.numberCountNow--; }
+                            else if (!this.boolReverse && this.numberCountNow < this.numberCountFinish) { this.numberCountNow++; };
+
+                        };
+
+                    } break;
+
+                };
+
+            },
+            functionConditionalExecute() {
+
+                throw new Error("WW");
+
+            },
+
         };
 
     };
-    // Функция запуска таймера;
-    async functionBegin(
 
-        jectTransmit = {
+    // Функция остановки исполнителя;
+    functionStop() {
 
-
-
-        },
-
-    ) {
-
-        const jectTimer = this;
-
-        await new Promise(async function(functionResolveFinite) {
-
-            jectTimer.functionResolveFinite = functionResolveFinite;
-
-            await jectTimer.functionUpdate();
-
-        });
+        // Очистка интервала;
+        clearInterval(this.jectInterval);
+        // Очитска переменной интервала;
+        this.jectInterval = undefined;
 
     };
-    // Функция обновления интервала;
-    async functionUpdate(
+    // Функция обновления исполнителя;
+    functionUpdate(jectTransmit) {
 
-        jectTransmit = {
+        if (jectTransmit) {
+            
+            jectTransmit.forEach((arrayJectPairNow) => {
 
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            numberSpeedMode: 1,
-
-        },
-
-    ) {
-        
-        const {
-
-            numberSpeed,
-            numberSpeedMode,
-
-        } = jectTransmit;
-
-        this.numberSpeed = (numberSpeed > 0 && numberSpeedMode > 0)
-        ? numberSpeed * numberSpeedMode : (numberSpeed > 0)
-        ? numberSpeed : (numberSpeedMode > 0)
-        ? this.numberSpeed * numberSpeedMode : this.numberSpeed;
-
-        this.intervalExecute = setInterval(() => {
-
-            this.numberIterateNow++;
-
-            this.functionExecute(this.jectParam);
-
-        },this.numberSpeed,this.jectParam);
+                if (this[arrayJectPairNow[0]]) {
+                    
+                    this[arrayJectPairNow[0]] = arrayJectPairNow[1];
+                
+                };
     
-    };
-    // Функция запуска интревала;
-    async functionContinue(
-
-        jectTransmit = {},
-
-    ) {
-        
-        await this.functionBegin();
+            });
     
-    };
+            this.functionStop({});
+            this.functionContinue({});
 
-};
-class classBasicTimerPlot extends classBasicTimer {
-
-    constructor(
-
-        jectTransmit = {
-
-            stringName     : "",
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            functionExecute: function() {},
-
-        },
-        
-    ) {
-
-        super(jectTransmit);
-
-        jectSession.arrayJectTimerPlot.push(this);
+        };
 
     };
+    // Функция продолжения исполнителя;
+    functionContinue() {
 
-};
-class classBasicTimerSession extends classBasicTimer {
+        this.functionStop();
 
-    constructor(
-        
-        jectTransmit = {
+        this.jectInterval = setInterval(() => {
 
-            stringName     : "",
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            functionExecute: function() {},
-
-        },
-        
-    ) {
-
-        super(jectTransmit);
-
-        jectSession.arrayJectTimerSession.push(this);
-
-    };
-
-};
-
-class classBasicTimerFinite extends classBasicTimer {
-
-    constructor(
-
-        jectTransmit = {
-
-            boolSkip       : jectConfigurate.boolSkipTimer,
-            stringName     : "",
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            numberIterate  : jectConfigurate.numberDefaultIterate,
-            functionExecute: function() {},
-
-        },
-
-    ) {
-
-        super(jectTransmit);
-
-        const { numberIterate, boolSkip, } = jectTransmit;
-
-        this.numberIterate    = (numberIterate > 0) ? numberIterate : jectConfigurate.numberDefaultIterate;
-        this.numberIterateNow = (boolSkip) ? this.numberIterate : 1; 
-
-    };
-
-    functionClear() {
-
-        functionArrayRemove({
-
-            arrayJect : jectSession.arrayJectTimerSession,
-            jectRemove: this,
-
-        });
-
-    };
-
-    async functionUpdate(
-
-        jectTransmit = {
-
-            numberSpeed    : this.numberSpeed,
-            numberSpeedMode: 1,
-
-        },
-
-    ) {
-
-        const {
-
-            numberSpeed,
-            numberSpeedMode,
-
-        } = jectTransmit;
-
-        this.numberSpeed = (numberSpeed > 0 && numberSpeedMode > 0)
-        ? numberSpeed * numberSpeedMode : (numberSpeed > 0)
-        ? numberSpeed : (numberSpeedMode > 0)
-        ? this.numberSpeed * numberSpeedMode : this.numberSpeed;
-
-        this.intervalExecute = setInterval(() => {
-
-            this.functionExecute(this.jectParam);
-
-            this.numberIterateNow++;
-
-            if (this.numberIterateNow === this.numberIterate + 1) {
-
-                clearInterval(this.intervalExecute);
-
-                this.functionClear();
-
-                if (this.functionResolveFinite) { this.functionResolveFinite(); }
-
-            };
+            this.jectFunction.functionPermanent.apply(this);
+            this.jectFunction.functionConditionalExecute();
+            this.jectFunction.functionFinish.apply(this);
+            this.jectFunction.functionConditional.apply(this);
+            this.jectFunction.functionCountNowChange.apply(this);
 
         },this.numberSpeed);
 
     };
+    // Функция завершения исполнителя;
+    functionRedefenite() {
 
-};
-class classBasicTimerFinitePlot extends classBasicTimerFinite {
-
-    constructor(
-
-        jectTransmit = {},
-
-    ) {
-
-        super(jectTransmit);
-
-        jectSession.arrayJectTimerPlot.push(this);
+        // Прекращение выполнения исполнителя;
+        this.functionStop();
+        // Удаление исполнителя из каталога исполнения;
+        this.functionDelete();
+        // Потверждение завершения работы исполнителя;
+        this.functionExecuteDone();
+        // Исполнение завершающих функций;  
+        functionArrayFunctionExecute(this.arrayFunctionFinish);
 
     };
+    // Асинхронная функция запуска временного исполнителя;
+    async functionBegin() {
 
-    functionClear() {
+        // Ожидание выполнения функций исполнителем;
+        await new Promise((functionResolve) => {
 
-        functionArrayRemove({
+            // Переопределение функции завершения исполнения для исполнителя;
+            this.functionExecuteDone = functionResolve;
+            // Если исполнитель необходимо пропустить, то он немедленно завершается;
+            if (this.boolSkip) {
 
-            arrayJect : jectSession.arrayJectTimerPlot,
-            jectRemove: this,
+                this.functionRedefenite();
 
-        });
+            }
+            // Иначе, исполнитель продолжает работать в обычном режиме;
+            else {
 
-    };
-
-};
-class classBasicTimerFiniteSession extends classBasicTimerFinite {
-
-    constructor(
-
-        jectTransmit = {
-
-
-
-        },  
-
-    ) {
-
-        super(jectTransmit);
-
-        jectSession.arrayJectTimerSession.push(this);
-
-    };
-
-};
-
-class classBasicTimerConditional extends classBasicTimer {
-
-    constructor(
-
-        jectTransmit = {
-
-            jectParam      : {},
-            stringName     : "",
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            boolСondition  : false,
-            functionExecute: function() {},
-
-        },
-
-    ) {
-        
-        super(jectTransmit);
-
-        const {
-            
-            boolСondition,
-        
-        } = jectTransmit;
-
-        this.boolСondition = boolСondition;
-
-    };
-
-    async functionBegin(
-
-        jectTransmit = {
-
-            boolСondition: false,
-
-        },
-
-    ) {
-
-        const jectTimer = this;
-
-        const {
-
-            boolСondition,
-
-        } = jectTransmit;
-
-        this.boolСondition = boolСondition;
-
-        await new Promise(async function(functionResolveFinite) {
-
-            jectTimer.functionResolveFinite = functionResolveFinite;
-
-            await jectTimer.functionUpdate(jectTransmit);
-
-        });
-
-    };
-    async functionUpdate(
-
-        jectTransmit = {
-
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            boolСondition  : false,
-            numberSpeedMode: 1,
-
-        },
-
-    ) {
-        
-        const {
-
-            numberSpeed,
-            boolСondition,
-            numberSpeedMode,
-
-        } = jectTransmit;
-
-        this.numberSpeed = (numberSpeed > 0 && numberSpeedMode > 0)
-        ? numberSpeed * numberSpeedMode : (numberSpeed > 0)
-        ? numberSpeed : (numberSpeedMode > 0)
-        ? this.numberSpeed * numberSpeedMode : this.numberSpeed;
-
-        this.boolСondition = boolСondition;
-
-        this.intervalExecute = setInterval(() => {
-
-            if (this.boolСondition) {
-
-                this.numberIterateNow++;
-
-                this.functionExecute(this.jectParam);
+                this.functionContinue({});
 
             };
 
-        },this.numberSpeed,this.jectParam);
+        });
+
+    };
+
+};
+
+// Базовые исполнители: таймеры;
+class classBasicTimer extends classBasicExecutorTime {
+
+    static jectTransmit = Object.assign(classBasicExecutorTime.jectTransmit,{});
+
+    constructor (jectTransmit = classBasicTimer.jectTransmit) {
+        
+        super(jectTransmit);
+    
+        this.jectFunction.functionConditionalExecute = () => {
+
+            if (this.numberCountNow === this.numberCountFinish) {
+
+                this.functionExecute();
+
+            };
+
+        };
     
     };
 
 };
 
-class classBasicTimerConditionalRegressive extends classBasicTimerConditional {
+// Базовые исполнители: повторители;
+class classBasicRepeater extends classBasicExecutorTime {
 
-    constructor(
+    static jectTransmit = Object.assign(classBasicExecutorTime.jectTransmit,{
 
-        jectTransmit = {
+        boolReverse: false,
 
-            jectParam      : {},
-            stringName     : "",
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            boolСondition  : false,
-            functionExecute: function() {},
+    });
 
-        },
-
-    ) {
-
+    constructor (jectTransmit = classBasicRepeater.jectTransmit) {
+        
         super(jectTransmit);
 
-    };
+        let {
 
-    async functionUpdate(
-
-        jectTransmit = {
-
-            numberSpeed    : jectConfigurate.numberDefaultSpeedTimer,
-            boolСondition  : false,
-            numberSpeedMode: 1,
-
-        },
-
-    ) {
-        
-        const {
-
-            numberSpeed,
-            boolСondition,
-            numberSpeedMode,
+            boolReverse,
 
         } = jectTransmit;
 
-        this.numberSpeed = (numberSpeed > 0 && numberSpeedMode > 0)
-        ? numberSpeed * numberSpeedMode : (numberSpeed > 0)
-        ? numberSpeed : (numberSpeedMode > 0)
-        ? this.numberSpeed * numberSpeedMode : this.numberSpeed;
+        // Поле, хранящее значение обратного порядка исполнения;
+        this.boolReverse = (boolReverse) ? true : false;
+        // Если активирован реверсивный режим, то происходит перестановка границ счетчика;
+        if (boolReverse) {
 
-        this.boolСondition = boolСondition;
+            this.numberCountNow = this.numberCountFinish;
+            this.numberCountFinish = 1;
 
-        this.intervalExecute = setInterval(() => {
+        };
 
-            if (this.boolСondition) {
+        this.jectFunction.functionConditionalExecute = () => {
 
-                this.numberIterateNow++;
-
-                this.functionExecute(this.jectParam);
-
-            } else {
-
-                if (this.numberIterateNow > 1) {
-                    
-                    --this.numberIterateNow;
+            if (
                 
-                    this.functionExecute(this.jectParam);
+                (this.boolReverse && this.numberCountNow >= this.numberCountFinish) ||
+                (!this.boolReverse && this.numberCountNow <= this.numberCountFinish)
 
-                };
+            ) { this.functionExecute(); };
 
-            };
-
-        },this.numberSpeed,this.jectParam);
+        };
     
     };
 
 };
+
+// Базовые исполнители: накопители;
+class classBasicHoarder extends classBasicRepeater {
+
+    static jectTransmit = Object.assign(classBasicRepeater.jectTransmit,{});
+
+    constructor (jectTransmit = classBasicHoarder.jectTransmit) {
+        
+        super(jectTransmit);
+    
+        this.numberCountBegin = this.numberCountNow;
+
+        this.jectFunction.functionConditionalExecute = () => {
+
+            if (
+
+                (this.boolReverse && this.numberCountNow >= this.numberCountFinish) ||
+                (!this.boolReverse && this.numberCountNow <= this.numberCountFinish)
+                
+            ) { this.functionExecute(); };
+
+        };
+    
+    };
+
+};
+
+// Базовые исполнители: маятники;
+class classBasicTicker extends classBasicHoarder {
+
+    static jectTransmit = Object.assign(classBasicRepeater.jectTransmit,{
+
+        boolDirection: false,
+        numberIterate: NaN,
+
+    });
+
+    constructor (jectTransmit = classBasicTicker.jectTransmit) {
+    
+        super(jectTransmit);
+
+        let {
+
+            boolDirection,
+            numberIterate,
+
+        } = jectTransmit;
+
+        this.boolDirection = (boolDirection ?? true) ? true : false;
+        this.numberIterate = numberIterate;
+
+        this.jectFunction.functionConditionalExecute = () => { this.functionExecute(); };
+
+    };
+
+};
+
+// Базовые исполнители: шагоходы;
+class classBasicWalker extends classBasicExecutorTime {
+
+    static jectTransmit = Object.assign(classBasicExecutorTime.jectTransmit,{
+
+        boolSmooth: false,
+        boolDefenite: false,
+        arrayNumberPoint: [[NaN],[NaN,NaN]],
+        numberIndexPointNow: NaN,
+        arrayNumberPointNow: [NaN,NaN],
+        
+    });
+
+    constructor (jectTransmit = classBasicWalker.jectTransmit) {
+
+        super(jectTransmit);
+
+        let {
+
+            boolSmooth,
+            boolDefenite,
+            arrayNumberPoint,
+            numberIndexPointNow,
+            arrayNumberPointNow,
+
+        } = jectTransmit;
+
+        // Поле, хранящее значение плавности шагохода;
+        this.boolSmooth = (boolSmooth) ? true : false;
+        // Поле, хранящее значение конечности шагохода;
+        this.boolDefenite = (boolDefenite) ? true : false;
+        // Поле, хранящее координаты точек, необходимых к обходу;
+        this.arrayNumberPoint = arrayNumberPoint ?? [];
+        // Поле, хранящее координату текущей точки;
+        this.arrayNumberPointNow = (arrayNumberPoint.includes(arrayNumberPointNow)) ? arrayNumberPointNow.slice() : (arrayNumberPoint[numberIndexPointNow]) ? arrayNumberPoint[numberIndexPointNow].slice() : arrayNumberPoint[0].slice();
+        // Поле, хранящее координату предыдущей точки;
+        this.arrayNumberPointLast = this.arrayNumberPointNow;
+        // Поле, хранящее координату следующей точки;
+        this.arrayNumberPointNext = functionArrayNext({ arrayNow: this.arrayNumberPoint, jectNow: this.arrayNumberPointNow });
+        // Поле, хранящее смещения по координатам;
+        this.arrayNumberPointBias = new Array(this.arrayNumberPoint[0].length).fill(0);
+
+        this.jectFunction.functionConditionalExecute = () => { this.functionExecute(); };
+
+        this.arrayFunctionPermanent.push(() => {
+            
+            this.arrayNumberPointNow.forEach((numberCordNow,numberIndexNow) => {
+
+                const numberPathLess = (this.boolSmooth) ? this.arrayNumberPointNow.reduce((numberPathLast,numberPathNow,numberIndexLast) => {
+
+                    let numberPath = functionNumberCalculatePath(
+
+                        this.arrayNumberPointNow[numberIndexLast],
+                        this.arrayNumberPointNext[numberIndexLast]
+
+                    );
+
+                    if (!numberPathLast) { numberPathNow = numberPath; }
+                    else if (numberPathLast > numberPath) { numberPathNow = numberPath; }
+                    else { numberPathNow = numberPathLast; };
+
+                    return numberPathNow;
+
+                },undefined) : 1;
+
+                this.arrayNumberPointBias.forEach((numberBiasNow,numberIndexNow) => {
+
+                    const numberPathNow = functionNumberCalculatePath(this.arrayNumberPointNow[numberIndexNow],this.arrayNumberPointNext[numberIndexNow]);
+
+                    if (
+
+                        (this.arrayNumberPointBias[numberIndexNow] > 0 && this.arrayNumberPointNow[numberIndexNow] + this.arrayNumberPointBias[numberIndexNow] >= this.arrayNumberPointNext[numberIndexNow]) ||
+                        (this.arrayNumberPointBias[numberIndexNow] < 0 && this.arrayNumberPointNow[numberIndexNow] + this.arrayNumberPointBias[numberIndexNow] <= this.arrayNumberPointNext[numberIndexNow])
+
+                    ) {
+
+                        this.arrayNumberPointBias[numberIndexNow] = 0;
+                        this.arrayNumberPointNow[numberIndexNow] = this.arrayNumberPointNext[numberIndexNow];
+                    
+                    }
+                    else if (this.arrayNumberPointNow[numberIndexNow] < this.arrayNumberPointNext[numberIndexNow]) {
+
+                        this.arrayNumberPointBias[numberIndexNow] = 1;
+
+                    }
+                    else if (this.arrayNumberPointNow[numberIndexNow] > this.arrayNumberPointNext[numberIndexNow]) {
+
+                        this.arrayNumberPointBias[numberIndexNow] = -1;
+
+                    }
+                    else {
+
+                        this.arrayNumberPointBias[numberIndexNow] = 0;
+
+                        this.jectFunction.functionFinish.apply(this);
+
+                    };
+
+                    if (this.arrayNumberPointBias[numberIndexNow] && this.boolSmooth && numberPathNow > numberPathLess) {
+
+                        this.arrayNumberPointBias[numberIndexNow] *= (numberPathLess) ? (numberPathNow / numberPathLess) : 1;
+
+                    };
+
+                });
+
+                this.arrayNumberPointNow[numberIndexNow] += this.arrayNumberPointBias[numberIndexNow];
+
+            });
+        
+        });
+        
+    };
+
+};
+
 
 functionResolveConnect();

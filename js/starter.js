@@ -1,32 +1,26 @@
-(async function() {
+(async function () {
 
-    // jectSession.jectControllerState.functionStateAdd([
+    let t = new classBasicWalker({
+        
+        functionExecute: function() {
 
-    //     functionArrayGetByName({
+            console.clear();
+            console.log(this.arrayNumberPointNow);
+            console.log(this.arrayNumberPointNext);
+            console.log(this.arrayNumberPointBias);
 
-    //         stringName: "introdaction",
-    //         arrayJectParse: jectSession.arrayJectStateClaster,
-
-    //     }),
-
-    // ]);
+        },
+        boolSmooth: true,
+        numberSpeed: 250,
+        arrayNumberPoint: [[0,0],[5,1],[2,-2],[7,8]],
     
-    // await jectSession.jectControllerState.functionStateSequenceRedefinite();
-
-    let timer = new classBasicTimerConditionalRegressive({
-
-        numberSpeed    : 100,
-        stringName     : "timer_test",
-        boolСondition  : true,
-        functionExecute: function() { console.log(this.numberIterateNow); },
-
     });
-    
-    timer.functionBegin({ boolСondition: true, });
 
-    setTimeout(() => { timer.functionUpdate({ boolСondition: false, }); },3000);
+    console.log(t);
 
-    setTimeout(() => { timer.functionUpdate({ boolСondition: true, }); },5000);
+    await t.functionBegin();
+
+    console.log("done");
 
 })();
 

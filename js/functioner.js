@@ -1,7 +1,82 @@
 {
     { // Log;
 
-        
+        // Error;
+
+        // Функция форматирвоания и получения строки ошибки с указанием локации, текста и подсказки;
+        function functionErrorLog(
+
+            jectTrasnmit = {
+
+                stringText: "",
+                stringPrompt: "",
+                stringLocation: "",
+
+            },
+
+        ) {
+
+            let {
+
+                stringText,
+                stringPrompt,
+                stringLocation,
+
+            } = jectTrasnmit;
+
+            if (stringPrompt) {
+                
+                stringPrompt = `Подсказка: ${stringPrompt};`;
+            
+            } else {
+
+                stringPrompt = "";
+
+            };
+
+            return `\n\n${stringLocation} - ${stringText};\n\n${stringPrompt}\n-----`;
+
+        };
+        function functionErrorLogPreset(
+
+            jectTransmit = {
+
+                stringLocation: "",
+
+            },
+
+        ) {
+
+            let {
+
+                stringLocation,
+
+            } = jectTransmit;
+
+            return function(
+
+                jectTransmit = {
+
+                    stringText: "",
+                    stringPrompt: "",
+                    stringLocation: "",
+
+                },
+
+            ) {
+
+                if (jectTransmit.stringLocation) { stringLocation = jectTransmit.stringLocation; };
+
+                jectTransmit.stringLocation = stringLocation;
+
+                return functionErrorLog(jectTransmit);
+
+            };
+
+        };
+        function functionErrorLogTransmitClassCheck(jectCheck,classCheck = class classCheck{}) {
+
+        };
 
     }
     { // Dom;
@@ -29,13 +104,13 @@
 
             return functionStringReplace({
 
-                stringParse       : stringTextNow,
-                stringExcerpt     : `<span.*?>.*?</span>`,
-                boolReplaceAll    : true,
+                stringParse: stringTextNow,
+                stringExcerpt: `<span.*?>.*?</span>`,
+                boolReplaceAll: true,
                 arrayStringReplace: functionStringExtract({
 
-                    stringParse   : stringTextNow,
-                    stringExcerpt : `<span.*?>(?<stringResult>.*?)</span>`,
+                    stringParse: stringTextNow,
+                    stringExcerpt: `<span.*?>(?<stringResult>.*?)</span>`,
                     boolExtractAll: true,
 
                 }),
@@ -64,20 +139,22 @@
 
             let domPText = domElement?.domPText;
 
-            if (!domPText || !(domPText instanceof HTMLParagraphElement)) { return; };
+            if (typeof(stringText) !== "string") { stringText = String(stringText); };
+            if (!domPText || !(domPText instanceof HTMLParagraphElement)) { console.log("WW"); return; };
 
-            domPText.innerHTML = `${stringText.slice(0,-1)}<span class="spanEnd">${stringText.slice(-1)}</span>`;
+            domPText.innerHTML = `${stringText.slice(0, -1)}<span class="spanEnd">${stringText.slice(-1)}</span>`;
 
         };
+        // Функция для создания html элемента, задания его id, class-а, место размещения и каталога сохранения;
         function functionDomElementCreate(jectTransmit = {
 
-            jectParamStyle          : {},
-            domElementOver          : document.createElement("sr"),
-            boolText                : false,
-            stringParms             : "",
-            stringElementId         : "",
-            stringElementType       : "",
-            stringElementClass      : "",
+            jectParamStyle: {},
+            domElementOver: document.createElement("sr"),
+            boolText: false,
+            stringParms: "",
+            stringElementId: "",
+            stringElementType: "",
+            stringElementClass: "",
             stringElementAffiliation: "",
 
         }) {
@@ -95,62 +172,62 @@
 
             } = jectTransmit;
 
-            let domPText      = document.createElement("p");
-            let domElement    = document.createElement("sr");
-            let stylePText    = domPText.style;
-            let styleElement  = document.createElement("style");
+            let domPText = document.createElement("p");
+            let domElement = document.createElement("sr");
+            let stylePText = domPText.style;
+            let styleElement = document.createElement("style");
 
-            if (typeof(stringParms) === "string") {
+            if (typeof (stringParms) === "string") {
 
                 const arrayStringParms = stringParms.split(" ");
 
                 arrayStringParms[2] = functionStringExtract({
 
-                    stringParse  : arrayStringParms[2],
+                    stringParse: arrayStringParms[2],
                     regexpExcerpt: /\[(?<stringResult>[\w]*)\]/g,
 
                 });
-                
-                [domElement,styleElement] = functionDomElementCreate({
 
-                    boolText                : boolText,
-                    domElementOver          : (document.getElementById(arrayStringParms[3]))
-                    ? document.getElementById(arrayStringParms[3]) : (arrayStringParms[3] === "body")
-                    ? document.body : (arrayStringParms[3] === "head")
-                    ? document.head : undefined,
-                    stringElementId         : arrayStringParms[1],
-                    stringElementType       : arrayStringParms[0],
-                    stringElementClass      : (arrayStringParms[2] && arrayStringParms[2] !== "x")
-                    ? arrayStringParms[2] : undefined,
-                    stringElementAffiliation: (["session","plot"].includes(arrayStringParms[4])) ? arrayStringParms[4] : undefined,
+                [domElement, styleElement] = functionDomElementCreate({
+
+                    boolText: boolText,
+                    domElementOver: (document.getElementById(arrayStringParms[3]))
+                        ? document.getElementById(arrayStringParms[3]) : (arrayStringParms[3] === "body")
+                            ? document.body : (arrayStringParms[3] === "head")
+                                ? document.head : undefined,
+                    stringElementId: arrayStringParms[1],
+                    stringElementType: arrayStringParms[0],
+                    stringElementClass: (arrayStringParms[2] && arrayStringParms[2] !== "x")
+                        ? arrayStringParms[2] : undefined,
+                    stringElementAffiliation: (["session", "plot"].includes(arrayStringParms[4])) ? arrayStringParms[4] : undefined,
 
                 });
 
             } else if (!stringParms) {
 
-                domElement   = document.createElement(stringElementType);
+                domElement = document.createElement(stringElementType);
                 styleElement = domElement.style;
 
                 if (domElementOver) {
-                    
+
                     domElementOver.appendChild(domElement);
-                
+
                 };
                 if (stringElementId) {
-                    
-                    domElement.id  = stringElementId;
-                
+
+                    domElement.id = stringElementId;
+
                 };
                 if (stringElementClass) {
-                    
+
                     domElement.className = stringElementClass;
-                
+
                 };
                 if (stringElementAffiliation) {
 
-                    const domStyle        = jectSession[`domStyle${stringElementAffiliation[0].toUpperCase() + stringElementAffiliation.substring(1)}`];
+                    const domStyle = jectSession[`domStyle${stringElementAffiliation[0].toUpperCase() + stringElementAffiliation.substring(1)}`];
                     const arrayDomElement = jectSession[`arrayDomElement${stringElementAffiliation[0].toUpperCase() + stringElementAffiliation.substring(1)}`];
-                    
+
                     if (domStyle && !domStyle.innerHTML.includes(`#${stringElementId}`)) { domStyle.innerHTML += `#${stringElementId}{}`; }
                     if (arrayDomElement) { arrayDomElement.push(domElement); };
 
@@ -160,34 +237,34 @@
                 if (boolText) {
 
                     domElement.domPText = domPText;
-    
+
                     if (stringElementId) {
-                        
+
                         domPText.id = `${stringElementId}P`;
-                    
+
                     };
 
                     domPText.className = jectConfigurate.stringDefaultStyleClassText;
-    
+
                     domElement.appendChild(domPText);
-    
+
                 };
 
             };
 
-            if (typeof(jectParamStyle) === "object") {
-                    
+            if (typeof (jectParamStyle) === "object") {
+
                 functionStylePropertySet({
 
-                    domElement    : domElement,
-                    stringExcerpt : ``,
+                    domElement: domElement,
+                    stringExcerpt: ``,
                     jectParamStyle: jectParamStyle,
 
                 });
-                
+
             };
 
-            return [domElement,styleElement,domPText,stylePText];
+            return [domElement, styleElement, domPText, stylePText];
 
         };
         function functionDomElementCreatePreset(jectTransmit = {
@@ -198,7 +275,7 @@
 
             const { domElementOver } = jectTransmit;
 
-            return function(strokeElementType = "",strokeElementId = "",strokeElementClass = "") {
+            return function (strokeElementType = "", strokeElementId = "", strokeElementClass = "") {
 
                 return functionDomElementCreate({
 
@@ -216,7 +293,7 @@
 
             jectTransmit = {
 
-                domElement   : document.createElement("sr"),
+                domElement: document.createElement("sr"),
                 boolStyleSave: jectConfigurate.boolSaveDomElementStyle,
 
             },
@@ -227,25 +304,30 @@
 
                 domElement,
                 boolStyleSave,
-            
+
             } = jectTransmit;
 
-            const domStyle          = functionStyleGetByElement({ domElement: domElement, });
+            const domStyle = functionStyleGetByElement({ domElement: domElement, });
             const stringAffiliation = domStyle.id.substring(5).toLocaleLowerCase();
 
             domElement.parentElement.removeChild(domElement);
 
-            if (!boolStyleSave) { domStyle.innerHTML = domStyle.innerHTML.replace(new RegExp(`${domElement.id} *{[^}]*}`),``); };
+            if (!boolStyleSave) { domStyle.innerHTML = domStyle.innerHTML.replace(new RegExp(`${domElement.id} *{[^}]*}`), ``); };
 
-            switch(stringAffiliation) {
+            switch (stringAffiliation) {
 
-                case "plot"   : { functionArrayRemove({ jectRemove: domElement, arrayJect: jectSession.arrayDomElementPlot }); }; break;
-                case "session": { functionArrayRemove({ jectRemove: domElement, arrayJect: jectSession.arrayDomElementSession }); }; break; 
+                case "plot": { functionArrayRemove({ jectRemove: domElement, arrayJect: jectSession.arrayDomElementPlot }); }; break;
+                case "session": { functionArrayRemove({ jectRemove: domElement, arrayJect: jectSession.arrayDomElementSession }); }; break;
 
             };
 
         };
+
+    }
+    { // Error;
+
         
+
     }
     { // Style;
 
@@ -261,17 +343,17 @@
 
             let { stringProperty } = jectTransmit;
 
-            if (typeof(stringProperty) !== "string") {
-                
+            if (typeof (stringProperty) !== "string") {
+
                 throw new Error(`functionStylePropertyProcess.jectTransmit.stringProperty - строка свойства не является строкой. stringProperty = ${stringProperty};`);
-            
+
             };
             if (!stringProperty) {
 
                 throw new Error(`functionStylePropertyProcess.jectTransmit.stringProperty - строка свойства пустая. stringProperty = "";`);
 
             };
-            
+
             for (let strokeCount = "A".charCodeAt(); strokeCount <= "Z".charCodeAt(); strokeCount++) {
 
                 const stringSymbol = String.fromCharCode(strokeCount);
@@ -280,16 +362,16 @@
 
                     stringProperty = functionStringReplace({
 
-                        stringParse   : stringProperty,
-                        stringExcerpt : `^${stringSymbol}`,
-                        stringReplace : `${stringSymbol.toLowerCase()}`,
+                        stringParse: stringProperty,
+                        stringExcerpt: `^${stringSymbol}`,
+                        stringReplace: `${stringSymbol.toLowerCase()}`,
                         stringReplaced: stringSymbol,
 
                     });
                     stringProperty = functionStringReplace({
 
-                        stringParse   : stringProperty,
-                        stringReplace : `-${stringSymbol.toLowerCase()}`,
+                        stringParse: stringProperty,
+                        stringReplace: `-${stringSymbol.toLowerCase()}`,
                         stringReplaced: stringSymbol,
                         boolReplaceAll: true,
 
@@ -298,7 +380,7 @@
                 };
 
             };
-            
+
             return stringProperty ?? "";
 
         };
@@ -332,10 +414,10 @@
 
             jectTransmit = {
 
-                domElement   : document.createElement("sr"),
-                styleElement : document.createElement("style"),
+                domElement: document.createElement("sr"),
                 stringElement: "",
-                
+                domStyleElement: document.createElement("style"),
+
             },
 
         ) {
@@ -343,17 +425,17 @@
             let {
 
                 domElement,
-                styleElement,
                 stringElement,
+                domStyleElement,
 
             } = jectTransmit;
 
-            return function(
+            return function (
 
                 jectTransmit = {
 
-                    stringValue   : "",
-                    stringExcerpt : "",
+                    stringValue: "",
+                    stringExcerpt: "",
                     stringProperty: "",
                     jectParamStyle: document.createElement("sr").style,
 
@@ -361,9 +443,10 @@
 
             ) {
 
-                jectTransmit.domElement    = domElement;
-                jectTransmit.styleElement  = styleElement;
-                jectTransmit.stringElement = stringElement; 
+                jectTransmit.domElement = domElement;
+                jectTransmit.domStyleElement = domStyleElement;
+
+                if (stringElement) { jectTransmit.stringElement = stringElement; };
 
                 functionStylePropertySet(jectTransmit);
 
@@ -374,13 +457,13 @@
         function functionStylePropertySet(
 
             jectTransmit = {
-                
-                domElement     : document.createElement("sr"),
-                stringValue    : "",
-                stringElement  : "",
-                stringExcerpt  : "",
-                stringProperty : "",
-                jectParamStyle : document.createElement("sr").style,
+
+                domElement: document.createElement("sr"),
+                stringValue: "",
+                stringElement: "",
+                stringExcerpt: "",
+                stringProperty: "",
+                jectParamStyle: document.createElement("sr").style,
                 domStyleElement: document.createElement("style"),
 
             },
@@ -388,12 +471,12 @@
         ) {
 
             const { domElement, stringElement } = jectTransmit;
-            
+
             let arrayPair = [];
 
             if (domElement) {
 
-                jectTransmit.domStyleElement  = functionStyleGetByElement({ domElement: domElement, });
+                jectTransmit.domStyleElement = functionStyleGetByElement({ domElement: domElement, });
                 jectTransmit.stringExcerpt = `#${domElement.id}`;
 
             }
@@ -402,25 +485,25 @@
                 jectTransmit.stringExcerpt = stringElement;
 
             };
-            
+
             let {
-                
+
                 stringValue,
                 domStyleElement,
                 stringExcerpt,
                 stringProperty,
                 jectParamStyle,
-            
+
             } = jectTransmit;
 
             if (!domStyleElement) { throw new Error(); };
             if (jectParamStyle) { arrayPair = Object.entries(jectParamStyle); };
-            if (stringProperty && stringValue) { arrayPair = [[stringProperty,stringValue]]; };
+            if (stringProperty && stringValue) { arrayPair = [[stringProperty, stringValue]]; };
 
             let stringStyle = functionStringExtractMany({
 
-                stringParse       : domStyleElement.innerHTML,
-                boolExtractAll    : false,
+                stringParse: domStyleElement.innerHTML,
+                boolExtractAll: false,
                 arrayStringExcerpt: [
 
                     `^(?<stringResult>${stringExcerpt}.*?})`,
@@ -432,35 +515,35 @@
 
             for (const arrayPairNow of arrayPair) {
 
-                let stringReplace  = "";
+                let stringReplace = "";
                 let stringReplaced = "";
 
                 if (stringStyle.includes(arrayPairNow[0])) {
 
-                    stringExcerpt  = `${stringExcerpt}.*?${arrayPairNow[0]}:.*?;`;
-                    stringReplace  = `${arrayPairNow[0]}:${arrayPairNow[1]};`;
+                    stringExcerpt = `${stringExcerpt}.*?${arrayPairNow[0]}:.*?;`;
+                    stringReplace = `${arrayPairNow[0]}:${arrayPairNow[1]};`;
                     stringReplaced = undefined;
 
                     functionStylePropertyReplace({
 
-                        stringValue    : arrayPairNow[1],
-                        regexpExcerpt  : new RegExp(stringExcerpt),
-                        stringProperty : arrayPairNow[0],
+                        stringValue: arrayPairNow[1],
+                        regexpExcerpt: new RegExp(stringExcerpt),
+                        stringProperty: arrayPairNow[0],
                         domStyleElement: domStyleElement,
 
                     });
-    
+
                 } else {
-    
+
                     functionStylePropertyAdd({
 
-                        stringValue    : arrayPairNow[1],
-                        regexpExcerpt  : new RegExp(`${stringExcerpt}{.*?}`),
-                        stringProperty : arrayPairNow[0],
+                        stringValue: arrayPairNow[1],
+                        regexpExcerpt: new RegExp(`${stringExcerpt}{.*?}`),
+                        stringProperty: arrayPairNow[0],
                         domStyleElement: domStyleElement,
 
                     });
-                    
+
                 };
 
             };
@@ -471,15 +554,15 @@
 
             jectTransmit = {
 
-                stringValue    : "",
-                regexpExcerpt  : /./,
-                stringProperty : "",
+                stringValue: "",
+                regexpExcerpt: /./,
+                stringProperty: "",
                 domStyleElement: document.createElement("style"),
 
             },
 
         ) {
-            
+
             let {
 
                 stringValue,
@@ -497,14 +580,14 @@
             stringProperty = functionStylePropertyProcess({ stringProperty: stringProperty });
             // Проверка найденного участка строки на наличие;
             if (stringParse) {
-                
+
                 domStyleElement.innerHTML = domStyleElement.innerHTML.replace(
-                
+
                     stringParse,
-                    stringParse.replace("}",`${stringProperty}:${stringValue};}`)
-                
+                    stringParse.replace("}", `${stringProperty}:${stringValue};}`)
+
                 );
-            
+
             };
 
         };
@@ -512,13 +595,13 @@
         function functionStylePropertyGet(
 
             jectTransmit = {
-                
-                domStyle      : document.createElement("style"),
-                domElement    : document.createElement("sr"),
-                stringStyle   : "",
-                stringExcerpt : "",
+
+                domStyle: document.createElement("style"),
+                domElement: document.createElement("sr"),
+                stringStyle: "",
+                stringExcerpt: "",
                 stringProperty: "",
-                
+
             },
 
         ) {
@@ -535,24 +618,24 @@
 
             if (!stringExcerpt) { stringExcerpt = `#${domElement.id}`; };
             if (!domStyle && !stringStyle && domElement) { stringStyle = functionStyleGetByElement({ domElement: domElement }).innerHTML; };
-            
+
             return functionStringExtract({
 
-                stringParse  : stringStyle,
+                stringParse: stringStyle,
                 stringExcerpt: `${stringExcerpt}{[^}]*${stringProperty}:(?<stringResult>[^;]*);`,
 
             });
 
         };
-        // Функция замены значения свойства у указанного стиля;
-        function functionStylePropertyReplace(
+        // Функция для удаления свойства у указанного стиля;
+        function functionStylePropertyRemove(
 
             jectTransmit = {
 
-                stringValue    : "",
-                regexpExcerpt  : /./,
-                stringProperty : "",
-                domStyleElement: document.createElement("sr"),
+                domElement: document.createElement("sr"),
+                regexpExcerpt: /./,
+                stringProperty: "",
+                domStyleElement: document.createElement("style"),
 
             },
 
@@ -560,13 +643,15 @@
 
             let {
 
-                stringValue,
+                domElement,
                 regexpExcerpt,
                 stringProperty,
                 domStyleElement,
-
+                
             } = jectTransmit;
 
+            // Нахождение стиля в случае отсутствия;
+            if (domElement && !domStyleElement) { domStyleElement = functionStyleGetByElement({ domElement: domElement }); };
             // Переменная с нужной частью строки;
             const stringParse = domStyleElement.innerHTML.match(regexpExcerpt)[0];
             // Проверка существования ключа;
@@ -575,27 +660,273 @@
             stringProperty = functionStylePropertyProcess({ stringProperty: stringProperty });
             // Проверка найденного участка строки на наличие;
             if (stringParse) {
-                
+
                 domStyleElement.innerHTML = functionStringReplace({
-    
-                    stringParse   : domStyleElement.innerHTML,
-                    regexpExcerpt : regexpExcerpt,
-                    stringReplace : `${stringProperty}:${stringValue};`,
+
+                    stringParse: domStyleElement.innerHTML,
+                    regexpExcerpt: regexpExcerpt,
+                    stringReplace: "",
                     stringReplaced: functionStringExtract({
 
-                        stringParse  : stringParse,
+                        stringParse: stringParse,
                         stringExcerpt: `(?<stringResult>${stringProperty}:.*?;)`,
 
                     }),
 
                 });
-            
+
+            };
+
+        };
+        // Функция замены значения свойства у указанного стиля;
+        function functionStylePropertyReplace(
+
+            jectTransmit = {
+
+                domElement: document.createElement("sr"),
+                stringValue: "",
+                regexpExcerpt: /./,
+                stringProperty: "",
+                domStyleElement: document.createElement("sr"),
+
+            },
+
+        ) {
+
+            let {
+
+                domElement,
+                stringValue,
+                regexpExcerpt,
+                stringProperty,
+                domStyleElement,
+
+            } = jectTransmit;
+
+            // Нахождение стиля в случае отсутствия;
+            if (domElement && !domStyleElement) { domStyleElement = functionStyleGetByElement({ domElement: domElement }); };
+            // Переменная с нужной частью строки;
+            const stringParse = domStyleElement.innerHTML.match(regexpExcerpt)[0];
+            // Проверка существования ключа;
+            if (!Object.keys(document.createElement("sr").style).includes(stringProperty)) { return; };
+            // Форматирование ключа;
+            stringProperty = functionStylePropertyProcess({ stringProperty: stringProperty });
+            // Проверка найденного участка строки на наличие;
+            if (stringParse) {
+
+                domStyleElement.innerHTML = functionStringReplace({
+
+                    stringParse: domStyleElement.innerHTML,
+                    regexpExcerpt: regexpExcerpt,
+                    stringReplace: `${stringProperty}:${stringValue};`,
+                    stringReplaced: functionStringExtract({
+
+                        stringParse: stringParse,
+                        stringExcerpt: `(?<stringResult>${stringProperty}:.*?;)`,
+
+                    }),
+
+                });
+
             };
 
         };
 
     }
     { // Array;
+
+        // Функция получения предыдущего элемента массива относительно указанного элемента или индекса;
+        function functionArrayLast(
+
+            jectTransmit = {
+
+                jectNow,
+                arrayNow: [],
+                numberIndexNow: NaN,
+
+            },
+
+        ) {
+
+            let {
+
+                jectNow,
+                arrayNow,
+                numberIndexNow,
+
+            } = jectTransmit;
+
+            let jectResult;
+
+            // Найти индекс искомого элемента в массиве;
+            if (jectNow || jectNow === 0) { numberIndexNow = arrayNow.indexOf(jectNow); };
+            // Если текущий индекс меньше первого индекса;
+            if (numberIndexNow < 0) { numberIndexNow = 0; };
+            // Если текущий индекс превышает размер массива;
+            if (numberIndexNow >= arrayNow.length) { numberIndexNow = arrayNow.length - 1; };
+            // Если предыдущий индекс меньше первого, то выбирается последний элемент массива, иначе выбирается по текущему элементу;
+            if (numberIndexNow - 1 === -1) { jectResult = arrayNow.at(-1); } else { jectResult = arrayNow[numberIndexNow - 1]; };
+            // Возврат найденного значения;
+            return jectResult;
+
+        };
+        // Функция получения следующего элемента массива относительно указанного элемента или индекса;
+        function functionArrayNext(
+
+            jectTransmit = {
+
+                jectNow,
+                arrayNow: [],
+                numberIndexNow: NaN,
+
+            },
+
+        ) {
+
+            let {
+
+                jectNow,
+                arrayNow,
+                numberIndexNow,
+
+            } = jectTransmit;
+
+            let jectResult;
+
+            // Найти индекс искомого элемента в массиве;
+            if (jectNow || jectNow === 0) { numberIndexNow = arrayNow.indexOf(jectNow); };
+            // Если текущий индекс меньше первого индекса;
+            if (numberIndexNow < 0) { numberIndexNow = 0; };
+            // Если текущий индекс превышает размер массива;
+            if (numberIndexNow >= arrayNow.length) { numberIndexNow = arrayNow.length - 1; };
+            // Если следующий индекс превышает последний индекс массива, то выбирается первый элемент массива, иначе выбирается по текущему элементу;
+            if (numberIndexNow + 1 === arrayNow.length) { jectResult = arrayNow[0]; } else { jectResult = arrayNow[numberIndexNow + 1]; };
+            // Возврат найденного значения;
+            return jectResult;
+
+        };
+        // Функция сравнения двух массивов координат (точек) на идентичность;
+        function functionArrayPointEquals(
+
+            arrayPointOne = [],
+            arrayPointTwo = [],
+
+        ) {
+
+            let boolResult = false;
+
+            if (
+                
+                (arrayPointOne.length && arrayPointTwo.length) &&
+                arrayPointOne.length === arrayPointTwo.length
+                
+            ) { boolResult = arrayPointOne.every((numberCordNow,numberIndexNow) => { return numberCordNow === arrayPointTwo[numberIndexNow]; }); };
+
+            return boolResult;
+
+        };
+        // Функция фильтрации элементов массива по набору правил;
+        function functionArrayFilter(jectTransmit = {
+
+            arrayJect: [],
+            classNeed: class Class{},
+            boolUnique: false,
+            jectFilterValue,
+            jectFilterProperty,
+            arrayJectFilterValue: [],
+            arrayJectFilterProperty: [],
+            strokeFilterPropertyName: "",
+            arrayStrokeFilterPropertyName: [],
+
+        }) {
+
+            let {
+
+                classNeed,
+                arrayJect,
+                boolUnique,
+                jectFilterValue,
+                jectFilterProperty,
+                arrayJectFilterValue,
+                arrayJectFilterProperty,
+                strokeFilterPropertyName,
+                arrayStrokeFilterPropertyName,
+
+            } = jectTransmit;
+
+            jectFilterValue = jectFilterValue ?? undefined;
+            arrayJectFilterProperty = arrayJectFilterProperty ?? [];
+            arrayStrokeFilterPropertyName = arrayStrokeFilterPropertyName ?? [];
+
+            if (boolUnique) {
+
+                return Array.from(new Set(arrayJect));
+
+            }
+            if (classNeed) {
+
+                return arrayJect.filter((jectNow) => {
+                    
+                    return jectNow instanceof classNeed;
+                
+                });
+
+            }
+            if (jectFilterValue) {
+
+                arrayJectFilterValue = [jectFilterValue];
+
+            }
+            if (jectFilterProperty) {
+
+                arrayJectFilterProperty = [jectFilterProperty];
+
+            }
+            if (strokeFilterPropertyName) {
+
+                arrayStrokeFilterPropertyName = [strokeFilterPropertyName];
+
+            }
+
+            if (!(arrayJect instanceof Array)) { return; }
+            if (!(arrayJectFilterValue instanceof Array)) { return; }
+            if (!(arrayJectFilterProperty instanceof Array)) { return; }
+            if (!(arrayStrokeFilterPropertyName instanceof Array)) { return; }
+
+            return arrayJect.filter((jectNow, numberIndexNow) => {
+
+                if (arrayJectFilterValue.includes(jectNow)) { return false; };
+
+                if (typeof (jectNow) === "object") {
+
+                    for (let strokeProperty of arrayJectFilterProperty) {
+
+                        if (Object.values(jectNow).includes(strokeProperty)) { return false; }
+
+                    };
+                    for (let strokePropertyName of arrayStrokeFilterPropertyName) {
+
+                        if (Object.keys(jectNow).includes(strokePropertyName)) { return false; }
+
+                    };
+
+                };
+
+                return true;
+
+            });
+
+        };
+        // Функция выполнения всех функций в массиве;
+        function functionArrayFunctionExecute(arrayNow = [new Function()]) {
+
+            for (const functionNow of arrayNow) {
+                
+                functionNow.apply(this);
+            
+            };
+
+        };
 
         function functionArraySwap(jectTransmit = {
 
@@ -625,13 +956,13 @@
             if (numberIndexOne && numberIndexTwo) {
 
                 if (
-                    
+
                     numberIndexOne >= 0 &&
                     numberIndexTwo >= 0 &&
-                    typeof(numberIndexOne) === "number" &&
-                    typeof(numberIndexTwo) === "number"
-                    
-                ) { arrayDPair = [[numberIndexOne,numberIndexTwo]]; }
+                    typeof (numberIndexOne) === "number" &&
+                    typeof (numberIndexTwo) === "number"
+
+                ) { arrayDPair = [[numberIndexOne, numberIndexTwo]]; }
 
             }
 
@@ -641,93 +972,13 @@
             arrayDPair = arrayDPair.filter((arrayPairNow) => {
 
                 if (!(arrayPairNow instanceof Array)) { return false; }
-                if (typeof(arrayPairNow[0]) !== "number") { return false; }
-                if (typeof(arrayPairNow[1]) !== "number") { return false; }
+                if (typeof (arrayPairNow[0]) !== "number") { return false; }
+                if (typeof (arrayPairNow[1]) !== "number") { return false; }
 
                 const jectElement = arrayJect[arrayPairNow[0]];
 
                 arrayJect[arrayPairNow[0]] = arrayJect[arrayPairNow[1]];
                 arrayJect[arrayPairNow[1]] = jectElement;
-
-            });
-
-        };
-        function functionArrayFilter(jectTransmit = {
-
-            arrayJect: [],
-            boolUnique: false,
-            jectFilterValue,
-            jectFilterProperty,
-            arrayJectFilterValue: [],
-            arrayJectFilterProperty: [],
-            strokeFilterPropertyName: "",
-            arrayStrokeFilterPropertyName: [],
-
-        }) {
-
-            let {
-
-                arrayJect,
-                boolUnique,
-                jectFilterValue,
-                jectFilterProperty,
-                arrayJectFilterValue,
-                arrayJectFilterProperty,
-                strokeFilterPropertyName,
-                arrayStrokeFilterPropertyName,
-
-            } = jectTransmit;
-
-            jectFilterValue = jectFilterValue ?? undefined;
-            arrayJectFilterProperty = arrayJectFilterProperty ?? [];
-            arrayStrokeFilterPropertyName = arrayStrokeFilterPropertyName ?? [];
-
-            if (boolUnique) {
-
-                return Array.from(new Set(arrayJect));
-
-            }
-            if (jectFilterValue) {
-
-                arrayJectFilterValue = [jectFilterValue];
-
-            }
-            if (jectFilterProperty) {
-
-                arrayJectFilterProperty = [jectFilterProperty];
-
-            }
-            if (strokeFilterPropertyName) {
-
-                arrayStrokeFilterPropertyName = [strokeFilterPropertyName];
-
-            }
-
-            if (!(arrayJect instanceof Array)) { return; }
-            if (!(arrayJectFilterValue instanceof Array)) { return; }
-            if (!(arrayJectFilterProperty instanceof Array)) { return; }
-            if (!(arrayStrokeFilterPropertyName instanceof Array)) { return; }
-
-            return arrayJect.filter((jectNow,numberIndexNow) => {
-
-                if (arrayJectFilterValue.includes(jectNow)) { return false; }
-                
-                if (typeof(jectNow) === "object") {
-
-                    for (let strokeProperty of arrayJectFilterProperty) {
-
-                        if (Object.values(jectNow).includes(strokeProperty)) { return false; }
-
-                    };
-                    for (let strokePropertyName of arrayStrokeFilterPropertyName) {
-
-                        if (Object.keys(jectNow).includes(strokePropertyName)) { return false; }
-
-                    };
-
-                }
-
-                return true;
 
             });
 
@@ -773,16 +1024,16 @@
             }
             else if (numberIndex) {
 
-                if (typeof(numberIndex) === "number") { arrayNumberIndex = [numberIndex]; }
+                if (typeof (numberIndex) === "number") { arrayNumberIndex = [numberIndex]; }
 
             };
 
             if (!(arrayJect instanceof Array)) { return; };
             if (!(arrayNumberIndex instanceof Array)) { return; };
 
-            arrayNumberIndex.forEach((numberNow,numberIndexNow) => {
+            arrayNumberIndex.forEach((numberNow, numberIndexNow) => {
 
-                arrayJect.splice(numberNow,1);
+                arrayJect.splice(numberNow, 1);
 
             });
 
@@ -814,7 +1065,7 @@
             }
             if (numberIndex) {
 
-                if (typeof(numberIndex) === "number") {
+                if (typeof (numberIndex) === "number") {
 
                     arrayNumberIndex = [numberIndex];
 
@@ -828,7 +1079,7 @@
 
             arrayNumberIndex = arrayNumberIndex.filter((numberNow) => {
 
-                return typeof(numberNow) === "number";
+                return typeof (numberNow) === "number";
 
             });
 
@@ -879,11 +1130,11 @@
             } = jectTransmit;
 
             if (!(arrayJectParse instanceof Array)) { return; }
-            if (typeof(strokePropertyName) !== "string") { return; }
+            if (typeof (strokePropertyName) !== "string") { return; }
 
             return arrayJectParse.filter((jectNow) => {
 
-                return typeof(jectNow) === "object";
+                return typeof (jectNow) === "object";
 
             }).find((jectNow) => {
 
@@ -896,14 +1147,105 @@
     }
     { // String;
 
+        // Функция замены подстрок в строке;
+        function functionStringReplace(
+
+            jectTransmit = {
+
+                stringParse: "",
+                stringReplace: "",
+                stringExcerpt: "",
+                regexpExcerpt: /./,
+                stringReplaced: "",
+                boolReplaceAll: false,
+                arrayStringReplace: [""],
+
+            },
+
+        ) {
+
+            let {
+
+                stringParse,
+                stringExcerpt,
+                stringReplace,
+                regexpExcerpt,
+                stringReplaced,
+                boolReplaceAll,
+                arrayStringReplace,
+
+            } = jectTransmit;
+
+            let regexpReplaced = "";
+
+            if (stringReplace == undefined) {
+
+                stringReplace = "";
+
+            };
+            if (stringReplaced == undefined) {
+
+                stringReplaced = "";
+
+            };
+            if ((stringReplace || stringReplace === "") && !arrayStringReplace) {
+
+                arrayStringReplace = [stringReplace];
+
+            };
+            if (typeof (stringExcerpt) === "string" && !regexpExcerpt) {
+
+                regexpExcerpt = new RegExp(stringExcerpt, "g");
+
+                if (!stringReplaced) { regexpReplaced = new RegExp(stringExcerpt); }
+
+            };
+            if (!regexpExcerpt) {
+
+                stringExcerpt = stringParse.replace("*", "\\*");
+                stringExcerpt = stringExcerpt.replaceAll(")", "\\)");
+                stringExcerpt = stringExcerpt.replaceAll("(", "\\(");
+                regexpExcerpt = new RegExp(stringExcerpt, "g");
+
+            };
+
+            const arrayStringFind = stringParse.match(regexpExcerpt);
+            const stringDefaultReplace = arrayStringReplace.pop();
+
+            if (arrayStringFind?.length) {
+
+                for (let numberIndex = (!boolReplaceAll) ? 0 : arrayStringFind.length - 1; numberIndex >= 0; numberIndex--) {
+
+                    const stringFindNow = arrayStringFind.pop();
+
+                    stringReplace = (arrayStringReplace[numberIndex]) ? arrayStringReplace[numberIndex] : stringDefaultReplace;
+
+                    if (stringReplaced) {
+
+                        stringParse = stringParse.replace(stringFindNow, stringFindNow.replace(stringReplaced, stringReplace));
+
+                    };
+                    if (regexpReplaced) {
+
+                        stringParse = stringParse.replace(stringFindNow, stringFindNow.replace(regexpReplaced, stringReplace));
+
+                    };
+
+                };
+
+            };
+
+            return stringParse;
+
+        };
         // Функция извлечения подстроки в строке;
         function functionStringExtract(
 
             jectTransmit = {
 
-                stringParse   : "",
-                stringExcerpt : "",
-                regexpExcerpt : /./,
+                stringParse: "",
+                stringExcerpt: "",
+                regexpExcerpt: /./,
                 boolExtractAll: false,
 
             },
@@ -921,25 +1263,25 @@
 
             } = jectTransmit;
 
-            if (typeof(stringParse) !== "string") {
-                
+            if (typeof (stringParse) !== "string") {
+
                 return;
-            
+
             };
-            if (typeof(stringExcerpt) === "string") {
-                
-                regexpExcerpt = new RegExp(stringExcerpt,"g");
-            
+            if (typeof (stringExcerpt) === "string") {
+
+                regexpExcerpt = new RegExp(stringExcerpt, "g");
+
             };
             if (!(stringExcerpt) instanceof RegExp) {
-                
+
                 stringExcerpt = new RegExp(stringParse);
-            
+
             };
 
             let arrayStringFind = Array.from(stringParse.matchAll(regexpExcerpt));
 
-            arrayStringFind.forEach((arrayJectNow,numberIndex,arrayJect) => {
+            arrayStringFind.forEach((arrayJectNow, numberIndex, arrayJect) => {
 
                 if (arrayJectNow.groups?.stringResult) { arrayStringResult.push(arrayJectNow.groups.stringResult); };
 
@@ -953,8 +1295,8 @@
 
             jectTransmit = {
 
-                stringParse       : "",
-                boolExtractAll    : false,
+                stringParse: "",
+                boolExtractAll: false,
                 arrayStringExcerpt: [""],
                 arrayRegexpExcerpt: [/./],
 
@@ -985,7 +1327,7 @@
 
                 for (let stringExcerptNow of arrayStringExcerpt) {
 
-                    arrayRegexpExcerpt.push(new RegExp(stringExcerptNow,"g"));
+                    arrayRegexpExcerpt.push(new RegExp(stringExcerptNow, "g"));
 
                 };
 
@@ -995,8 +1337,8 @@
 
                 const arrayStringFind = functionStringExtract({
 
-                    stringParse   : stringParse,
-                    regexpExcerpt : regexpExcerptNow,
+                    stringParse: stringParse,
+                    regexpExcerpt: regexpExcerptNow,
                     boolExtractAll: boolExtractAll,
 
                 });
@@ -1015,9 +1357,9 @@
 
             jectTransmit = {
 
-                stringParse   : "",
-                stringExcerpt : "",
-                regexpExcerpt : /./,
+                stringParse: "",
+                stringExcerpt: "",
+                regexpExcerpt: /./,
                 boolExtractAll: false,
 
             },
@@ -1035,36 +1377,36 @@
 
             } = jectTransmit;
 
-            if (typeof(stringParse) !== "string") {
-                
+            if (typeof (stringParse) !== "string") {
+
                 return;
-            
+
             };
-            if (typeof(stringExcerpt) === "string") {
-                
-                regexpExcerpt = new RegExp(stringExcerpt,"g");
-            
+            if (typeof (stringExcerpt) === "string") {
+
+                regexpExcerpt = new RegExp(stringExcerpt, "g");
+
             };
             if (!(stringExcerpt) instanceof RegExp) {
-                
+
                 stringExcerpt = new RegExp(stringParse);
-            
+
             };
 
             let arrayStringFind = Array.from(stringParse.matchAll(regexpExcerpt));
 
-            arrayStringFind.forEach((arrayJectNow,numberIndex,arrayJect) => {
+            arrayStringFind.forEach((arrayJectNow, numberIndex, arrayJect) => {
 
                 if (arrayJectNow.groups) {
 
                     Object.entries(arrayJectNow.groups).forEach((arrayJectPair) => {
 
                         if (arrayJectPair[1]) {
-                            
+
                             if (arrayJectPair[0]) { jectResult[arrayJectPair[0]] = []; };
 
                             jectResult[arrayJectPair[0]].push(arrayJectPair[1]);
-                        
+
                         };
 
                     });
@@ -1078,107 +1420,183 @@
             return (!boolExtractAll) ? jectResult?.stringResult?.[0] : jectResult;
 
         };
-        // Функция замены подстрок в строке;
-        function functionStringReplace(
+
+    }
+    { // Number;
+
+        // Функция вычисления расстояния между двумя позициями;
+        function functionNumberCalculatePath(
+
+            numberMore = NaN,
+            numberLess = NaN,
+
+        ) {
+
+            // Переменная результата;
+            let numberResult = 0;
+            // Если точки совпадают, то расстояние между ними равно 0;
+            if (numberMore === numberLess) { return 0; };
+            // Если в качестве большей точки указана точка меньше наименьшей, то они замещаются между собой;
+            if (numberMore < numberLess) {
+
+                numberResult = numberLess;
+                numberLess = numberMore;
+                numberMore = numberResult;
+                numberResult = NaN;
+
+            };
+            // Определение расстояния между двумя точками;
+            numberResult = numberMore - numberLess;
+            // Возврат результата;
+            return numberResult;
+        
+        };
+        // Функция переопределения указанного числа относительно заданного диапазона;
+        function functionNumberRecalculationRange(
 
             jectTransmit = {
 
-                stringParse       : "",
-                stringReplace     : "",
-                stringExcerpt     : "",
-                regexpExcerpt     : /./,
-                stringReplaced    : "",
-                boolReplaceAll    : false,
-                arrayStringReplace: [""],
+                numberNow: NaN,
+                arrayNumberRange: [NaN,NaN],
 
             },
 
         ) {
 
+            /*
+                функция перерасчета числа для диапазона - данная функция возвращает число на основе указанного числа и диапазона.
+                
+                Принцип работы: функция сверяет число с крайними правыи и левым значением. Если число выходит за пределы диапазона, то оно принимает крайнее значение,
+                которое пересекла.
+                
+                Пример: functionNumberRecalculationRange({ arrayNumberRange: [-10,10], numberNow: 11 }) - число равняется 10, т.к. изначально пересекло диапазон после 10;
+            */
+
             let {
 
-                stringParse,
-                stringExcerpt,
-                stringReplace,
-                regexpExcerpt,
-                stringReplaced,
-                boolReplaceAll,
-                arrayStringReplace,
+                numberNow,
+                arrayNumberRange,
 
             } = jectTransmit;
 
-            let regexpReplaced = "";
+            // Создается копия исходного диапазона;
+            arrayNumberRange = arrayNumberRange.slice();
+            // Выборка двух первых значений массива;
+            arrayNumberRange = arrayNumberRange.splice(0,2);
+            // Сортировка значений массива в порядке возростания;
+            arrayNumberRange = arrayNumberRange.sort((numberOne,numberTwo) => numberOne - numberTwo);
+            // Возврат перерасчета числа на диапазоне;
+            return (arrayNumberRange[0] > numberNow) ? arrayNumberRange[0] : (arrayNumberRange[1] < numberNow) ? arrayNumberRange[1] : numberNow;
 
-            if (stringReplace == undefined) {
+        };
+        // Функция переопределения указанного числа до наиболее приблеженного из выборки;
+        function functionNumberRecalculationNearest(
+
+            jectTransmit = {
+
+                boolLess: false,
+                boolMore: false,
+                numberCheck: NaN,
+                arrayNumberCheck: [NaN],
+
+            },
+
+        ) {
+
+            /*
+                Функция перерасчета числа до ближайшего совпадения по выборке - данная функция возвращает число на основе указанного числа и выборки.
                 
-                stringReplace = "";
-            
-            };
-            if (stringReplaced == undefined) {
+                Принцип работы: функция интегрирует число в выборку, после чего сравнивает соседние с ним числа, если такие имеются. Число наиболее близкое к заданному
+                вовзращается в качестве результата;
+
+                Пример: functionNumberRecalculationNearest({ arrayNumberNow: [0,15,9], numberCheck: 2 }) - функция вернет 0, т.к. он ближе всего к 2;
+            */
+
+            let {
+
+                boolLess,
+                boolMore,
+                numberCheck,
+                boolReverse,
+                arrayNumberCheck,
+
+            } = jectTransmit;
+
+            // Логическая переменная для обнаружения проверяемого числа в выборке;
+            let boolInclude = false;
+            // Переменная для сохранения индекса числа в выборке;
+            let numberIndexCheck = NaN;
+            // Переменная с результирующим числом;
+            let numberResult = NaN;
+            // Крайние правое и левое число в выборке;
+            let numberLeft = NaN, numberRight = NaN;
+            // Если приоритет отдан наибольшему значению, то приоритет наименьшего не актуален;
+            boolLess = (boolMore) ? false : true;
+            // Если приоритет отдан наименьшему значению, то приоритет наибольшего не актуален;
+            boolMore = (boolLess) ? false : boolMore ?? false;
+            // Создание копии исходной выборки;
+            arrayNumberCheck = arrayNumberCheck.slice();
+            // Фильтрация выборки по уникальности значений;
+            arrayNumberCheck = functionArrayUnique({ arrayJect: arrayNumberCheck });
+            // Фильтрация массива по принадлежности к числам;
+            arrayNumberCheck = arrayNumberCheck.filter((numberNow) => {
                 
-                stringReplaced = "";
+                // Если выборка содержит указанное число, то функция запоминает об его присутствии;
+                if (!boolInclude && arrayNumberCheck.includes(numberCheck)) { boolInclude = true; numberIndexCheck = arrayNumberCheck.indexOf(numberCheck); };
+                // Если текущее число сущетсвенно и является числом, то оно проходит фильтрацию; 
+                return numberNow && typeof(numberNow) === "number";
             
-            };
-            if ((stringReplace || stringReplace === "") && !arrayStringReplace) {
+            });
+            // Сортировка выборки;
+            arrayNumberCheck = arrayNumberCheck.sort((numberOne,numberTwo) => numberOne - numberTwo);
+            // Если выборка пуста, то результирующее число равно указанному числу;
+            if (!arrayNumberCheck.length) { numberResult = numberCheck; }
+            // Если выборка состоит из одного элемента, то результирующее число равно единственному элементу выборки;
+            else if (arrayNumberCheck.length === 1) { numberResult = arrayNumberCheck[0]; } 
+            // Если указанное число больше последнего в выборке, то результирующее будет равно последнему числу выборки;
+            else if (arrayNumberCheck.at(-1) <= numberCheck) { numberResult = arrayNumberCheck.at(-1); }
+            // Если указанное число меньше первого в выборке, то результирующее будет равно первому числу выборки;
+            else if (arrayNumberCheck[0] >= numberCheck) { numberResult = arrayNumberCheck[0]; }
+            // Иначе результирующее число вычисляется по слудующему алгоритму;
+            else {
 
-                arrayStringReplace = [stringReplace];
+                // Если выборка содержит число, то определяются крайние от указанного числа;
+                if (boolInclude) {
 
-            };
-            if (typeof(stringExcerpt) === "string" && !regexpExcerpt) {
-                
-                regexpExcerpt = new RegExp(stringExcerpt,"g");
+                    numberLeft = arrayNumberCheck[numberIndexCheck - 1];
+                    numberRight = arrayNumberCheck[numberIndexCheck + 1];
 
-                if (!stringReplaced) { regexpReplaced = new RegExp(stringExcerpt); }
-            
-            };
-            if (!regexpExcerpt) {
+                }
 
-                stringExcerpt = stringParse.replace("*","\\*");
-                stringExcerpt = stringExcerpt.replaceAll(")","\\)");
-                stringExcerpt = stringExcerpt.replaceAll("(","\\(");
-                regexpExcerpt = new RegExp(stringExcerpt,"g");
-            
-            };
+                for (let numberIndexNow in arrayNumberCheck) {
 
-            const arrayStringFind      = stringParse.match(regexpExcerpt);
-            const stringDefaultReplace = arrayStringReplace.pop();
-
-            if (arrayStringFind?.length) {
-
-                for (let numberIndex = (!boolReplaceAll) ? 0 : arrayStringFind.length - 1; numberIndex >= 0; numberIndex--) {
-
-                    const stringFindNow = arrayStringFind.pop();
-
-                    stringReplace = (arrayStringReplace[numberIndex]) ? arrayStringReplace[numberIndex] : stringDefaultReplace;
-    
-                    if (stringReplaced) {
+                    if (arrayNumberCheck[numberIndexNow] > numberCheck) {
                         
-                        stringParse = stringParse.replace(stringFindNow,stringFindNow.replace(stringReplaced,stringReplace));
-                    
-                    };
-                    if (regexpReplaced) {
-                        
-                        stringParse = stringParse.replace(stringFindNow,stringFindNow.replace(regexpReplaced,stringReplace));
+                        numberLeft = arrayNumberCheck[numberIndexNow - 1];
+                        numberRight = arrayNumberCheck[numberIndexNow];
+                        break;
                     
                     };
 
                 };
 
+                const numberLeftDistance = numberCheck - numberLeft, numberRightDistance = numberRight - numberCheck;
+
+                numberResult = (numberLeftDistance < numberRightDistance) ? numberLeft : (numberRightDistance < numberLeftDistance) ? numberRight : (boolLess && numberLeftDistance === numberRightDistance) ? numberLeft : numberRight; 
+
             };
 
-            return stringParse;
+            numberResult = numberResult ?? (!boolReverse) ? arrayNumberCheck[0] : arrayNumberCheck.at(-1);
+            
+            return numberResult;
 
         };
-
-    }
-    { // Number;
-
         function functionGetMultiply([...arrayNumber]) {
 
             return 0;
 
         };
-        function functionGetNumberRandom(jectTransmit = {
+        function functionNumberRandomGet(jectTransmit = {
 
             numberMin: 0,
             numberMax: 100,
@@ -1197,9 +1615,9 @@
         };
         function functionCalculateNumberDivisionIntegerNumber(jectTransmit = {
 
-            numberDevider : 1,
+            numberDevider: 1,
             numberDevidend: 1,
-            
+
         }) {
 
             const {
@@ -1217,28 +1635,44 @@
     { // Regexp;
 
         // Функция генерации регулярного выражения для поиска в объекте стиля;
-        function functionGetRegexpStyle(
+        function functionRegexpStyleGet(
 
             jectTransmit = {
 
-                stringMode  : "",
-                stringStyle : "",
+                domElement: document.createElement("sr"),
+                stringMode: "",
+                stringStyle: "",
 
             },
 
         ) {
 
-            const { stringStyle, stringMode } = jectTransmit;
+            let {
+                
+                domElement,
+                stringMode,
+                stringStyle,
+            
+            } = jectTransmit;
 
-            return new RegExp(`}${stringStyle}[^}]*}`,stringMode);
+            if (!stringStyle && domElement) { stringStyle = `#${domElement.id}`; };
+
+            stringStyle = functionStringExtract({
+
+                stringParse  : stringStyle,
+                stringExcerpt: `(?<stringResult>[a-zA-Z_0-9#.>:,]+){`,
+
+            });
+
+            return new RegExp(`${stringStyle}{.*?}`,stringMode);
 
         };
         function functionGetRegexpIgnore(
 
             jectTransmit = {
 
-                stringSeparator : "",
-                stringInterrupt : "",
+                stringSeparator: "",
+                stringInterrupt: "",
 
             },
 
@@ -1258,7 +1692,16 @@
         };
 
     }
+    { // Boolean;
 
+        function functionBoolClassCheck(jectCheck, classCheck = class ClassCheck{}) {
+
+            return jectCheck instanceof classCheck;
+
+        };
+
+    }
+    
 }
 
 functionResolveConnect();
