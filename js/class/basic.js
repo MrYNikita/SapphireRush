@@ -101,6 +101,7 @@ class classBasicExecutorTime extends classBasicExecutor {
         boolSkip: false,
         boolReverse: false,
         numberSpeed: NaN,
+        numberSpeedMode: NaN,
         numberCountFinish: NaN,
         arrayFunctionFinish: [new Function()],
         arrayFunctionPermanent: [new Function()],
@@ -116,6 +117,7 @@ class classBasicExecutorTime extends classBasicExecutor {
 
             boolSkip,
             numberSpeed,
+            numberSpeedMode,
             numberCountFinish,
             arrayFunctionFinish,
             arrayFunctionPermanent,
@@ -124,15 +126,15 @@ class classBasicExecutorTime extends classBasicExecutor {
         } = jectTransmit;
 
         // Поле, хранящее значение пропуска исполнителя;
-        this.boolSkip = (boolSkip) ? true : jectConfigurate.boolSkip;
+        this.boolSkip = (boolSkip) ? true : jectConfigurate.boolSkipExecutor;
         // Поле, хранящее значение скорости работы;
-        this.numberSpeed = numberSpeed;
+        this.numberSpeed = ((numberSpeed) ? numberSpeed : jectConfigurate.numberDefaultSpeedExecutor) * (numberSpeedMode ?? 1);
         // Поле, хранящее индекс интервала;
         this.jectInterval = NaN;
         // Поле, хранящее индекс текущей итерации;
         this.numberCountNow = 1;
         // Поле, хранящее номер конечной итерации;
-        this.numberCountFinish = numberCountFinish;
+        this.numberCountFinish = (numberCountFinish) ? numberCountFinish : jectConfigurate.numberDefaultCountFinishExecutor;
         // Поле, хранящее функция прерывания промиса;
         this.functionExecuteDone = new Function();
         // Поле, хранящее функции итогового исполнения; 
@@ -218,7 +220,34 @@ class classBasicExecutorTime extends classBasicExecutor {
 
                 };
 
-                if (boolFinish) { this.functionRedefenite(); };
+                if(this.boolSkip) {
+
+                    switch(this.constructor.name) {
+
+                        case classBasicWalker.name: {
+
+
+
+                        }; break;
+                        default: {
+
+                            // Завершение исполнения;
+                            boolFinish = true;
+                            // Переопределение счетчика текущей итерации;
+                            this.numberCountNow = this.numberCountFinish;
+                            // Выполнение функции продолжения;
+                            this.jectFunction.functionConditionalExecute.apply(this);
+
+                        } break;
+
+                    };
+
+                };
+                if(boolFinish) {
+                    
+                    this.functionRedefenite();
+                
+                };
 
             },
             functionPermanent() {
@@ -366,7 +395,7 @@ class classBasicExecutorTime extends classBasicExecutor {
             // Если исполнитель необходимо пропустить, то он немедленно завершается;
             if (this.boolSkip) {
 
-                this.functionRedefenite();
+                this.jectFunction.functionFinish.apply(this);
 
             }
             // Иначе, исполнитель продолжает работать в обычном режиме;

@@ -6,24 +6,19 @@ jectConfigurate.boolSkip = false;
 jectConfigurate.boolReload = true;
 jectConfigurate.boolSkipAnima = false;
 jectConfigurate.boolSkipState = false;
-jectConfigurate.boolSkipTimer = false;
-jectConfigurate.boolSkipTicker = false;
 jectConfigurate.boolSkipExecutor = false;
-jectConfigurate.boolSkipRepeater = false;
 jectConfigurate.boolClearSession = false;
 jectConfigurate.boolSaveAnimaImplement = false;
 jectConfigurate.boolSaveDomElementStyle = false;
 
 // Числовые данные;
-jectConfigurate.numberDefaultIterate = 100;
 jectConfigurate.numberScreenWidthMin = 270;
 jectConfigurate.numberScreenHeightMin = 570;
-jectConfigurate.numberDefaultSpeedGame = 1000;
-jectConfigurate.numberDefaultSpeedTimer = 1000;
 jectConfigurate.numberDefaultSpeedAnima = 10;
-jectConfigurate.numberDefaultIterateAnima = 100;
+jectConfigurate.numberDefaultSpeedExecutor = 10;
 jectConfigurate.numberDivBackgroundGridRows = 11;
 jectConfigurate.numberDivBackgroundGridColumns = 9;
+jectConfigurate.numberDefaultCountFinishExecutor = 100;
 
 // Строковые данные;
 jectConfigurate.stringDefaultColorPurple = "rgba(210,0,255,1)";
