@@ -1,24 +1,53 @@
 (async function () {
 
-    let t = new classBasicWalker({
+    let canvas = document.createElement("canvas");
+    let context = canvas.getContext("2d");
+    
+    canvas.style.marginTop = "100px";
+    canvas.width = 500;
+    canvas.height = 500;
+
+    document.body.appendChild(canvas);
+
+    context.beginPath();
+
+    let t1 = new classBasicWalker({
         
         functionExecute: function() {
 
+            const [x,y] = this.arrayNumberPointNow;
+
             console.clear();
-            console.log(this.arrayNumberPointNow);
-            console.log(this.arrayNumberPointNext);
-            console.log(this.arrayNumberPointBias);
+            console.log(`
+            смещения: ${this.arrayNumberPointBias};
+            точки: ${this.arrayNumberPoint};
+            текущая точка: ${this.arrayNumberPointNow};
+            следующая точка: ${this.arrayNumberPointNext};
+            кол-во итераций: ${this.numberCountNow};
+            `);
+            context.lineTo(x,y);
+            context.strokeStyle = "red";
+            context.stroke();
+            context.fill();
 
         },
-        boolSmooth: true,
-        numberSpeed: 250,
-        arrayNumberPoint: [[0,0],[5,1],[2,-2],[7,8]],
+        boolSync: true,
+        boolInstant: false,
+        boolDefenite: true,
+        boolCentripetal: false,
+        numberSpeed: 15,
+        arrayNumberPoint: [
+            [250,250],[225,250],
+            [250,200],[275,250],
+            [350,250],[290,275],
+            [325,350],[250,300],
+            [175,350],[210,275],
+            [150,250],[250,250]
+        ],
     
     });
 
-    console.log(t);
-
-    await t.functionBegin();
+    await t1.functionBegin();
 
     console.log("done");
 

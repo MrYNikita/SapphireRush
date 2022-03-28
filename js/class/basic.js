@@ -174,8 +174,8 @@ class classBasicExecutorTime extends classBasicExecutor {
 
                             functionArrayPointEquals(
 
-                                this.arrayNumberPointBias,
-                                new Array(this.arrayNumberPoint[0].length).fill(0)
+                                this.arrayNumberPointNow,
+                                this.arrayNumberPointNext
 
                             )
 
@@ -184,6 +184,21 @@ class classBasicExecutorTime extends classBasicExecutor {
                             this.arrayNumberPointLast = this.arrayNumberPointNext;
                             this.arrayNumberPointNext = functionArrayNext({ arrayNow: this.arrayNumberPoint, jectNow: this.arrayNumberPointNext });
 
+                            this.jectFunction.functionBiasChange();
+
+                        };
+                        if (
+
+                            functionArrayPointEquals(
+
+                                this.arrayNumberPointNow,
+                                this.arrayNumberPoint.at(-1)
+
+                            ) && this.boolDefenite && this.arrayNumberPointLast === this.arrayNumberPoint.at(-1)
+
+                        ) {
+
+                            boolFinish = true;
 
                         };
 
@@ -227,7 +242,7 @@ class classBasicExecutorTime extends classBasicExecutor {
                     } break;
                     case classBasicWalker.name: {
 
-                        if (this.arrayNumberPointNext === this.arrayNumberPoint[0]) { this.numberCountNow++; };
+                        if (functionArrayPointEquals(this.arrayNumberPointNow,this.arrayNumberPoint[0])) { this.numberCountNow++; };
 
                     };
                     case classBasicTicker.name: {
@@ -495,8 +510,11 @@ class classBasicWalker extends classBasicExecutorTime {
 
     static jectTransmit = Object.assign(classBasicExecutorTime.jectTransmit,{
 
+        boolSync: false,
         boolSmooth: false,
+        boolInstant: false,
         boolDefenite: false,
+        boolCentripetal: false,
         arrayNumberPoint: [[NaN],[NaN,NaN]],
         numberIndexPointNow: NaN,
         arrayNumberPointNow: [NaN,NaN],
@@ -509,18 +527,27 @@ class classBasicWalker extends classBasicExecutorTime {
 
         let {
 
+            boolSync,
             boolSmooth,
+            boolInstant,
             boolDefenite,
+            boolCentripetal,
             arrayNumberPoint,
             numberIndexPointNow,
             arrayNumberPointNow,
 
         } = jectTransmit;
 
+        // Поле, хранящее значение синхронности перехода;
+        this.boolSync = (boolSync) ? true : false;
         // Поле, хранящее значение плавности шагохода;
         this.boolSmooth = (boolSmooth) ? true : false;
+        // Поле, хранящее значение моментальности перехода;
+        this.boolInstant = (boolInstant) ? true : false;
         // Поле, хранящее значение конечности шагохода;
         this.boolDefenite = (boolDefenite) ? true : false;
+        // Поле, хранящее значение центростремления шагахода;
+        this.boolCentripetal = (boolCentripetal) ? true : false;
         // Поле, хранящее координаты точек, необходимых к обходу;
         this.arrayNumberPoint = arrayNumberPoint ?? [];
         // Поле, хранящее координату текущей точки;
@@ -531,77 +558,123 @@ class classBasicWalker extends classBasicExecutorTime {
         this.arrayNumberPointNext = functionArrayNext({ arrayNow: this.arrayNumberPoint, jectNow: this.arrayNumberPointNow });
         // Поле, хранящее смещения по координатам;
         this.arrayNumberPointBias = new Array(this.arrayNumberPoint[0].length).fill(0);
+        // Поле, хранящее центральную координату;
+        this.arrayNumberPointCenter = this.arrayNumberPoint[0];
 
-        this.jectFunction.functionConditionalExecute = () => { this.functionExecute(); };
+        if (this.boolCentripetal) {
 
-        this.arrayFunctionPermanent.push(() => {
+            let arrayNumberPointNew = this.arrayNumberPoint.splice(0,2);
             
+            this.arrayNumberPoint = this.arrayNumberPoint.reverse();
+
+            while (this.arrayNumberPoint.length) {
+
+                const arrayNumberPointNow = this.arrayNumberPoint.pop();
+
+                arrayNumberPointNew = [...arrayNumberPointNew,arrayNumberPointNow,this.arrayNumberPointCenter.slice(),arrayNumberPointNow.slice()];
+
+            };
+
+            arrayNumberPointNew.push(arrayNumberPointNew[1].slice());
+
+            this.arrayNumberPoint = arrayNumberPointNew;
+
+        };
+        if (this.boolInstant) {
+
+            this.boolSync = false;
+            this.boolSmooth = false;
+
+        }
+        else if (this.boolSync || this.boolSmooth) {
+            
+            this.boolInstant = false;
+        
+        };
+
+        this.jectFunction.functionBiasChange = () => {
+
+            const numberPathLess = (this.boolSync) ? this.arrayNumberPointNow.reduce((numberPathNow,numberPathLast,numberIndexNow) => {
+
+                numberPathLast = numberPathNow;
+                numberPathNow = functionNumberCalculatePath(
+
+                    this.arrayNumberPointNow[numberIndexNow],
+                    this.arrayNumberPointNext[numberIndexNow]
+
+                );
+
+                if (numberPathNow === 0) { return numberPathLast; };
+                if (numberPathLast && numberPathNow > numberPathLast) { numberPathNow = numberPathLast; };
+
+                return numberPathNow;
+
+            },undefined) ?? 1 : 1;
+
+            this.arrayNumberPointBias.forEach((numberBiasNow,numberIndexNow) => {
+
+                let numberModeBias = 1;
+
+                const numberPathNow = (this.boolSync) ? functionNumberCalculatePath(
+
+                    this.arrayNumberPointNow[numberIndexNow],
+                    this.arrayNumberPointNext[numberIndexNow]
+
+                ) : 1;
+
+                if (numberPathNow !== numberPathLess) { numberModeBias = numberPathNow / numberPathLess; };
+
+                if (this.arrayNumberPointNow[numberIndexNow] < this.arrayNumberPointNext[numberIndexNow]) {
+
+                    this.arrayNumberPointBias[numberIndexNow] = 1 * numberModeBias;
+    
+                }
+                else if (this.arrayNumberPointNow[numberIndexNow] > this.arrayNumberPointNext[numberIndexNow]) {
+    
+                    this.arrayNumberPointBias[numberIndexNow] = -1 * numberModeBias;
+    
+                }
+                else {
+
+                    this.arrayNumberPointBias[numberIndexNow] = 0;
+
+                };
+
+            });
+
+        };
+        this.jectFunction.functionPointNowChange = () => {
+
             this.arrayNumberPointNow.forEach((numberCordNow,numberIndexNow) => {
-
-                const numberPathLess = (this.boolSmooth) ? this.arrayNumberPointNow.reduce((numberPathLast,numberPathNow,numberIndexLast) => {
-
-                    let numberPath = functionNumberCalculatePath(
-
-                        this.arrayNumberPointNow[numberIndexLast],
-                        this.arrayNumberPointNext[numberIndexLast]
-
-                    );
-
-                    if (!numberPathLast) { numberPathNow = numberPath; }
-                    else if (numberPathLast > numberPath) { numberPathNow = numberPath; }
-                    else { numberPathNow = numberPathLast; };
-
-                    return numberPathNow;
-
-                },undefined) : 1;
-
-                this.arrayNumberPointBias.forEach((numberBiasNow,numberIndexNow) => {
-
-                    const numberPathNow = functionNumberCalculatePath(this.arrayNumberPointNow[numberIndexNow],this.arrayNumberPointNext[numberIndexNow]);
-
-                    if (
-
-                        (this.arrayNumberPointBias[numberIndexNow] > 0 && this.arrayNumberPointNow[numberIndexNow] + this.arrayNumberPointBias[numberIndexNow] >= this.arrayNumberPointNext[numberIndexNow]) ||
-                        (this.arrayNumberPointBias[numberIndexNow] < 0 && this.arrayNumberPointNow[numberIndexNow] + this.arrayNumberPointBias[numberIndexNow] <= this.arrayNumberPointNext[numberIndexNow])
-
-                    ) {
-
-                        this.arrayNumberPointBias[numberIndexNow] = 0;
-                        this.arrayNumberPointNow[numberIndexNow] = this.arrayNumberPointNext[numberIndexNow];
-                    
-                    }
-                    else if (this.arrayNumberPointNow[numberIndexNow] < this.arrayNumberPointNext[numberIndexNow]) {
-
-                        this.arrayNumberPointBias[numberIndexNow] = 1;
-
-                    }
-                    else if (this.arrayNumberPointNow[numberIndexNow] > this.arrayNumberPointNext[numberIndexNow]) {
-
-                        this.arrayNumberPointBias[numberIndexNow] = -1;
-
-                    }
-                    else {
-
-                        this.arrayNumberPointBias[numberIndexNow] = 0;
-
-                        this.jectFunction.functionFinish.apply(this);
-
-                    };
-
-                    if (this.arrayNumberPointBias[numberIndexNow] && this.boolSmooth && numberPathNow > numberPathLess) {
-
-                        this.arrayNumberPointBias[numberIndexNow] *= (numberPathLess) ? (numberPathNow / numberPathLess) : 1;
-
-                    };
-
-                });
 
                 this.arrayNumberPointNow[numberIndexNow] += this.arrayNumberPointBias[numberIndexNow];
 
+                if (
+                    
+                    this.boolInstant ||
+                    this.arrayNumberPointBias[numberIndexNow] > 0 && this.arrayNumberPointNow[numberIndexNow] >= this.arrayNumberPointNext[numberIndexNow] ||
+                    this.arrayNumberPointBias[numberIndexNow] < 0 && this.arrayNumberPointNow[numberIndexNow] <= this.arrayNumberPointNext[numberIndexNow]
+                
+                ) {
+
+                    this.arrayNumberPointBias[numberIndexNow] = 0;
+                    this.arrayNumberPointNow[numberIndexNow] = this.arrayNumberPointNext[numberIndexNow];
+
+                };
+
             });
-        
-        });
-        
+
+        };
+        this.jectFunction.functionConditionalExecute = () => {
+
+            this.jectFunction.functionPointNowChange();
+
+        };
+
+        this.arrayFunctionConditional.push(() => { this.functionExecute(); });
+
+        this.jectFunction.functionBiasChange();
+
     };
 
 };
