@@ -1,9 +1,11 @@
 (async function () {
 
-    let t1 = new classBasicTicker({
+    let t1 = new classBasicRepeater({
         
-        boolSkip: true,
-        functionExecute: function() { console.log(this.numberCountNow); },
+        boolSkip: false,
+        numberSpeed: 25,
+        arrayNumberCount: [[10],[20]],
+        functionExecute: function() { console.log(this.arrayNumberCountNow); },
 
     });
 

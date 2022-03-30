@@ -48,6 +48,17 @@ class classAnima extends classBasic {
     };
 
 };
+class classAnimaImplementer extends classAnima {
+   
+    static jectTransmit = Object.assign(classAnima.jectTransmit,{});
+
+    constructor (jectTransmit = classAnimaImplementer.jectTransmit) {
+
+        
+
+    };
+
+};
 
 // class classAnimaCatalog extends classBasic {
 

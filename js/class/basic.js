@@ -134,192 +134,49 @@ class classBasicExecutorTime extends classBasicExecutor {
         // Поле, хранящее индекс текущей итерации;
         this.numberCountNow = 1;
         // Поле, хранящее номер конечной итерации;
-        this.numberCountFinish = (numberCountFinish) ? numberCountFinish : jectConfigurate.numberDefaultCountFinishExecutor;
+        this.numberCountEnd = (numberCountFinish) ? numberCountFinish : jectConfigurate.numberDefaultCountFinishExecutor;
+        // Поле, хранящее текущее значение счетчиков;
+        this.arrayNumberCountNow = [this.numberCountNow];
         // Поле, хранящее функция прерывания промиса;
         this.functionExecuteDone = new Function();
         // Поле, хранящее функции итогового исполнения; 
         this.arrayFunctionFinish = arrayFunctionFinish ?? [];
+        // Поле, хранящее конечное значение счетчика;
+        this.arrayNumberCountEnd = [this.numberCountEnd];
         // Поле, хранящее функции постоянного исполнения;
         this.arrayFunctionPermanent = arrayFunctionPermanent ?? [];
         // Поле, хранящее функции условного исполнения;
         this.arrayFunctionConditional = arrayFunctionConditional ?? [];
-        // Поле, хранящее объект функций;
-        this.jectFunction = {
+        // Функция пропуска исполнителя;
+        this._functionSkip = function () {
 
-            functionFinish() {
+            if (this.boolSkip) {
 
-                let boolFinish = false;
+                this.functionSkip();
 
-                switch(this.constructor.name) {
+                return true;
 
-                    case classBasicTimer.name: {
+            };
 
-                        if (this.numberCountNow <= this.numberCountFinish) { boolFinish = true; };
+        };
+        // Функция выполнения исполнителя;
+        this._functionCompletion = function () {
 
-                    } break;
-                    case classBasicTicker.name: {
 
-                        if (this.numberCountNow === this.numberCountFinish) {
+        };
+        // Функция изменения счетчика исполнителя;
+        this._functionCountNowChange = function () {
 
-                            let numberBuffer = this.numberCountBegin;
 
-                            this.boolReverse = !this.boolReverse;
-                            this.numberCountBegin = this.numberCountFinish;
-                            this.numberCountFinish = numberBuffer;
+        };
+        // Функция условного выполнения исполнителя;
+        this._functionConditionalExecute = function () {
 
-                        };
+            
+        };
+        // Функция условного завершения исполнителя;
+        this._functionConditionalCompletion = function () {
 
-                    } break;
-                    case classBasicWalker.name: {
-
-                        if (
-
-                            functionArrayPointEquals(
-
-                                this.arrayNumberPointNow,
-                                this.arrayNumberPointNext
-
-                            )
-
-                        ) {
-
-                            this.arrayNumberPointLast = this.arrayNumberPointNext;
-                            this.arrayNumberPointNext = functionArrayNext({ arrayNow: this.arrayNumberPoint, jectNow: this.arrayNumberPointNext });
-
-                            this.jectFunction.functionBiasChange();
-
-                        };
-                        if (
-
-                            functionArrayPointEquals(
-
-                                this.arrayNumberPointNow,
-                                this.arrayNumberPoint.at(-1)
-
-                            ) && this.boolDefenite && this.arrayNumberPointLast === this.arrayNumberPoint.at(-1)
-
-                        ) {
-
-                            boolFinish = true;
-
-                        };
-
-                    }; break;
-                    case classBasicHoarder.name: {
-
-                        if (this.boolReverse && this.numberCountNow <= this.numberCountFinish) { boolFinish = true; }
-                        else if (!this.boolReverse && this.numberCountNow >= this.numberCountFinish) { boolFinish = true; };
-
-                    } break;
-                    case classBasicRepeater.name: {
-
-                        if (this.boolReverse && this.numberCountNow <= this.numberCountFinish) { boolFinish = true; }
-                        else if (!this.boolReverse && this.numberCountNow >= this.numberCountFinish) { boolFinish = true; };
-
-                    } break;
-
-                };
-
-                if(this.boolSkip) {
-
-                    switch(this.constructor.name) {
-
-                        case classBasicWalker.name: {
-
-
-
-                        }; break;
-                        default: {
-
-                            // Завершение исполнения;
-                            boolFinish = true;
-                            // Переопределение счетчика текущей итерации;
-                            this.numberCountNow = this.numberCountFinish;
-                            // Выполнение функции продолжения;
-                            this.jectFunction.functionConditionalExecute.apply(this);
-
-                        } break;
-
-                    };
-
-                };
-                if(boolFinish) {
-                    
-                    this.functionRedefenite();
-                
-                };
-
-            },
-            functionPermanent() {
-
-                functionArrayFunctionExecute(this.arrayFunctionPermanent);
-
-            },
-            functionConditional() {
-                
-                if (this.boolCondition) { functionArrayFunctionExecute(this.arrayFunctionConditional); };
-
-            },
-            functionCountNowChange() {
-
-                switch (this.constructor.name) {
-
-                    case classBasicTimer.name: {
-
-                        if (this.boolCondition) { this.numberCountNow++ };
-
-                    } break;
-                    case classBasicWalker.name: {
-
-                        if (functionArrayPointEquals(this.arrayNumberPointNow,this.arrayNumberPoint[0])) { this.numberCountNow++; };
-
-                    };
-                    case classBasicTicker.name: {
-
-                        if (this.boolCondition) {
-
-                            if (this.boolReverse && this.numberCountNow > this.numberCountFinish) { this.numberCountNow--; }
-                            else if (!this.boolReverse && this.numberCountNow < this.numberCountFinish) { this.numberCountNow++; };
-
-                        };
-
-                    }; break;
-                    case classBasicHoarder.name: {
-
-                        if (this.boolCondition) {
-
-                            if (this.boolReverse && this.numberCountNow > this.numberCountFinish) { this.numberCountNow--; }
-                            else if (!this.boolReverse && this.numberCountNow < this.numberCountFinish) { this.numberCountNow++; };
-
-                        }
-                        else {
-
-                            if (this.boolReverse && this.numberCountNow < this.numberCountBegin) { this.numberCountNow++; }
-                            else if (!this.boolReverse && this.numberCountNow > this.numberCountBegin) { this.numberCountNow--; };
-
-                        };
-
-
-                    } break;
-                    case classBasicRepeater.name: {
-
-                        if (this.boolCondition) {
-
-                            if (this.boolReverse && this.numberCountNow > this.numberCountFinish) { this.numberCountNow--; }
-                            else if (!this.boolReverse && this.numberCountNow < this.numberCountFinish) { this.numberCountNow++; };
-
-                        };
-
-                    } break;
-
-                };
-
-            },
-            functionConditionalExecute() {
-
-                throw new Error("WW");
-
-            },
 
         };
 
@@ -332,6 +189,19 @@ class classBasicExecutorTime extends classBasicExecutor {
         clearInterval(this.jectInterval);
         // Очитска переменной интервала;
         this.jectInterval = undefined;
+
+    };
+    // Функция пропуска исполнителя;
+    functionSkip() {
+
+        // Установка значения пропуска;
+        this.boolSkip = true;
+        // Установка счетчика по итоговым значениям;
+        this.arrayNumberCountNow.forEach((numberCountNow,numberIndexNow) => { this.arrayNumberCountNow[numberIndexNow] = this.arrayNumberCountEnd[numberIndexNow]; });
+        // Выполнение функции исполнителя с максимальным счетчиком;
+        this.jectFunction.functionCompletion.apply(this);
+        // Завершение исполнителя;
+        this.functionInterrupt();
 
     };
     // Функция обновления исполнителя;
@@ -362,17 +232,21 @@ class classBasicExecutorTime extends classBasicExecutor {
 
         this.jectInterval = setInterval(() => {
 
-            this.jectFunction.functionPermanent.apply(this);
-            this.jectFunction.functionConditionalExecute();
-            this.jectFunction.functionFinish.apply(this);
-            this.jectFunction.functionConditional.apply(this);
-            this.jectFunction.functionCountNowChange.apply(this);
+            if (
+                
+                this._functionSkip() ||
+                this._functionConditionalCompletion()
+                
+            ) { return; };
+
+            this._functionConditionalExecute();
+            this._functionCountNowChange();
 
         },this.numberSpeed);
 
     };
-    // Функция завершения исполнителя;
-    functionRedefenite() {
+    // Функция прерывание исполнителя;
+    functionInterrupt() {
 
         // Прекращение выполнения исполнителя;
         this.functionStop();
@@ -395,7 +269,7 @@ class classBasicExecutorTime extends classBasicExecutor {
             // Если исполнитель необходимо пропустить, то он немедленно завершается;
             if (this.boolSkip) {
 
-                this.jectFunction.functionFinish.apply(this);
+                this.functionSkip();
 
             }
             // Иначе, исполнитель продолжает работать в обычном режиме;
@@ -420,14 +294,20 @@ class classBasicTimer extends classBasicExecutorTime {
         
         super(jectTransmit);
     
-        this.jectFunction.functionConditionalExecute = () => {
+        this._functionCountNowChange = function () {
 
-            if (this.numberCountNow === this.numberCountFinish) {
+            if(this.boolCondition) { this.arrayNumberCountNow[0]++; };
 
-                this.functionExecute();
+        };
+        this._functionConditionalExecute = function () {
+            
+            
+        
+        };
+        this._functionConditionalCompletion = function () {
 
-            };
-
+            if (functionArrayPointEquals(this.arrayNumberCountNow,this.arrayNumberCountEnd)) { this.jectFunction.functionCompletion.apply(this); };
+        
         };
     
     };
@@ -458,19 +338,39 @@ class classBasicRepeater extends classBasicExecutorTime {
         // Если активирован реверсивный режим, то происходит перестановка границ счетчика;
         if (boolReverse) {
 
-            this.numberCountNow = this.numberCountFinish;
-            this.numberCountFinish = 1;
+            this.numberCountNow = this.numberCountEnd;
+            this.numberCountEnd = 1;
 
         };
 
-        this.jectFunction.functionConditionalExecute = () => {
+        this._functionCountNowChange = function () {
+
+            if (this.boolCondition) {
+
+                if (this.boolReverse && this.arrayNumberCountNow[0] > this.arrayNumberCountEnd[0]) { this.arrayNumberCountNow[0]--; }
+                else if (!this.boolReverse && this.arrayNumberCountNow[0] < this.arrayNumberCountEnd[0]) { this.arrayNumberCountNow[0]++; };
+
+            };
+
+        };
+        this._functionConditionalExecute = function () {
 
             if (
                 
-                (this.boolReverse && this.numberCountNow >= this.numberCountFinish) ||
-                (!this.boolReverse && this.numberCountNow <= this.numberCountFinish)
+                (this.boolReverse && this.arrayNumberCountNow[0] > this.arrayFunctionFinish[0]) ||
+                (!this.boolReverse && this.arrayNumberCountNow[0] < this.arrayNumberCountEnd[0])
 
             ) { this.functionExecute(); };
+
+        };
+        this._functionConditionalCompletion = function () {
+
+            if (
+                
+                (this.boolReverse && this.arrayNumberCountNow[0] <= this.arrayNumberCountEnd[0]) ||
+                (!this.boolReverse && this.arrayNumberCountNow[0] >= this.arrayNumberCountEnd[0])
+
+            ) { this.jectFunction.functionCompletion.apply(this); };
 
         };
     
@@ -489,14 +389,42 @@ class classBasicHoarder extends classBasicRepeater {
     
         this.numberCountBegin = this.numberCountNow;
 
-        this.jectFunction.functionConditionalExecute = () => {
+        this.arrayNumberCountStart = [this.numberCountBegin];
+
+        this._functionCountNowChange = function () {
+
+            if (this.boolCondition) {
+
+                if (this.boolReverse && this.arrayNumberCountNow[0] > this.arrayNumberCountEnd[0]) { this.arrayNumberCountNow[0]--; }
+                else if (!this.boolReverse && this.arrayNumberCountNow[0] < this.arrayNumberCountEnd[0]) { this.arrayNumberCountNow[0]++; };
+
+            }
+            else {
+
+                if (this.boolReverse && this.arrayNumberCountNow[0] < this.arrayNumberCountStart[0]) { this.arrayNumberCountNow[0]++; }
+                else if (!this.boolReverse && this.arrayNumberCountNow[0] > this.arrayNumberCountStart[0]) { this.arrayNumberCountNow[0]--; };
+
+            };
+
+        };
+        this._functionConditionalExecute = function () {
 
             if (
 
-                (this.boolReverse && this.numberCountNow >= this.numberCountFinish) ||
-                (!this.boolReverse && this.numberCountNow <= this.numberCountFinish)
+                (this.boolReverse && this.arrayNumberCountNow[0] > this.arrayNumberCountEnd[0]) ||
+                (!this.boolReverse && this.arrayNumberCountNow[0] < this.arrayNumberCountEnd[0])
                 
             ) { this.functionExecute(); };
+
+        };
+        this._functionConditionalCompletion = function () {
+
+            if (
+                
+                (this.boolReverse && this.arrayNumberCountNow[0] <= this.arrayNumberCountEnd[0]) ||
+                (!this.boolReverse && this.arrayNumberCountNow[0] >= this.arrayNumberCountEnd[0])
+                
+            ) { this.jectFunction.functionCompletion.apply(this); };
 
         };
     
@@ -527,8 +455,40 @@ class classBasicTicker extends classBasicHoarder {
 
         this.boolDirection = (boolDirection ?? true) ? true : false;
         this.numberIterate = numberIterate;
+        
+        this._functionCountNowChange = function () {
 
-        this.jectFunction.functionConditionalExecute = () => { this.functionExecute(); };
+            if (this.boolCondition) {
+
+                if (this.boolReverse && this.arrayNumberCountNow[0] > this.arrayNumberCountEnd[0]) { this.arrayNumberCountNow[0]--; }
+                else if (!this.boolReverse && this.arrayNumberCountNow[0] < this.arrayNumberCountEnd[0]) { this.arrayNumberCountNow[0]++; };
+
+            };
+
+        };
+        this._functionConditionalExecute = function () {
+
+            if (
+
+                (this.boolReverse && this.arrayNumberCountNow[0] > this.arrayNumberCountEnd[0]) ||
+                (!this.boolReverse && this.arrayNumberCountNow[0] < this.arrayNumberCountEnd[0])
+                
+            ) { this.functionExecute(); };
+
+        };
+        this._functionConditionalCompletion = function () {
+
+            // Проверка на совпадение значений счетчика и его предела;
+            if (this.arrayNumberCountNow[0] === this.arrayNumberCountEnd[0]) {
+
+                // Изменение направления маятника;
+                this.boolReverse = !this.boolReverse;
+                // Обмен значениями между предалами счетчика;
+                [this.arrayNumberCountStart[0],this.arrayNumberCountEnd[0]] = [this.arrayNumberCountEnd[0],this.arrayNumberCountStart[0]];
+
+            };
+
+        };
 
     };
 
@@ -544,9 +504,9 @@ class classBasicWalker extends classBasicExecutorTime {
         boolInstant: false,
         boolDefenite: false,
         boolCentripetal: false,
-        arrayNumberPoint: [[NaN],[NaN,NaN]],
-        numberIndexPointNow: NaN,
-        arrayNumberPointNow: [NaN,NaN],
+        arrayNumberCount: [[NaN],[NaN,NaN]],
+        numberIndexCountNow: NaN,
+        arrayNumberCountNow: [NaN,NaN],
         
     });
 
@@ -561,9 +521,9 @@ class classBasicWalker extends classBasicExecutorTime {
             boolInstant,
             boolDefenite,
             boolCentripetal,
-            arrayNumberPoint,
-            numberIndexPointNow,
-            arrayNumberPointNow,
+            arrayNumberCount,
+            numberIndexCountNow,
+            arrayNumberCountNow,
 
         } = jectTransmit;
 
@@ -578,35 +538,35 @@ class classBasicWalker extends classBasicExecutorTime {
         // Поле, хранящее значение центростремления шагахода;
         this.boolCentripetal = (boolCentripetal) ? true : false;
         // Поле, хранящее координаты точек, необходимых к обходу;
-        this.arrayNumberPoint = arrayNumberPoint ?? [];
+        this.arrayNumberCount = arrayNumberCount ?? [];
         // Поле, хранящее координату текущей точки;
-        this.arrayNumberPointNow = (arrayNumberPoint.includes(arrayNumberPointNow)) ? arrayNumberPointNow.slice() : (arrayNumberPoint[numberIndexPointNow]) ? arrayNumberPoint[numberIndexPointNow].slice() : arrayNumberPoint[0].slice();
+        this.arrayNumberCountNow = (arrayNumberCount.includes(arrayNumberCountNow)) ? arrayNumberCountNow.slice() : (arrayNumberCount[numberIndexCountNow]) ? arrayNumberCount[numberIndexCountNow].slice() : arrayNumberCount[0].slice();
         // Поле, хранящее координату предыдущей точки;
-        this.arrayNumberPointLast = this.arrayNumberPointNow;
+        this.arrayNumberCountStart = this.arrayNumberCountNow;
         // Поле, хранящее координату следующей точки;
-        this.arrayNumberPointNext = functionArrayNext({ arrayNow: this.arrayNumberPoint, jectNow: this.arrayNumberPointNow });
+        this.arrayNumberCountEnd = functionArrayNext({ arrayNow: this.arrayNumberCount, jectNow: this.arrayNumberCountNow });
         // Поле, хранящее смещения по координатам;
-        this.arrayNumberPointBias = new Array(this.arrayNumberPoint[0].length).fill(0);
+        this.arrayNumberCountBias = new Array(this.arrayNumberCount[0].length).fill(0);
         // Поле, хранящее центральную координату;
-        this.arrayNumberPointCenter = this.arrayNumberPoint[0];
+        this.arrayNumberCountCenter = this.arrayNumberCount[0];
 
         if (this.boolCentripetal) {
 
-            let arrayNumberPointNew = this.arrayNumberPoint.splice(0,2);
+            let arrayNumberPointNew = this.arrayNumberCount.splice(0,2);
             
-            this.arrayNumberPoint = this.arrayNumberPoint.reverse();
+            this.arrayNumberCount = this.arrayNumberCount.reverse();
 
-            while (this.arrayNumberPoint.length) {
+            while (this.arrayNumberCount.length) {
 
-                const arrayNumberPointNow = this.arrayNumberPoint.pop();
+                const arrayNumberPointNow = this.arrayNumberCount.pop();
 
-                arrayNumberPointNew = [...arrayNumberPointNew,arrayNumberPointNow,this.arrayNumberPointCenter.slice(),arrayNumberPointNow.slice()];
+                arrayNumberPointNew = [...arrayNumberPointNew,arrayNumberPointNow,this.arrayNumberCountCenter.slice(),arrayNumberPointNow.slice()];
 
             };
 
             arrayNumberPointNew.push(arrayNumberPointNew[1].slice());
 
-            this.arrayNumberPoint = arrayNumberPointNew;
+            this.arrayNumberCount = arrayNumberPointNew;
 
         };
         if (this.boolInstant) {
@@ -621,15 +581,15 @@ class classBasicWalker extends classBasicExecutorTime {
         
         };
 
-        this.jectFunction.functionBiasChange = () => {
+        this._functionBiasChange = function () {
 
-            const numberPathLess = (this.boolSync) ? this.arrayNumberPointNow.reduce((numberPathNow,numberPathLast,numberIndexNow) => {
+            const numberPathLess = (this.boolSync) ? this.arrayNumberCountNow.reduce((numberPathNow,numberPathLast,numberIndexNow) => {
 
                 numberPathLast = numberPathNow;
                 numberPathNow = functionNumberCalculatePath(
 
-                    this.arrayNumberPointNow[numberIndexNow],
-                    this.arrayNumberPointNext[numberIndexNow]
+                    this.arrayNumberCountNow[numberIndexNow],
+                    this.arrayNumberCountEnd[numberIndexNow]
 
                 );
 
@@ -640,69 +600,104 @@ class classBasicWalker extends classBasicExecutorTime {
 
             },undefined) ?? 1 : 1;
 
-            this.arrayNumberPointBias.forEach((numberBiasNow,numberIndexNow) => {
+            this.arrayNumberCountBias.forEach((numberBiasNow,numberIndexNow) => {
 
                 let numberModeBias = 1;
 
                 const numberPathNow = (this.boolSync) ? functionNumberCalculatePath(
 
-                    this.arrayNumberPointNow[numberIndexNow],
-                    this.arrayNumberPointNext[numberIndexNow]
+                    this.arrayNumberCountNow[numberIndexNow],
+                    this.arrayNumberCountEnd[numberIndexNow]
 
                 ) : 1;
 
                 if (numberPathNow !== numberPathLess) { numberModeBias = numberPathNow / numberPathLess; };
 
-                if (this.arrayNumberPointNow[numberIndexNow] < this.arrayNumberPointNext[numberIndexNow]) {
+                if (this.arrayNumberCountNow[numberIndexNow] < this.arrayNumberCountEnd[numberIndexNow]) {
 
-                    this.arrayNumberPointBias[numberIndexNow] = 1 * numberModeBias;
+                    this.arrayNumberCountBias[numberIndexNow] = 1 * numberModeBias;
     
                 }
-                else if (this.arrayNumberPointNow[numberIndexNow] > this.arrayNumberPointNext[numberIndexNow]) {
+                else if (this.arrayNumberCountNow[numberIndexNow] > this.arrayNumberCountEnd[numberIndexNow]) {
     
-                    this.arrayNumberPointBias[numberIndexNow] = -1 * numberModeBias;
+                    this.arrayNumberCountBias[numberIndexNow] = -1 * numberModeBias;
     
                 }
                 else {
 
-                    this.arrayNumberPointBias[numberIndexNow] = 0;
+                    this.arrayNumberCountBias[numberIndexNow] = 0;
 
                 };
 
             });
 
         };
-        this.jectFunction.functionPointNowChange = () => {
+        this._functionCountNowChange = function () {
 
-            this.arrayNumberPointNow.forEach((numberCordNow,numberIndexNow) => {
+            this.arrayNumberCountNow.forEach((numberCordNow,numberIndexNow) => {
 
-                this.arrayNumberPointNow[numberIndexNow] += this.arrayNumberPointBias[numberIndexNow];
+                this.arrayNumberCountNow[numberIndexNow] += this.arrayNumberCountBias[numberIndexNow];
 
                 if (
                     
                     this.boolInstant ||
-                    this.arrayNumberPointBias[numberIndexNow] > 0 && this.arrayNumberPointNow[numberIndexNow] >= this.arrayNumberPointNext[numberIndexNow] ||
-                    this.arrayNumberPointBias[numberIndexNow] < 0 && this.arrayNumberPointNow[numberIndexNow] <= this.arrayNumberPointNext[numberIndexNow]
+                    this.arrayNumberCountBias[numberIndexNow] > 0 && this.arrayNumberCountNow[numberIndexNow] >= this.arrayNumberCountEnd[numberIndexNow] ||
+                    this.arrayNumberCountBias[numberIndexNow] < 0 && this.arrayNumberCountNow[numberIndexNow] <= this.arrayNumberCountEnd[numberIndexNow]
                 
                 ) {
 
-                    this.arrayNumberPointBias[numberIndexNow] = 0;
-                    this.arrayNumberPointNow[numberIndexNow] = this.arrayNumberPointNext[numberIndexNow];
+                    this.arrayNumberCountBias[numberIndexNow] = 0;
+                    this.arrayNumberCountNow[numberIndexNow] = this.arrayNumberCountEnd[numberIndexNow];
 
                 };
 
             });
 
         };
-        this.jectFunction.functionConditionalExecute = () => {
+        this._functionConditionalExecute = function () {
 
-            this.jectFunction.functionPointNowChange();
+            functionArrayFunctionExecute(this.arrayFunctionConditional);
+
+        };
+        this._functionConditionalCompletion = function () {
+
+            if (
+
+                functionArrayPointEquals(
+
+                    this.arrayNumberCountNow,
+                    this.arrayNumberCountEnd
+
+                )
+
+            ) {
+
+                this.arrayNumberCountStart = this.arrayNumberCountEnd;
+                this.arrayNumberCountEnd = functionArrayNext({ arrayNow: this.arrayNumberCount, jectNow: this.arrayNumberCountEnd });
+
+                this._functionBiasChange();
+
+            };
+            if (
+
+                functionArrayPointEquals(
+
+                    this.arrayNumberCountNow,
+                    this.arrayNumberCount.at(-1)
+
+                ) && this.boolDefenite && this.arrayNumberCountStart === this.arrayNumberCount.at(-1)
+
+            ) {
+
+                this._functionCompletion();
+
+            };
 
         };
 
         this.arrayFunctionConditional.push(() => { this.functionExecute(); });
 
-        this.jectFunction.functionBiasChange();
+        this._functionBiasChange();
 
     };
 
