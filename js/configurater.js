@@ -21,6 +21,7 @@ jectConfigurate.numberDivBackgroundGridColumns = 9;
 jectConfigurate.numberDefaultCountFinishExecutor = 100;
 
 // Строковые данные;
+jectConfigurate.stringDefaultMeasure = "%";
 jectConfigurate.stringDefaultColorPurple = "rgba(210,0,255,1)";
 jectConfigurate.stringDefaultColorOrange = "rgba(255,120,0,1)";
 jectConfigurate.stringDefaultStyleClassText = "elementText";
@@ -39,7 +40,6 @@ jectConfigurate.arrayStringSpeedGameMode = ["очень медленно", "ме
 jectConfigurate.regexpStyleExctractProperty = /(?:[\d; ]*([^{]*?):)/;
 
 // Обработка данных;
-
 if (jectConfigurate.boolSkip) {
 
     jectConfigurate.boolSkipAnima = true;

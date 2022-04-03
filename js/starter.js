@@ -1,15 +1,33 @@
 (async function () {
 
-    let t1 = new classBasicRepeater({
-        
-        boolSkip: false,
-        numberSpeed: 25,
-        arrayNumberCount: [[10],[20]],
-        functionExecute: function() { console.log(this.arrayNumberCountNow); },
+    let c1 = new classAnimaTeamwise({
+
+        stringName: "animaCatalogTest",
+        jectParam: { },
+        arrayJectAnima: [
+
+            new classAnima({
+
+                numberSpeed: 25,
+                classExecutor: classBasicRepeater,
+                functionAnima: function(jectTransmit) { console.log(`1.${this.arrayNumberCountNow[0]}`); }
+
+            }),
+            new classAnima({
+
+                numberSpeed: 50,
+                classExecutor: classBasicRepeater,
+                functionAnima: function(jectTransmit) { console.log(`2.${this.arrayNumberCountNow[0]}`); }
+
+            }),
+
+        ],
 
     });
 
-    await t1.functionBegin(); console.log("done");
+    await c1.functionExecute();
+
+    console.log("done");
 
 })();
 

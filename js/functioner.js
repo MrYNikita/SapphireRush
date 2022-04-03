@@ -918,13 +918,9 @@
 
         };
         // Функция выполнения всех функций в массиве;
-        function functionArrayFunctionExecute(arrayNow = [new Function()]) {
+        function functionArrayFunctionExecute(arrayNow = [new Function()], arrayJectArgument = []) {
 
-            for (const functionNow of arrayNow) {
-                
-                functionNow.apply(this);
-            
-            };
+            arrayNow.forEach((functionNow,numberIndexNow) => { functionNow.apply(this,[arrayJectArgument[numberIndexNow]]); });
 
         };
 

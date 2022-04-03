@@ -20,14 +20,37 @@ class classBasic {
     };
 
 };
-
-// Базовые классы: исполнители;
-class classBasicExecutor extends classBasic {
+class classBasicImplementing extends classBasic {
 
     static jectTransmit = Object.assign(classBasic.jectTransmit,{
 
-        boolCondition: false,
         jectCatalog: new Array() ?? new Map() ?? new Set(),
+        
+    });
+
+    constructor(jectTransmit = classBasicImplementing.jectTransmit) {
+
+        super(jectTransmit);
+
+        let {
+
+            jectCatalog,
+
+        } = jectTransmit;
+
+        if (jectCatalog instanceof Array) { jectCatalog.push(this); } else if (jectCatalog instanceof Map || jectCatalog instanceof Set) { jectCatalog.add(this); };
+
+    };
+
+};
+
+// Базовые классы: исполнители;
+class classBasicExecutor extends classBasicImplementing {
+
+    static jectTransmit = Object.assign(classBasic.jectTransmit,{
+
+        jectParam: {},
+        boolCondition: false,
         functionExecute: new Function(),
         arrayFunctionExecute: [new Function()],
     
@@ -39,7 +62,7 @@ class classBasicExecutor extends classBasic {
 
         let {
 
-            jectCatalog,
+            jectParam = {},
             boolCondition,
             functionExecute,
             arrayFunctionExecute,
@@ -56,8 +79,8 @@ class classBasicExecutor extends classBasic {
 
         };
 
-        if (jectCatalog instanceof Array) { jectCatalog.push(this); } else if (jectCatalog instanceof Map || jectCatalog instanceof Set) { jectCatalog.add(this); };
-
+        this.setMemory = new Set();
+        this.jectParam = jectParam;
         this.boolCondition = (boolCondition !== false) ? true : false;
         this.arrayFunctionExecute = arrayFunctionExecute ?? [];
 
@@ -72,7 +95,7 @@ class classBasicExecutor extends classBasic {
 
     async functionExecute() {
 
-        functionArrayFunctionExecute.apply(this,[this.arrayFunctionExecute]);
+        functionArrayFunctionExecute.apply(this,[this.arrayFunctionExecute,[this.jectParam]]);
 
     };
 
@@ -162,6 +185,12 @@ class classBasicExecutorTime extends classBasicExecutor {
         // Функция выполнения исполнителя;
         this._functionCompletion = function () {
 
+            // Переопределения текущего счетчика путем копирования значений конечного предела;
+            this.arrayNumberCountNow = this.arrayNumberCountEnd.slice();
+            // Итоговое выполнение основных функций исполнителем;
+            this.functionExecute();
+            // Завершение работы исполнителя;
+            this.functionInterrupt();
 
         };
         // Функция изменения счетчика исполнителя;
@@ -306,7 +335,7 @@ class classBasicTimer extends classBasicExecutorTime {
         };
         this._functionConditionalCompletion = function () {
 
-            if (functionArrayPointEquals(this.arrayNumberCountNow,this.arrayNumberCountEnd)) { this.jectFunction.functionCompletion.apply(this); };
+            if (functionArrayPointEquals(this.arrayNumberCountNow,this.arrayNumberCountEnd)) { this._functionCompletion(); };
         
         };
     
@@ -370,7 +399,7 @@ class classBasicRepeater extends classBasicExecutorTime {
                 (this.boolReverse && this.arrayNumberCountNow[0] <= this.arrayNumberCountEnd[0]) ||
                 (!this.boolReverse && this.arrayNumberCountNow[0] >= this.arrayNumberCountEnd[0])
 
-            ) { this.jectFunction.functionCompletion.apply(this); };
+            ) { this._functionCompletion(); };
 
         };
     
@@ -424,7 +453,7 @@ class classBasicHoarder extends classBasicRepeater {
                 (this.boolReverse && this.arrayNumberCountNow[0] <= this.arrayNumberCountEnd[0]) ||
                 (!this.boolReverse && this.arrayNumberCountNow[0] >= this.arrayNumberCountEnd[0])
                 
-            ) { this.jectFunction.functionCompletion.apply(this); };
+            ) { this._functionCompletion(); };
 
         };
     
@@ -702,6 +731,5 @@ class classBasicWalker extends classBasicExecutorTime {
     };
 
 };
-
 
 functionResolveConnect();
