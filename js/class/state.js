@@ -1,36 +1,28 @@
-class classStateModule {
-
-    constructor(jectState) {
-
-        if (jectState instanceof classState) { this.jectState = jectState; };
-
-    };
-
-};
 class classState extends classBasic {
 
-    constructor(jectTransmit = {
+    static jectTransmit = Object.assign(classBasic.jectTransmit,{
 
-        stringName             : "",
-        functionState          : async function() {},
-        jectAnimaSequenceIntro : new classAnimaSequence(),
-        jectAnimaSequenceFinish: new classAnimaSequence(),
+        functionState: async function() {},
+        jectAnimaSequenceEnd: new classAnimaSequence(),
+        jectAnimaSequenceStart: new classAnimaSequence(),
+        
+    });
 
-    }) {
+    constructor(jectTransmit = classState.jectTransmit) {
 
         super(jectTransmit);
 
-        const {
+        let {
 
-            functionState,
-            jectAnimaSequenceIntro,
-            jectAnimaSequenceFinish,
+            functionState = async function() {},
+            jectAnimaSequenceEnd,
+            jectAnimaSequenceStart,
 
         } = jectTransmit;
 
-        this.functionState           = functionState ?? async function() {};
-        this.jectAnimaSequenceIntro  = jectAnimaSequenceIntro;
-        this.jectAnimaSequenceFinish = jectAnimaSequenceFinish;
+        this.functionState = functionState;
+        this.jectAnimaSequenceEnd  = jectAnimaSequenceEnd;
+        this.jectAnimaSequenceStart = jectAnimaSequenceStart;
 
     };
 
@@ -88,21 +80,15 @@ class classStateVideo extends classState {
 };
 class classStateButton extends classState {
 
-    constructor(
+    static jectTransmit = Object.assign(classState.jectTransmit,{
 
-        jectTransmit = {
+        stringText: "",
+        jectAnimaClick: new classAnima(),
+        jectStyleButton: document.createElement("sr").style,
 
-            stringName             : "",
-            stringText             : "",
-            jectAnimaClick         : new classAnima(),
-            jectStyleButton        : document.createElement("sr").style,
-            functionExecute        : async function() {},
-            jectAnimaSequenceIntro : new classAnimaSequence(),
-            jectAnimaSequenceFinish: new classAnimaSequence(),
+    });
 
-        },
-
-    ) {
+    constructor(jectTransmit = classStateButton.jectTransmit) {
 
         jectTransmit.functionState = async function() {
 
@@ -114,11 +100,11 @@ class classStateButton extends classState {
             
             });
 
-            this.jectAnimaSequenceIntro.domElement = domButton;
+            this.jectAnimaSequenceStart.jectParam.domElement = domButton;
 
-            if (this.jectAnimaSequenceIntro) {
+            if (this.jectAnimaSequenceStart) {
 
-                await this.jectAnimaSequenceIntro.functionExecute();
+                await this.jectAnimaSequenceStart.functionExecute();
             
             };
 
@@ -130,7 +116,7 @@ class classStateButton extends classState {
 
         super(jectTransmit);
 
-        const {
+        let {
 
             stringText,
             jectAnimaClick,
@@ -165,35 +151,19 @@ class classStateChoice extends classState {
 
 };
 
-class classStateCatalogModule {
-
-    constructor(jectStateCatalog) {
-
-        if (jectStateCatalog instanceof classStateCatalog) {
-
-            this.jectStateCatalog = jectStateCatalog;
-
-        };
-
-    };
-
-};
 class classStateCatalog extends classBasic {
 
-    constructor(
+    static jectTransmit = Object.assign(classBasic.jectTransmit,{
 
-        jectTransmit = {
+        arrayJectState: [new classState()],
+        
+    });
 
-            stringName: "",
-            arrayJectState: [new classState(),new classStateCatalog()],
-
-        },
-
-    ) {
+    constructor(jectTransmit = classStateCatalog.jectTransmit) {
 
         super(jectTransmit);
 
-        const {
+        let {
 
             arrayJectState,
 
@@ -217,21 +187,17 @@ class classStateCatalog extends classBasic {
 };
 class classStatePlot extends classStateCatalog {
 
-    constructor(
+    static jectTransmit = Object.assign(classStateCatalog.jectTransmit,{
 
-        jectTransmit = {
+        stringStyle: "",
 
-            stringName    : "",
-            stringStyle   : "",
-            arrayJectState: [new classState(),new classStateClaster()],
+    });
 
-        },
-
-    ) {
+    constructor(jectTransmit = classStatePlot.jectTransmit) {
 
         super(jectTransmit);
 
-        const {
+        let {
 
             stringStyle,
 
@@ -248,16 +214,9 @@ class classStatePlot extends classStateCatalog {
 };
 class classStateClaster extends classStateCatalog {
 
-    constructor(
+    static jectTransmit = Object.assign(classStateCatalog.jectTransmit,{});
 
-        jectTransmit = {
-
-            stringName    : "",
-            arrayJectState: [new classState(),new classStateClaster()],
-
-        },
-
-    ) {
+    constructor(jectTransmit = classStateClaster.jectTransmit) {
 
         super(jectTransmit);
 
@@ -274,89 +233,109 @@ class classStateClaster extends classStateCatalog {
 }
 { // Кластеры;
 
-    // new classStateClaster({
+    new classStateClaster({
 
-    //     stringName    : "introdaction",
-    //     arrayJectState: [
+        stringName    : "introdaction",
+        arrayJectState: [
 
-    //         new classStateButton({
+            new classStateButton({
 
-    //             jectStyleButton       : {
+                jectStyleButton       : {
 
-    //                 top            : "-50%",
-    //                 left           : "50%",
-    //                 width          : "0%",
-    //                 height         : "10%",
-    //                 border         : "3px solid",
-    //                 position       : "absolute",
-    //                 transform      : "translateX(-50%)",
-    //                 background     : "none",
-    //                 whiteSpace     : "pre-wrap",
-    //                 borderColor    : jectConfigurate.stringDefaultSessionBorderColor,
-    //                 borderRadius   : "25px",
+                    top            : "-50%",
+                    left           : "50%",
+                    width          : "0%",
+                    height         : "10%",
+                    border         : "3px solid",
+                    position       : "absolute",
+                    transform      : "translateX(-50%)",
+                    background     : "none",
+                    whiteSpace     : "pre-wrap",
+                    borderColor    : jectConfigurate.stringDefaultSessionBorderColor,
+                    borderRadius   : "25px",
 
-    //             },
-    //             jectAnimaSequenceIntro: new classAnimaSequence({
+                },
+                jectAnimaSequenceStart: new classAnimaSequence({
 
-    //                 arrayJectAnima: [
+                    jectParam: {
 
-    //                     new classAnimaTeamwise({
+                        domElement: jectSession.domDivBackground,
 
-    //                         arrayJectAnima: [
+                    },                 
+                    arrayJectAnima: [
+
+                        new classAnimaTeamwise({
+
+                            arrayJectAnima: [
     
-    //                             functionArrayGetByName({
+                                new classAnimaDomGradientWaveLinearTonTwo({
+
+                                    classExecutor: classBasicRepeater,
+                                    numberCountEnd: 200,
+                                    jectParam: {
+
+                                        domElement: jectSession.domDivBackground,
+                                        stringMeasure: "%",
+                                        stringDirection: "to top",
+                                        numberBorderTop: 100,
+                                        numberBorderBottom: -200,
+                                        arrayNumberColorRGBA: [[0,0,0,255],[255,255,255,255]],
+
+                                    },
+
+                                }),
+                                new classAnimaDomMove({
+
+                                    classExecutor: classBasicRepeater,
+                                    numberSpeed: 15,
+                                    numberCountEnd: 200,
+                                    jectParam: new classAnimaDomMoveParam({
+
+                                        numberPositionEndTop: 50,
+                                        stringMeasure: "%",
+                                        numberPositionStartTop: -50
+
+                                    }),
+                                    stringName: "moveClassic",
+
+
+                                }),
     
-    //                                 stringName    : "gradientWaveLinearTonTwo",
-    //                                 arrayJectParse: jectSession.arrayJectAnima,
-            
-    //                             }).functionCreate({ numberIterate: 200, }),
-    //                             new classAnimaDomMove({
-
-    //                                 jectParam: new classAnimaDomMoveParam({
-
-    //                                     numberPositionEndTop: 50,
-    //                                     stringMeasure: "%",
-    //                                     numberPositionStartTop: -50
-
-    //                                 }),
-    //                                 stringName: "moveClassic",
-
-
-    //                             }).functionCreate({ numberIterate: 200, numberSpeed: 15, }),
+                            ],
     
-    //                         ],
-    
-    //                     }),
-    //                     new classAnimaDomExpand({
+                        }),
+                        new classAnimaDomExpand({
 
-    //                         jectParam: new classAnimaDomExpandParam({
+                            classExecutor: classBasicRepeater,
+                            jectParam: new classAnimaDomExpandParam({
 
-    //                             stringMeasure : "%",
-    //                             numberEndWidth: 20,
+                                stringMeasure: "%",
+                                numberWidthEnd: 20,
 
-    //                         }),
+                            }),
                             
-    //                     }).functionCreate({  }),
-    //                     new classAnimaDomTextBust({
+                        }),
+                        new classAnimaDomTextBust({
 
-    //                         jectParam: new classAnimaDomTextBustParam({
+                            classExecutor: classBasicRepeater,
+                            jectParam: new classAnimaDomTextBustParam({
 
-    //                             stringTextNeed  : "Начнём?",
-    //                             stringTextResult: `Начнём?`,
+                                stringTextNeed  : "Начнём?",
+                                stringTextResult: `Начнём?`,
 
-    //                         }),
+                            }),
 
-    //                     }).functionCreate({}),
+                        }),
 
-    //                 ],
+                    ],
 
-    //             }),
+                }),
 
-    //         }),
+            }),
 
-    //     ],
+        ],
 
-    // });
+    });
 
 }
 

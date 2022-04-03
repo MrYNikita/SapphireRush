@@ -45,7 +45,9 @@ class classAnima extends classBasicImplementing {
         numberSpeed: NaN,
         classExecutor: classBasicExecutorTime,
         functionAnima: function() {},
+        numberCountEnd: NaN,
         numberSpeedMode: NaN,
+        arrayNumberCountEnd: [NaN,NaN],
 
     });
 
@@ -62,8 +64,10 @@ class classAnima extends classBasicImplementing {
             jectParam = new classAnimaParam(),
             numberSpeed,
             classExecutor,
-            functionAnima, 
+            functionAnima,
+            numberCountEnd,
             numberSpeedMode,
+            arrayNumberCountEnd,
 
         } = jectTransmit;
 
@@ -81,6 +85,10 @@ class classAnima extends classBasicImplementing {
         this.functionAnima = functionAnima;
         // Поле, хранящее ссылку на текущий каталог анимаций;
         this.jectAnimaCatalog = undefined;
+        // Поле, хранящее массив завершающего состояния счетчика;
+        this.numberCountEnd = numberCountEnd;
+        // Поле, хранящее массив завершающих состояний счетчика;
+        this.arrayNumberCountEnd = (numberCountEnd) ? [numberCountEnd] : arrayNumberCountEnd;
 
     };
 
@@ -93,7 +101,9 @@ class classAnima extends classBasicImplementing {
             jectParam: this.jectParam,
             stringName: `${this.stringName}Executor`,
             numberSpeed: this.numberSpeed,
+            numberCountEnd: this.numberCountEnd,
             functionExecute: this.functionAnima,
+            arrayNumberCountEnd: this.arrayNumberCountEnd,
 
         });
 
@@ -204,7 +214,7 @@ class classAnimaTeamwise extends classAnimaCatalog {
 };
 class classAnimaSequence extends classAnimaCatalog {
 
-    static jectTransmit = Object.assign(classAnimaSequence.jectTransmit,{
+    static jectTransmit = Object.assign(classAnimaCatalog.jectTransmit,{
 
 
 
@@ -228,15 +238,11 @@ class classAnimaSequence extends classAnimaCatalog {
 
             if (jectAnimaNow instanceof classAnima) {
                 
-                if (!jectAnimaNow.jectParam.domElement) { jectAnimaNow.jectParam.domElement = this.domElement; };
-
                 await jectAnimaNow.functionExecute();
             
             };
             if (jectAnimaNow instanceof classAnimaTeamwise || jectAnimaNow instanceof classAnimaSequence) {
                 
-                if (!jectAnimaNow.domElement) { jectAnimaNow.domElement = this.domElement; };
-
                 await jectAnimaNow.functionExecute();
             
             };
@@ -251,11 +257,7 @@ class classAnimaDomMove extends classAnima {
     
     constructor(jectTransmit = classAnima.jectTransmit) {
 
-        jectTransmit.functionAnima = async function(
-
-            jectTransmit = new classAnimaParam({}),
-
-        ) {
+        jectTransmit.functionAnima = async function(jectTransmit = classAnimaDomExpandParam.jectTransmit) {
 
             let {
 
@@ -302,7 +304,7 @@ class classAnimaDomMove extends classAnima {
             functionStylePropertySet({
 
                 domElement    : domElement,
-                stringValue   : `${numberPositionStartTop + numberPositionBiasTop * numberIterateNow}${stringMeasure}`,
+                stringValue   : `${numberPositionStartTop + numberPositionBiasTop * arrayNumberCountNow[0]}${stringMeasure}`,
                 stringProperty: "top",
 
             });
@@ -374,94 +376,19 @@ class classAnimaDomMoveParam extends classAnimaParam {
 
 };
 
-class classAnimaDomExpand extends classAnima {
-
-    constructor(jectTransmit = classAnima.jectTransmit) {
-
-        jectTransmit.functionAnima = async function(jectTransmit = new classAnimaDomExpandParam()) {
-
-            const {
-
-                numberIterate,
-                numberIterateNow,
-
-            } = this;
-
-            let {
-
-                domElement,
-                stringMeasure,
-                numberEndWidth,
-                numberEndHeight,
-                numberBiasWidth,
-                numberBiasHeight,
-                numberStartWidth,
-                numberStartHeight,
-
-            } = jectTransmit;
-
-            if (!numberStartWidth) {
-
-                numberStartWidth = functionStylePropertyGet({ domElement: domElement, stringProperty: "width", }).match(/\d+/)[0] - 0;
-                jectTransmit.numberStartWidth = numberStartWidth;
-                
-            };
-            if (!numberStartHeight) {
-
-                numberStartHeight = functionStylePropertyGet({ domElement: domElement, stringProperty: "height", }).match(/\d+/)[0] - 0;
-                jectTransmit.numberStartHeight = numberStartHeight;
-
-            };
-            if (typeof(numberStartWidth) === "number" && typeof(numberEndWidth) === "number" && numberStartWidth !== numberEndWidth && !numberBiasWidth) {
-
-                numberBiasWidth = (numberEndWidth - numberStartWidth) / numberIterate;
-                jectTransmit.numberBiasWidth = numberBiasWidth;
-
-            };
-            if (typeof(numberStartHeight) === "number" && typeof(numberEndHeight) === "number" && numberStartHeight !== numberEndHeight && !numberBiasHeight) {
-
-                numberBiasHeight = (numberEndHeight - numberStartHeight) / numberIterate;
-                jectTransmit.numberBiasHeight = numberBiasHeight;
-
-            };
-
-            if (numberBiasWidth || numberBiasHeight) {
-
-                if (numberBiasWidth) {
-
-                    functionStylePropertySet({
-
-                        domElement    : domElement,
-                        stringValue   : `${numberStartWidth + numberBiasWidth * numberIterateNow}${stringMeasure}`,
-                        stringProperty: "width",
-
-                    });
-
-                };
-                if (numberBiasHeight) {
-
-
-
-                };
-
-            } else { this.numberIterateNow = this.numberIterate; };
-
-        };
-
-        super(jectTransmit);
-
-    };
-
-};
 class classAnimaDomExpandParam extends classAnimaParam {
 
     static jectTransmit = Object.assign(classAnimaParam.jectTransmit,{
 
         numberWidthEnd: NaN,
+        numberWidthBias: NaN,
         numberHeightEnd: NaN,
         numberMarginEnd: NaN,
+        numberMarginBias: NaN,
+        numberHeightBias: NaN,
         numberWidthStart: NaN,
         numberPaddingEnd: NaN,
+        numberPaddingBias: NaN,
         numberHeightStart: NaN,
         numberMarginStart: NaN,
         numberPaddingStart: NaN,
@@ -475,12 +402,16 @@ class classAnimaDomExpandParam extends classAnimaParam {
         let {
 
             numberWidthEnd,
+            numberWidthBias,
             numberHeightEnd,
             numberMarginEnd,
+            numberMarginBias,
             numberWidthStart,
             numberPaddingEnd,
+            numberHeightBias,
             numberMarginStart,
             numberHeightStart,
+            numberPaddingBias,
             numberPaddingStart,
 
         } = jectTransmit;
@@ -488,15 +419,106 @@ class classAnimaDomExpandParam extends classAnimaParam {
         // Поля, хранящие конечные значения размеров;
         this.numberWidthEnd = numberWidthEnd;
         this.numberHeightEnd = numberHeightEnd;
+        // Поля, хранящие смещения значений размеров;
+        this.numberWidthBias = numberWidthBias;
+        this.numberHeightBias = numberHeightBias;
         // Поля, хранящие начальные значения размеров;
         this.numberWidthStart = numberWidthStart;
         this.numberHeightStart = numberHeightStart;
         // Поля, хранящие конечные значения отступов;
         this.numberMarginEnd = numberMarginEnd;
         this.numberPaddingEnd = numberPaddingEnd;
+        // Поля, хранящие смещения значений отступов;
+        this.numberMarginBias = numberMarginBias;
+        this.numberPaddingBias = numberPaddingBias;
         // Поля, хранящие начальные значения отступов;
         this.numberMarginStart = numberMarginStart;
         this.numberPaddingStart = numberPaddingStart;
+
+    };
+
+};
+class classAnimaDomExpand extends classAnima {
+
+    static jectTransmit = Object.assign(classAnima.jectTransmit,{
+
+        jectParam: new classAnimaDomExpandParam(),
+        
+    });
+
+    constructor(jectTransmit = classAnimaDomExpand.jectTransmit) {
+
+        jectTransmit.functionAnima = async function(jectTransmit = classAnimaDomExpandParam.jectTransmit) {
+
+            let {
+
+                arrayNumberCountEnd,
+                arrayNumberCountNow,
+
+            } = this;
+
+            let {
+
+                domElement,
+                stringMeasure,
+                numberWidthEnd,
+                numberHeightEnd,
+                numberWidthBias,
+                numberHeightBias,
+                numberWidthStart,
+                numberHeightStart,
+
+            } = jectTransmit;
+
+            if (!numberWidthStart) {
+
+                numberWidthStart = functionStylePropertyGet({ domElement: domElement, stringProperty: "width", }).match(/\d+/)[0] - 0;
+                jectTransmit.numberWidthStart = numberWidthStart;
+                
+            };
+            if (!numberHeightStart) {
+
+                numberHeightStart = functionStylePropertyGet({ domElement: domElement, stringProperty: "height", }).match(/\d+/)[0] - 0;
+                jectTransmit.numberHeightStart = numberHeightStart;
+
+            };
+            if (typeof(numberWidthStart) === "number" && typeof(numberWidthEnd) === "number" && numberWidthStart !== numberWidthEnd && !numberWidthBias) {
+
+                numberWidthBias = (numberWidthEnd - numberWidthStart) / arrayNumberCountEnd[0];
+                jectTransmit.numberWidthBias = numberWidthBias;
+
+            };
+            if (typeof(numberHeightStart) === "number" && typeof(numberHeightEnd) === "number" && numberHeightStart !== numberHeightEnd && !numberHeightBias) {
+
+                numberHeightBias = (numberHeightEnd - numberHeightStart) / arrayNumberCountEnd[0];
+                jectTransmit.numberHeightBias = numberHeightBias;
+
+            };
+
+            if (numberWidthBias || numberHeightBias) {
+
+                if (numberWidthBias) {
+
+                    functionStylePropertySet({
+
+                        domElement    : domElement,
+                        stringValue   : `${numberWidthStart + numberWidthBias * arrayNumberCountNow[0]}${stringMeasure}`,
+                        stringProperty: "width",
+
+                    });
+
+                };
+                if (numberHeightBias) {
+
+
+
+                };
+
+            } else { this.arrayNumberCountNow[0] = this.arrayNumberCountEnd[0]; };
+
+        };
+
+        super(jectTransmit);
 
     };
 
@@ -512,11 +534,11 @@ class classAnimaDomTextBust extends classAnima {
 
         ) {
 
-            const {
+            let {
 
                 boolSkip,
-                numberIterate,
-                numberIterateNow,
+                arrayNumberCountNow,
+                arrayNumberCountEnd,
 
             } = this;
 
@@ -541,7 +563,7 @@ class classAnimaDomTextBust extends classAnima {
 
             if (!domElement?.domPText) {
                 
-                jectTransmit.numberIterateNow = numberIterate;
+                jectTransmit.arrayNumberCountNow[0] = arrayNumberCountNow[0];
             
                 return;
             
@@ -549,7 +571,7 @@ class classAnimaDomTextBust extends classAnima {
 
             let stringTextNow = functionDomElementTextGet({ domElement: domElement });
 
-            if (numberIterateNow === numberIterate || boolSkip) {
+            if (arrayNumberCountEnd[0] === arrayNumberCountNow[0] || boolSkip) {
     
                 functionDomElementTextChange({
 
@@ -563,7 +585,7 @@ class classAnimaDomTextBust extends classAnima {
 
                 if (stringTextNow.length > stringTextNeed.length) {
                     
-                    if (Math.floor(numberIterate / (stringTextNow.length - stringTextNeed.length)) % numberIterateNow === 0) {
+                    if (Math.floor(arrayNumberCountEnd[0] / (stringTextNow.length - stringTextNeed.length)) % arrayNumberCountNow[0] === 0) {
 
                         stringTextNow = stringTextNow.slice(0,-1);
 
@@ -572,7 +594,7 @@ class classAnimaDomTextBust extends classAnima {
                 }
                 else if (stringTextNow.length < stringTextNeed.length) {
                     
-                    if (Math.floor(numberIterate / (stringTextNeed.length - stringTextNow.length)) % numberIterateNow === 0) {
+                    if (Math.floor(arrayNumberCountEnd[0] / (stringTextNeed.length - stringTextNow.length)) % arrayNumberCountNow[0] === 0) {
 
                         stringTextNow += " ";
 
@@ -586,7 +608,7 @@ class classAnimaDomTextBust extends classAnima {
 
                     if (stringSymbol !== stringTextNeed[numberIndex]) {
 
-                        arrayStringTextNow[numberIndex] = arrayStringSymbol[functionGetNumberRandom({
+                        arrayStringTextNow[numberIndex] = arrayStringSymbol[functionNumberRandomGet({
 
                             numberMin: 0,
                             numberMax: arrayStringSymbol.length - 1
@@ -598,6 +620,7 @@ class classAnimaDomTextBust extends classAnima {
                 });
 
                 stringTextNow = arrayStringTextNow.join("");
+                
                 functionDomElementTextChange({
 
                     domElement: domElement,
@@ -636,6 +659,120 @@ class classAnimaDomTextBustParam extends classAnimaParam {
 
         this.stringTextNeed = stringTextNeed;
         this.stringTextResult = stringTextResult;
+
+    };
+
+};
+
+class classAnimaDomGradientWaveLinearTonTwoParam extends classAnimaParam {
+
+    static jectTransmit = Object.assign(classAnimaParam.jectTransmit,{
+
+        stringDirection: "to top",
+        numberBorderTop: NaN,
+        numberBorderBias: NaN,
+        numberBorderLeft: NaN,
+        numberBorderRight: NaN,
+        numberBorderBottom: NaN,
+        arrayNumberColorRGBA: [[NaN],[NaN]],
+
+    });
+
+    constructor(jectTransmit = classAnimaDomGradientWaveLinearTonTwoParam.jectTransmit) {
+
+        super(jectTransmit);
+
+        let {
+
+            stringDirection,
+            numberBorderTop,
+            numberBorderBias,
+            numberBorderLeft,
+            numberBorderRight,
+            numberBorderBottom,
+            arrayNumberColorRGBA,
+
+        } = jectTransmit;
+
+        // Поле, хранящее направление смещения границы;
+        this.stringDirection = stringDirection;
+        // Поля, хранящие положение границы;
+        this.numberBorderTop = numberBorderTop;
+        this.numberBorderLeft = numberBorderLeft;
+        this.numberBorderRight = numberBorderRight;
+        this.numberBorderBottom = numberBorderBottom;
+        // Поле, хранящее смещение положения границы;
+        this.numberBorderBias = numberBorderBias;
+        // Поле, хранящие массив задействованных цветов;
+        this.arrayNumberColorRGBA = arrayNumberColorRGBA;
+
+    };
+
+};
+class classAnimaDomGradientWaveLinearTonTwo extends classAnima {
+
+    static jectTransmit = Object.assign(classAnima.jectTransmit,{
+
+        jectParam: new classAnimaDomGradientWaveLinearTonTwoParam(),
+
+    });
+
+    constructor(jectTransmit = classAnimaDomGradientWaveLinearTonTwo.jectTransmit) {
+
+        jectTransmit.functionAnima = async function(jectTransmit = classAnimaDomGradientWaveLinearTonTwoParam.jectTransmit) {
+
+            let {
+
+                arrayNumberCountNow,
+                arrayNumberCountEnd,
+
+            } = this;
+            let {
+
+                stringDirection,
+                numberBorderTop,
+                numberBorderBottom,
+
+            } = jectTransmit;
+
+            if (!jectTransmit.numberBorderBias) {
+                
+                switch (stringDirection) {
+
+                    case "to top": jectTransmit.numberBorderBias = (numberBorderTop - numberBorderBottom) / arrayNumberCountEnd[0];
+
+                };
+            
+            };
+
+            let {
+
+                domElement,
+                numberBorderBias,
+                stringMeasure,
+                arrayNumberColorRGBA = [[0,0,0,255],[255,255,255,255]],
+
+            } = jectTransmit;
+
+            let numberValue = NaN;
+
+            switch (stringDirection) {
+
+                case "to top": { numberValue = numberBorderBottom + numberBorderBias * arrayNumberCountNow[0]; }; break;
+
+            };
+
+            functionStylePropertySet({
+
+                domElement    : domElement,
+                stringValue   : `linear-gradient(${stringDirection},rgba(${arrayNumberColorRGBA[0].join(",")}) ${numberValue}${stringMeasure},rgba(${arrayNumberColorRGBA[1].join(",")}))`,
+                stringProperty: `background`,
+
+            });
+
+        };
+
+        super(jectTransmit);
 
     };
 

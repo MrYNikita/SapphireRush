@@ -1,31 +1,15 @@
 (async function () {
 
-    let c1 = new classAnimaTeamwise({
+    jectSession.jectControllerState.functionStateAdd(
+        [functionArrayGetByName({
+            stringName: "introdaction",
+            arrayJectParse: jectSession.arrayJectStateClaster,
+        })]
+    );
 
-        stringName: "animaCatalogTest",
-        jectParam: { },
-        arrayJectAnima: [
+    console.log(jectSession.arrayJectState);
 
-            new classAnima({
-
-                numberSpeed: 25,
-                classExecutor: classBasicRepeater,
-                functionAnima: function(jectTransmit) { console.log(`1.${this.arrayNumberCountNow[0]}`); }
-
-            }),
-            new classAnima({
-
-                numberSpeed: 50,
-                classExecutor: classBasicRepeater,
-                functionAnima: function(jectTransmit) { console.log(`2.${this.arrayNumberCountNow[0]}`); }
-
-            }),
-
-        ],
-
-    });
-
-    await c1.functionExecute();
+    await jectSession.jectControllerState.functionStateSequenceRedefinite();
 
     console.log("done");
 

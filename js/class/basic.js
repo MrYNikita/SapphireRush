@@ -125,7 +125,8 @@ class classBasicExecutorTime extends classBasicExecutor {
         boolReverse: false,
         numberSpeed: NaN,
         numberSpeedMode: NaN,
-        numberCountFinish: NaN,
+        numberCountEnd: NaN,
+        arrayNumberCountEnd: [NaN],
         arrayFunctionFinish: [new Function()],
         arrayFunctionPermanent: [new Function()],
         arrayFunctionConditional: [new Function()],
@@ -140,6 +141,7 @@ class classBasicExecutorTime extends classBasicExecutor {
 
             boolSkip,
             numberSpeed,
+            numberCountEnd,
             numberSpeedMode,
             numberCountFinish,
             arrayFunctionFinish,
@@ -157,7 +159,7 @@ class classBasicExecutorTime extends classBasicExecutor {
         // Поле, хранящее индекс текущей итерации;
         this.numberCountNow = 1;
         // Поле, хранящее номер конечной итерации;
-        this.numberCountEnd = (numberCountFinish) ? numberCountFinish : jectConfigurate.numberDefaultCountFinishExecutor;
+        this.numberCountEnd = (numberCountEnd) ? numberCountEnd : jectConfigurate.numberDefaultCountEndExecutor;
         // Поле, хранящее текущее значение счетчиков;
         this.arrayNumberCountNow = [this.numberCountNow];
         // Поле, хранящее функция прерывания промиса;

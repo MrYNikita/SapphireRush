@@ -18,7 +18,7 @@ jectConfigurate.numberDefaultSpeedAnima = 10;
 jectConfigurate.numberDefaultSpeedExecutor = 10;
 jectConfigurate.numberDivBackgroundGridRows = 11;
 jectConfigurate.numberDivBackgroundGridColumns = 9;
-jectConfigurate.numberDefaultCountFinishExecutor = 100;
+jectConfigurate.numberDefaultCountEndExecutor = 100;
 
 // Строковые данные;
 jectConfigurate.stringDefaultMeasure = "%";
